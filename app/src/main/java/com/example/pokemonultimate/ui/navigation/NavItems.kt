@@ -40,7 +40,7 @@ enum class NavigationItem(
     HOME(
         label = "Home",
         selectedIcon = R.drawable.ic_home_selected,
-        unselectedIcon = R.drawable.ic_home_unselected,
+        unselectedIcon = R.drawable.ic_home_unfilled,
         destination = MainNavigation.HomeDestination
     ),
     BOOSTERS(

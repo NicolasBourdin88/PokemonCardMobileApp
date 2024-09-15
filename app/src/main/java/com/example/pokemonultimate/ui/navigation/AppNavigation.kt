@@ -1,6 +1,5 @@
 package com.example.pokemonultimate.ui.navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -22,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -36,7 +34,6 @@ import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion
 import com.example.pokemonultimate.ui.screens.BoostersScreen
 import com.example.pokemonultimate.ui.screens.CollectionScreen
 import com.example.pokemonultimate.ui.screens.HomeScreen
-import com.example.pokemonultimate.ui.theme.AppTheme
 
 const val ICON_SIZE = 24
 
@@ -53,33 +50,30 @@ fun AppNavigation() {
     val configuration = LocalConfiguration.current
     val isPortrait by remember { mutableStateOf(configuration.screenWidthDp < 500) }
 
-    AppTheme {
-        Scaffold(
-            bottomBar = {
-                if (isPortrait) BottomBarNavigation(currentDestination, navController)
-            }
-        ) { paddingValues ->
-            Row(
-                Modifier
-                    .fillMaxSize()
-                    .background(Color.Blue)
-            ) {
-                if (!isPortrait) RailBarNavigation(currentDestination, navController)
+    Scaffold(
+        bottomBar = {
+            if (isPortrait) BottomBarNavigation(currentDestination, navController)
+        }
+    ) { paddingValues ->
+        Row(
+            Modifier
+                .fillMaxSize()
+        ) {
+            if (!isPortrait) RailBarNavigation(currentDestination, navController)
 
-                NavHost(
-                    navController = navController,
-                    startDestination = MainNavigation.startDestination,
-                    modifier = Modifier.padding(paddingValues)
-                ) {
-                    composable<MainNavigation.HomeDestination> {
-                        HomeScreen()
-                    }
-                    composable<MainNavigation.CollectionDestination> {
-                        CollectionScreen()
-                    }
-                    composable<MainNavigation.BoostersDestination> {
-                        BoostersScreen()
-                    }
+            NavHost(
+                navController = navController,
+                startDestination = MainNavigation.startDestination,
+                modifier = Modifier.padding(paddingValues)
+            ) {
+                composable<MainNavigation.HomeDestination> {
+                    HomeScreen()
+                }
+                composable<MainNavigation.CollectionDestination> {
+                    CollectionScreen()
+                }
+                composable<MainNavigation.BoostersDestination> {
+                    BoostersScreen()
                 }
             }
         }
@@ -91,7 +85,7 @@ private fun RailBarNavigation(
     currentDestination: MainNavigation?,
     navController: NavHostController
 ) {
-    NavigationRail(containerColor = Color.White) {
+    NavigationRail(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) {
         NavigationItem.entries.forEach { navItem ->
             val isSelected = currentDestination == navItem.destination
 
@@ -125,7 +119,7 @@ private fun BottomBarNavigation(
     currentDestination: MainNavigation?,
     navController: NavHostController
 ) {
-    NavigationBar(containerColor = Color.White) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLow) {
         NavigationItem.entries.forEach { navItem ->
             val isSelected = currentDestination == navItem.destination
 
@@ -169,8 +163,6 @@ private fun IconNavigation(isSelected: Boolean, navigationItem: NavigationItem) 
 
 private fun NavHostController.navigateToSelectedItem(destination: MainNavigation) {
     navigate(destination) {
-        // Pop up to the start destination of the graph to avoid building up a large stack of destinations
-        // on the back stack as users select items
         popUpTo(this@navigateToSelectedItem.graph.findStartDestination().id) {
             saveState = true
         }
