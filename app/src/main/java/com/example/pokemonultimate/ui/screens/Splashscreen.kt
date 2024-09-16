@@ -9,14 +9,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
@@ -27,7 +26,7 @@ import com.example.pokemonultimate.MainActivity
 import com.example.pokemonultimate.R
 import kotlinx.coroutines.delay
 
-const val SPLASH_SCREEN_DURATION: Long = 20000L
+const val SPLASH_SCREEN_DURATION: Long = 2000L
 
 @Composable
 fun SplashScreen(navController: NavController) {
@@ -41,7 +40,7 @@ fun SplashScreen(navController: NavController) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(MaterialTheme.colorScheme.surfaceContainerLow),
     ) {
         LogoPokemon()
         BottomAnimation()
