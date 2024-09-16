@@ -72,3 +72,15 @@ val surfaceContainerLowDark = Color(0xFF171D1E)
 val surfaceContainerDark = Color(0xFF1B2122)
 val surfaceContainerHighDark = Color(0xFF252B2C)
 val surfaceContainerHighestDark = Color(0xFF303637)
+
+val cardFireFirstColor = Color(0XFFE02A02)
+val cardFireSecondColor = Color(0XFFFFBD15)
+
+val cardPlantFirstColor = Color(0XFF9EFED0)
+val cardPlantSecondColor = Color(0XFF038E00)
+
+val cardElectricFirstColor = Color(0XFFFFC700)
+val cardElectricSecondColor = Color(0XFFFFDC5F)
+
+val cardWaterFirstColor = Color(0XFFC0F6FA)
+val cardWaterSecondColor = Color(0XFF03A4E8)
