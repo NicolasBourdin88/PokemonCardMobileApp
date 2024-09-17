@@ -1,14 +1,18 @@
 package com.example.pokemonultimate.ui.screens
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
@@ -31,9 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,102 +49,158 @@ import com.example.pokemonultimate.ui.theme.cardPlantFirstColor
 import com.example.pokemonultimate.ui.theme.cardPlantSecondColor
 import com.example.pokemonultimate.ui.theme.cardWaterFirstColor
 import com.example.pokemonultimate.ui.theme.cardWaterSecondColor
+import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.TitleText
 import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
+import com.example.pokemonultimate.ui.utils.setFirstToUpperCase
 
-@OptIn(ExperimentalMaterial3Api::class)
+private const val DEFAULT_WITH_POKEMON_CELL = 200
+private const val DEFAULT_PADDING_BOTTOM_POKEMON_CELL = 40
+private const val NUMBER_OF_COLUMN = 2
+
 @Composable
 fun HomeScreen() {
     Column {
-        var text by remember {
-            mutableStateOf("")
-        }
-        var expanded by rememberSaveable { mutableStateOf(false) }
         TitleText("What Are You Looking For", modifier = Modifier.padding(start = 8.dp))
+        HomeSearchBar()
+        ListCardPokemonType()
+    }
+}
 
-        SearchBar(
+@Composable
+private fun PokemonCard(pokemonCellInfo: PokemonCellInfo) {
+    Box {
+        CardBackground(pokemonCellInfo)
+        ImagePokemon(pokemonCellInfo)
+    }
+}
+
+@Composable
+private fun ImagePokemon(pokemonCellInfo: PokemonCellInfo) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Image(
+            painter = painterResource(pokemonCellInfo.pokemonCellImage),
+            contentDescription = pokemonCellInfo.name,
+            modifier = pokemonCellInfo.modifier,
+            contentScale = ContentScale.FillWidth
+        )
+    }
+}
+
+@Composable
+private fun CardBackground(pokemonCellInfo: PokemonCellInfo) {
+    Card(
+        Modifier
+            .fillMaxWidth()
+            .padding(Padding.NORMAL.dp)
+            .height(200.dp),
+    ) {
+        Row(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .semantics { traversalIndex = 0f }
-                .fillMaxWidth()
-                .padding(bottom = 8.dp, start = 16.dp, end = 16.dp),
-            inputField = {
-                SearchBarDefaults.InputField(
-                    query = text,
-                    onQueryChange = { text = it },
-                    onSearch = { expanded = false },
-                    expanded = expanded,
-                    onExpandedChange = { expanded = it },
-                    placeholder = { Text("Search card") },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                )
-            },
-            colors = SearchBarColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                dividerColor = MaterialTheme.colorScheme.secondaryContainer
-            ),
-            expanded = expanded,
-            onExpandedChange = { expanded = it },
-        ) {}
-
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.padding(horizontal = 8.dp)
+                .fillMaxSize()
+                .background(brush = pokemonCellInfo.brush)
+                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            items(CELL.entries.size) { position ->
-                val cell = CELL.entries[position]
-                Box {
-                    Card(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                            .height(196.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(brush = cell.brush)
-                                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
-                            verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                cell.name.lowercase().replaceFirstChar { it.uppercase() },
-                                modifier = Modifier.weight(1F),
-                                color = Color.White,
-                                fontFamily = fontFamilyAvenir,
-                                fontWeight = FontWeight.ExtraBold,
-                                fontSize = 18.sp,
-                            )
-                            Icon(
-                                painter = painterResource(R.drawable.arrow_right_card),
-                                contentDescription = "Direction arrow",
-                                tint = Color.White
-                            )
-                        }
-                    }
-
-                }
-            }
+            Text(
+                pokemonCellInfo.name.setFirstToUpperCase(),
+                modifier = Modifier.weight(1F),
+                color = Color.White,
+                fontFamily = fontFamilyAvenir,
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 18.sp,
+            )
+            Icon(
+                painter = painterResource(R.drawable.arrow_right_card),
+                contentDescription = "Direction arrow",
+                tint = Color.White
+            )
         }
     }
 }
 
-private enum class CELL(val color: Color, val brush: Brush) {
+@Composable
+private fun ListCardPokemonType() {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(NUMBER_OF_COLUMN),
+        modifier = Modifier.padding(horizontal = Padding.NORMAL.dp)
+    ) {
+        items(PokemonCellInfo.entries.size) { position ->
+            val pokemonCellInfo = PokemonCellInfo.entries[position]
+            PokemonCard(pokemonCellInfo)
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun HomeSearchBar() {
+    var text by remember {
+        mutableStateOf("")
+    }
+    var expanded by rememberSaveable { mutableStateOf(false) }
+
+    SearchBar(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = Padding.NORMAL.dp, start = Padding.BIG.dp, end = Padding.BIG.dp),
+        windowInsets = WindowInsets(top = 0.dp),
+        inputField = {
+            SearchBarDefaults.InputField(
+                query = text,
+                onQueryChange = { text = it },
+                onSearch = { expanded = false },
+                expanded = expanded,
+                onExpandedChange = { expanded = it },
+                placeholder = { Text("Search card") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+            )
+        },
+        colors = SearchBarColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            dividerColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+    ) {}
+}
+
+private enum class PokemonCellInfo(
+    @DrawableRes val pokemonCellImage: Int,
+    val brush: Brush,
+    val modifier: Modifier,
+) {
     FIRE(
-        color = Color.Red,
+        pokemonCellImage = R.drawable.image_card_fire,
         brush = Brush.linearGradient(listOf(cardFireFirstColor, cardFireSecondColor)),
+        modifier = Modifier
+            .padding(bottom = DEFAULT_PADDING_BOTTOM_POKEMON_CELL.dp, end = 20.dp)
+            .width(DEFAULT_WITH_POKEMON_CELL.dp),
     ),
     PLANT(
-        color = Color.Red,
+        pokemonCellImage = R.drawable.image_card_plant,
         brush = Brush.linearGradient(listOf(cardPlantFirstColor, cardPlantSecondColor)),
+        modifier = Modifier
+            .padding(bottom = DEFAULT_PADDING_BOTTOM_POKEMON_CELL.dp)
+            .width(DEFAULT_WITH_POKEMON_CELL.dp),
     ),
     ELECTRIC(
-        color = Color.Red,
+        pokemonCellImage = R.drawable.image_card_electric,
         brush = Brush.linearGradient(listOf(cardElectricFirstColor, cardElectricSecondColor)),
+        modifier = Modifier
+            .padding(bottom = DEFAULT_PADDING_BOTTOM_POKEMON_CELL.dp)
+            .width(DEFAULT_WITH_POKEMON_CELL.dp),
     ),
     WATER(
-        color = Color.Red,
+        pokemonCellImage = R.drawable.image_card_water,
         brush = Brush.linearGradient(listOf(cardWaterFirstColor, cardWaterSecondColor)),
+        modifier = Modifier
+            .padding(bottom = 40.dp)
+            .width(125.dp),
     ),
 }
