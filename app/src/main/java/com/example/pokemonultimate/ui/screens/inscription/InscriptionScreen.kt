@@ -8,9 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -62,10 +63,6 @@ import com.example.pokemonultimate.ui.utils.CustomTextField
 import com.example.pokemonultimate.ui.utils.OrView
 import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
-
-private const val DEFAULT_WITH_POKEMON_CELL = 200
-private const val DEFAULT_PADDING_BOTTOM_POKEMON_CELL = 40
-
 
 @Composable
 fun InscriptionScreen(
@@ -137,19 +134,32 @@ fun BottomBar(viewModel: InscriptionViewModel) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
 
     ModalBottomSheet(
-        modifier = Modifier.fillMaxHeight(),
+        modifier = Modifier,
         sheetState = sheetState,
-        onDismissRequest = { viewModel.closeBottomSheet() }
+        onDismissRequest = { viewModel.closeBottomSheet() },
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            modifier = Modifier.padding(horizontal = Padding.NORMAL.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = Padding.BIG.dp),
+            contentAlignment = Alignment.Center
         ) {
-            items(PokemonCellProfil.entries.size) { position ->
-                val pokemonCellProfil = PokemonCellProfil.entries[position]
-                ImagePokemon(pokemonCellProfil)
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = Padding.BIG.dp),
+                verticalArrangement = Arrangement.spacedBy(Padding.BIG.dp),
+                horizontalArrangement = Arrangement.spacedBy(Padding.BIG.dp)
+            ) {
+                items(PokemonCellProfil.entries.size) { position ->
+                    val pokemonCellProfil = PokemonCellProfil.entries[position]
+                    ImagePokemon(pokemonCellProfil)
+                }
             }
         }
+
+
     }
 }
 
@@ -158,63 +168,27 @@ fun BottomBar(viewModel: InscriptionViewModel) {
 private fun ImagePokemon(pokemonCellProfil: PokemonCellProfil) {
     Box(
         modifier = Modifier
+            .fillMaxSize()
             .clip(CircleShape)
-            .background(brush = pokemonCellProfil.brush)
-
+            .aspectRatio(1f)
+            .background(brush = pokemonCellProfil.brush),
+        contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(pokemonCellProfil.pokemonCellImage),
             contentDescription = pokemonCellProfil.name,
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier.size(72.dp),
         )
     }
 }
 
-
-private enum class PokemonCellProfil(
-    @DrawableRes val pokemonCellImage: Int,
-    val brush: Brush,
-) {
-    ICE(
-        pokemonCellImage = R.drawable.image_card_ice,
-        brush = Brush.linearGradient(listOf(cardIceFirstColor, cardIceSecondColor)),
-
-        ),
-    FIRE(
-        pokemonCellImage = R.drawable.image_card_fire,
-        brush = Brush.linearGradient(listOf(cardFireFirstColor, cardFireSecondColor)),
-
-        ),
-    PLANT(
-        pokemonCellImage = R.drawable.image_card_plant,
-        brush = Brush.linearGradient(listOf(cardPlantFirstColor, cardPlantSecondColor)),
-
-        ),
-    ELECTRIC(
-        pokemonCellImage = R.drawable.image_card_electric,
-        brush = Brush.linearGradient(listOf(cardElectricFirstColor, cardElectricSecondColor)),
-
-        ),
-    WATER(
-        pokemonCellImage = R.drawable.image_card_water,
-        brush = Brush.linearGradient(listOf(cardWaterFirstColor, cardWaterSecondColor)),
-
-        ),
-    NORMAL(
-        pokemonCellImage = R.drawable.image_card_normal,
-        brush = Brush.linearGradient(listOf(cardNormalFirstColor, cardNormalSecondColor)),
-    ),
-
-}
-
 @Composable
 fun PikachuWithButtonPlus(onButtonClick: () -> Unit) {
-
     Box(
         modifier = Modifier
             .size(150.dp)
+            .offset(y = 20.dp)
     ) {
-
         Box(
             modifier = Modifier
                 .size(130.dp)
@@ -239,10 +213,12 @@ fun PikachuWithButtonPlus(onButtonClick: () -> Unit) {
         }
         Box(
             modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .offset(x = (-16).dp, y = (-12).dp)
                 .size(30.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.onPrimaryContainer)
-                .align(Alignment.BottomEnd)
+
 
         ) {
             Image(
@@ -267,7 +243,7 @@ fun WelcomeText() {
     ) {
         Text(
             text = stringResource(id = R.string.welcome),
-            fontSize = 36.sp, fontFamily = fontFamilyAvenir, fontWeight = FontWeight.ExtraBold,
+            fontSize = 36.sp, fontFamily = fontFamilyAvenir, fontWeight = FontWeight.Normal,
         )
 
         Text(
@@ -335,6 +311,7 @@ fun SigninView(navController: NavHostController) {
         )
         Text(
             text = stringResource(R.string.signin),
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.clickable {
                 navController.navigate(ButtonNavigation.ConnectionDestination.route)
@@ -342,6 +319,43 @@ fun SigninView(navController: NavHostController) {
             }
         )
     }
+}
+
+
+private enum class PokemonCellProfil(
+    @DrawableRes val pokemonCellImage: Int,
+    val brush: Brush,
+) {
+    ICE(
+        pokemonCellImage = R.drawable.image_card_ice,
+        brush = Brush.linearGradient(listOf(cardIceFirstColor, cardIceSecondColor)),
+
+        ),
+    FIRE(
+        pokemonCellImage = R.drawable.image_card_fire,
+        brush = Brush.linearGradient(listOf(cardFireFirstColor, cardFireSecondColor)),
+
+        ),
+    PLANT(
+        pokemonCellImage = R.drawable.image_card_plant,
+        brush = Brush.linearGradient(listOf(cardPlantFirstColor, cardPlantSecondColor)),
+
+        ),
+    ELECTRIC(
+        pokemonCellImage = R.drawable.image_card_electric,
+        brush = Brush.linearGradient(listOf(cardElectricFirstColor, cardElectricSecondColor)),
+
+        ),
+    WATER(
+        pokemonCellImage = R.drawable.image_card_water,
+        brush = Brush.linearGradient(listOf(cardWaterFirstColor, cardWaterSecondColor)),
+
+        ),
+    NORMAL(
+        pokemonCellImage = R.drawable.image_card_normal,
+        brush = Brush.linearGradient(listOf(cardNormalFirstColor, cardNormalSecondColor)),
+    ),
+
 }
 
 

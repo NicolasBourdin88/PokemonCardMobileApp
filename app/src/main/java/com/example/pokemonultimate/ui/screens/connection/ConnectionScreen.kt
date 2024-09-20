@@ -1,4 +1,4 @@
-package com.example.pokemonultimate.ui.screens
+package com.example.pokemonultimate.ui.screens.connection
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,9 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.pokemonultimate.R
 import com.example.pokemonultimate.ui.navigation.ButtonNavigation
@@ -47,12 +45,17 @@ import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
 
 
 @Composable
-fun ConnectionScreen(navController: NavHostController) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun ConnectionScreen(
+    navController: NavHostController,
+    viewModel: ConnectionViewModel = viewModel()
+) {
+    val username by viewModel.username
+    val password by viewModel.password
 
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -66,7 +69,7 @@ fun ConnectionScreen(navController: NavHostController) {
         CustomTextField(
             label = stringResource(id = R.string.username),
             value = username,
-            onValueChange = { username = it },
+            onValueChange = { viewModel.onUsernameChanged(it) },
             leadingIconRes = R.drawable.ic_user,
             isPasswordField = false
         )
@@ -75,7 +78,7 @@ fun ConnectionScreen(navController: NavHostController) {
         CustomTextField(
             label = stringResource(id = R.string.password),
             value = password,
-            onValueChange = { password = it },
+            onValueChange = { viewModel.onPasswordChanged(it) },
             leadingIconRes = R.drawable.ic_password,
             isPasswordField = true
         )
@@ -93,10 +96,12 @@ fun ConnectionScreen(navController: NavHostController) {
 fun PikachuWithCircle() {
     Box(
         modifier = Modifier
+            .padding(top = Padding.HUGE.dp)
             .size(130.dp)
             .clip(shape = CircleShape)
             .background(MaterialTheme.colorScheme.primary)
             .clipToBounds()
+
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_pikachu),
@@ -122,7 +127,7 @@ fun WelcomeBackText() {
     ) {
         Text(
             text = stringResource(id = R.string.welcome_back),
-            fontSize = 36.sp, fontFamily = fontFamilyAvenir, fontWeight = FontWeight.ExtraBold,
+            fontSize = 36.sp, fontFamily = fontFamilyAvenir, fontWeight = FontWeight.Normal,
         )
 
         Text(
@@ -143,6 +148,7 @@ fun ButtonSignin(navController: NavHostController) {
         },
         modifier = Modifier
             .padding(horizontal = 120.dp)
+            .padding(top = 60.dp)
             .fillMaxWidth()
             .padding(top = 32.dp)
 
@@ -154,7 +160,6 @@ fun ButtonSignin(navController: NavHostController) {
         )
     }
 }
-
 
 
 @Composable
@@ -193,6 +198,7 @@ fun SignupView(navController: NavHostController) {
         )
         Text(
             text = stringResource(R.string.signup),
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.clickable {
                 navController.navigate(ButtonNavigation.InscriptionDestination.route)
