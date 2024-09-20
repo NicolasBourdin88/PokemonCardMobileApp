@@ -1,23 +1,23 @@
 package com.example.pokemonultimate.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,134 +25,178 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.pokemonultimate.R
+import com.example.pokemonultimate.ui.navigation.ButtonNavigation
+import com.example.pokemonultimate.ui.utils.ArrowStyle
+import com.example.pokemonultimate.ui.utils.CustomTextField
+import com.example.pokemonultimate.ui.utils.OrView
+import com.example.pokemonultimate.ui.utils.Padding
+import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
+
 
 @Composable
-fun ConnectionScreen() {
+fun ConnectionScreen(navController: NavHostController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrowleft),
-                contentDescription = stringResource(id = R.string.user_icon),
-                modifier = Modifier
-                    .padding(all = 16.dp)
-                    .size(30.dp)
-            )
-        }
-        Image(
-            painter = painterResource(id = R.drawable.ic_logo_user_pkm),
-            contentDescription = stringResource(id = R.string.content_logo_profil_empty),
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(160.dp)
-        )
 
-        Text(text = stringResource(id = R.string.welcome_back), fontSize = 36.sp)
-        Text(text = stringResource(id = R.string.login_text), fontSize = 14.sp)
+        ArrowStyle(navController)
 
-        TextField(
-            singleLine = true,
+        PikachuWithCircle()
+
+        WelcomeBackText()
+
+        // Utilisation de CustomTextField pour le nom d'utilisateur
+        CustomTextField(
+            label = stringResource(id = R.string.username),
             value = username,
             onValueChange = { username = it },
-            label = { Text(text = stringResource(id = R.string.username)) },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_user),
-                    contentDescription = stringResource(id = R.string.user_icon),
-                    modifier = Modifier.size(32.dp)
-                )
-            },
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).fillMaxWidth(),
-            shape = RoundedCornerShape(20.dp),
-            colors = TextFieldDefaults.colors(
-                disabledIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            )
+            leadingIconRes = R.drawable.ic_user,
+            isPasswordField = false
         )
 
-
-        TextField(
-            singleLine = true,
+        // Utilisation de CustomTextField pour le mot de passe
+        CustomTextField(
+            label = stringResource(id = R.string.password),
             value = password,
             onValueChange = { password = it },
-            label = { Text(text = stringResource(id = R.string.password)) },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_password),
-                    contentDescription = stringResource(id = R.string.password_icon),
-                    modifier = Modifier.size(32.dp)
-                )
-            }
+            leadingIconRes = R.drawable.ic_password,
+            isPasswordField = true
         )
 
-
-        Button(onClick = { }) {
-            Text(text = stringResource(R.string.signin))
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 75.dp)
-        ) {
-            HorizontalDivider(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(3.dp),
-                color = MaterialTheme.colorScheme.inverseSurface
-            )
-
-            Text(
-                text = stringResource(R.string.or),
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.inverseSurface,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(3.dp)
-            )
-        }
-
-        Button(onClick = { }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_google),
-                contentDescription = stringResource(id = R.string.google_icon),
-                modifier = Modifier.size(105.dp)
-            )
-            Text(
-                text = stringResource(R.string.signin_google),
-            )
-        }
-
-
-        Row() {
-            Text(
-                text = stringResource(R.string.dont_account),
-            )
-            Text(
-                text = stringResource(R.string.signup),
-            )
-        }
-
-
+        ButtonSignin(navController)
+        OrView()
+        GoogleSigninView()
+        SignupView(navController)
     }
 
+}
+
+
+@Composable
+fun PikachuWithCircle() {
+    Box(
+        modifier = Modifier
+            .size(130.dp)
+            .clip(shape = CircleShape)
+            .background(MaterialTheme.colorScheme.primary)
+            .clipToBounds()
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_pikachu),
+            contentDescription = stringResource(id = R.string.content_logo_profil_empty),
+            colorFilter = ColorFilter.tint(Color.White),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .graphicsLayer {
+                    scaleX = -1f
+                    translationY = 90f
+                    translationX = -22f
+                }
+        )
+    }
+}
+
+@Composable
+fun WelcomeBackText() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy((-10).dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(Padding.BIG.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.welcome_back),
+            fontSize = 36.sp, fontFamily = fontFamilyAvenir, fontWeight = FontWeight.ExtraBold,
+        )
+
+        Text(
+            text = stringResource(id = R.string.login_text),
+            fontSize = 16.sp, fontFamily = fontFamilyAvenir,
+            modifier = Modifier.padding(bottom = Padding.NORMAL.dp)
+        )
+    }
+
+}
+
+
+@Composable
+fun ButtonSignin(navController: NavHostController) {
+    Button(
+        onClick = {
+
+        },
+        modifier = Modifier
+            .padding(horizontal = 120.dp)
+            .fillMaxWidth()
+            .padding(top = 32.dp)
+
+    ) {
+        Text(
+            text = stringResource(R.string.signin),
+            fontFamily = fontFamilyAvenir,
+            modifier = Modifier.align(Alignment.CenterVertically)
+        )
+    }
+}
+
+
+
+@Composable
+fun GoogleSigninView() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = Padding.HUGE.dp)
+            .clickable {
+
+            },
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_google),
+            contentDescription = stringResource(id = R.string.google_icon),
+            modifier = Modifier
+                .padding(end = 16.dp)
+                .size(24.dp),
+            tint = Color.Unspecified
+        )
+        Text(
+            text = stringResource(R.string.signin_google),
+            color = MaterialTheme.colorScheme.secondary
+        )
+    }
+}
+
+@Composable
+fun SignupView(navController: NavHostController) {
+    Row {
+        Text(
+            text = stringResource(R.string.dont_account),
+            modifier = Modifier.padding(end = 8.dp),
+            color = MaterialTheme.colorScheme.secondary
+        )
+        Text(
+            text = stringResource(R.string.signup),
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            modifier = Modifier.clickable {
+                navController.navigate(ButtonNavigation.InscriptionDestination.route)
+            }
+        )
+    }
 }
