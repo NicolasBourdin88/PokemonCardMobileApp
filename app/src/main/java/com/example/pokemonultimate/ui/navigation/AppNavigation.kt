@@ -39,6 +39,8 @@ import com.example.pokemonultimate.ui.screens.BoostersScreen
 import com.example.pokemonultimate.ui.screens.CollectionScreen
 import com.example.pokemonultimate.ui.screens.home.HomeScreen
 import com.example.pokemonultimate.ui.screens.home.HomeViewModel
+import com.example.pokemonultimate.ui.screens.ConnectionScreen
+import com.example.pokemonultimate.ui.screens.inscription.InscriptionScreen
 
 const val ICON_SIZE = 24
 
@@ -54,17 +56,23 @@ fun AppNavigation() {
 
     val configuration = LocalConfiguration.current
     val isPortrait by remember { mutableStateOf(configuration.screenWidthDp < 500) }
+    val isOnLoginScreen =
+        navBackStackEntry?.destination?.route == ButtonNavigation.ConnectionDestination.route ||
+                navBackStackEntry?.destination?.route == ButtonNavigation.InscriptionDestination.route
+
 
     Scaffold(
         bottomBar = {
-            if (isPortrait) BottomBarNavigation(currentDestination, navController)
+            if (isPortrait && !isOnLoginScreen) BottomBarNavigation(currentDestination, navController)
         },
         topBar = {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Button(modifier = Modifier.padding(top = 54.dp, end = 16.dp), onClick = {
-
-                }) {
-                    Text("Se connecter")
+            if (!isOnLoginScreen) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Button(modifier = Modifier.padding(top = 54.dp, end = 16.dp), onClick = {
+                        navController.navigate(ButtonNavigation.ConnectionDestination.route)
+                    }) {
+                        Text("Se connecter")
+                    }
                 }
             }
         }
@@ -73,7 +81,7 @@ fun AppNavigation() {
             Modifier
                 .fillMaxSize()
         ) {
-            if (!isPortrait) RailBarNavigation(currentDestination, navController)
+            if (!isPortrait && !isOnLoginScreen) RailBarNavigation(currentDestination, navController)
 
             NavHost(
                 navController = navController,
@@ -89,6 +97,12 @@ fun AppNavigation() {
                 }
                 composable<MainNavigation.BoostersDestination> {
                     BoostersScreen()
+                }
+                composable(ButtonNavigation.ConnectionDestination.route) {
+                    ConnectionScreen(navController)
+                }
+                composable(ButtonNavigation.InscriptionDestination.route) {
+                    InscriptionScreen(navController)
                 }
             }
         }

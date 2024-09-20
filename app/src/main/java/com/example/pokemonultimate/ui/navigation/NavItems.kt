@@ -25,6 +25,12 @@ sealed class MainNavigation : NavigationDestination() {
     }
 }
 
+sealed class ButtonNavigation(val route: String) {
+    object ConnectionDestination : ButtonNavigation("connection")
+    object InscriptionDestination : ButtonNavigation("inscription")
+}
+
+
 enum class NavigationItem(
     val label: String,
     @DrawableRes val selectedIcon: Int,
@@ -49,6 +55,7 @@ enum class NavigationItem(
         unselectedIcon = R.drawable.ic_boosters_unselected,
         destination = MainNavigation.BoostersDestination
     ),
+
 }
 
 @Serializable
