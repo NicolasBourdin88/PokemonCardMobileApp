@@ -98,7 +98,7 @@ fun ArrowStyle(navController: NavHostController) {
             painter = painterResource(id = R.drawable.ic_arrowleft),
             contentDescription = stringResource(id = R.string.user_icon),
             modifier = Modifier
-                .padding(all = 16.dp)
+                .padding(start = Padding.BIG.dp, top = Padding.NORMAL.dp)
                 .size(30.dp)
                 .clickable {
                     navController.popBackStack()
