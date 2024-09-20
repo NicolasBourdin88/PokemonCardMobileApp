@@ -45,6 +45,8 @@ import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
 import com.example.pokemonultimate.ui.screens.home.HomeScreen
 import com.example.pokemonultimate.ui.screens.home.HomeViewModel
 import com.example.pokemonultimate.ui.utils.Padding
+import com.example.pokemonultimate.ui.screens.connection.ConnectionScreen
+import com.example.pokemonultimate.ui.screens.inscription.InscriptionScreen
 
 const val ICON_SIZE = 24
 
@@ -63,13 +65,14 @@ fun AppNavigation() {
     val shouldDisplayBackAction = remember { mutableStateOf(false) }
     val currentBackNavController = remember { mutableStateOf(navController) }
     val isInFullScreen = remember { mutableStateOf(false) }
+    val isOnLoginScreen =
+        navBackStackEntry?.destination?.route == ButtonNavigation.ConnectionDestination.route ||
+                navBackStackEntry?.destination?.route == ButtonNavigation.InscriptionDestination.route
+
 
     Scaffold(
         bottomBar = {
-            if (isPortrait && !isInFullScreen.value) BottomBarNavigation(
-                currentDestination,
-                navController
-            )
+            if (isPortrait && !isOnLoginScreen) BottomBarNavigation(currentDestination, navController)
         },
         topBar = {
             if (!isInFullScreen.value) {
@@ -111,10 +114,7 @@ fun AppNavigation() {
             Modifier
                 .fillMaxSize()
         ) {
-            if (!isPortrait && !isInFullScreen.value) RailBarNavigation(
-                currentDestination,
-                navController
-            )
+            if (!isPortrait && !isOnLoginScreen) RailBarNavigation(currentDestination, navController)
 
             NavHost(
                 navController = navController,
@@ -143,6 +143,12 @@ fun AppNavigation() {
                     BoostersScreen(onBoosterOpened = {
                         isInFullScreen.value = true
                     })
+                }
+                composable(ButtonNavigation.ConnectionDestination.route) {
+                    ConnectionScreen(navController)
+                }
+                composable(ButtonNavigation.InscriptionDestination.route) {
+                    InscriptionScreen(navController)
                 }
             }
         }

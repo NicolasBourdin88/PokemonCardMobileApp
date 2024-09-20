@@ -86,6 +86,13 @@ val cardLightningSecondColor = Color(0XFFFFDC5F)
 val cardWaterFirstColor = Color(0XFFC0F6FA)
 val cardWaterSecondColor = Color(0XFF03A4E8)
 
+val cardIceFirstColor = Color(0xFFADFFF7)
+val cardIceSecondColor = Color(0xFF3CD7C9)
+
+val cardNormalFirstColor = Color(0xFFCFAE00)
+val cardNormalSecondColor = Color(0xFFFDEBA7)
+
+
 val cardColorlessFirstColor = Color(0XFFD3D3D3)
 val cardColorlessSecondColor = Color(0XFFFFFFFF)
 
