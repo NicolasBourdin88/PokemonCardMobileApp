@@ -1,4 +1,4 @@
-package com.example.pokemonultimate.data.model
+package com.example.pokemonultimate.data.model.pokemonCardModel
 
 import androidx.room.Entity
 import kotlinx.serialization.KSerializer

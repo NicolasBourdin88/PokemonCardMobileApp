@@ -1,9 +1,9 @@
 package com.example.pokemonultimate.ui.screens.home
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -73,6 +73,9 @@ fun HomeScreen(
     var querySearch: String? by remember {
         mutableStateOf(null)
     }
+    var filters: String? by remember {
+        mutableStateOf(null)
+    }
 
     Column {
         if (notInSearchMode) TitleText("What Are You Looking For")
@@ -83,11 +86,14 @@ fun HomeScreen(
             }
         )
         if (notInSearchMode) {
-            ListCardPokemonType()
-        } else if (querySearch != null) {
-            ListCardSearchResult(homeViewModel, query = querySearch!!)
+            ListCardPokemonType(
+                onCardClick = { cardType ->
+                    filters = cardType
+                    notInSearchMode = false
+                }
+            )
         } else {
-            Log.e("Error", "C'est louche")
+            ListCardSearchResult(homeViewModel, query = querySearch, filters = filters)
         }
     }
 }
@@ -95,9 +101,10 @@ fun HomeScreen(
 @Composable
 fun ListCardSearchResult(
     homeViewModel: HomeViewModel,
-    query: String
+    query: String?,
+    filters: String?,
 ) {
-    val pager = homeViewModel.getFlow(query)
+    val pager = homeViewModel.getFlow(query, filters)
     val lazyPagingItems = pager.collectAsLazyPagingItems()
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
@@ -134,7 +141,8 @@ fun ListCardSearchResult(
                     contentDescription = "Card",
                     modifier = Modifier
                         .width(100.dp)
-                        .padding(Padding.NORMAL.dp)
+                        .padding(Padding.NORMAL.dp),
+                    contentScale = ContentScale.FillWidth,
                 )
             }
         }
@@ -142,8 +150,12 @@ fun ListCardSearchResult(
 }
 
 @Composable
-private fun PokemonCard(pokemonCellInfo: PokemonCellInfo) {
-    Box {
+private fun PokemonCard(pokemonCellInfo: PokemonCellInfo, onCardClick: (String) -> Unit) {
+    Box(
+        modifier = Modifier.clickable {
+            onCardClick.invoke(pokemonCellInfo.name)
+        }
+    ) {
         CardBackground(pokemonCellInfo)
         ImagePokemon(pokemonCellInfo)
     }
@@ -199,13 +211,15 @@ private fun CardBackground(pokemonCellInfo: PokemonCellInfo) {
 }
 
 @Composable
-private fun ListCardPokemonType() {
+private fun ListCardPokemonType(onCardClick: (String) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
         modifier = Modifier.padding(horizontal = Padding.NORMAL.dp),
     ) {
         items(PokemonCellInfo.entries) { pokemonCellInfo ->
-            PokemonCard(pokemonCellInfo)
+            PokemonCard(pokemonCellInfo, onCardClick = {
+                onCardClick.invoke(it)
+            })
         }
     }
 }
@@ -258,7 +272,7 @@ private enum class PokemonCellInfo(
             .padding(bottom = DEFAULT_PADDING_BOTTOM_POKEMON_CELL.dp, end = 20.dp)
             .width(DEFAULT_WITH_POKEMON_CELL.dp),
     ),
-    PLANT(
+    GRASS(
         pokemonCellImage = R.drawable.image_card_plant,
         brush = Brush.linearGradient(listOf(cardPlantFirstColor, cardPlantSecondColor)),
         modifier = Modifier

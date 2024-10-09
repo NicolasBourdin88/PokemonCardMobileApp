@@ -1,6 +1,5 @@
 package com.example.pokemonultimate.data.api
 
-import android.util.Log
 import androidx.annotation.StringRes
 import com.example.pokemonultimate.R
 import kotlinx.serialization.json.Json
@@ -14,6 +13,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.net.UnknownHostException
 
 object ApiController {
+
     val json = Json {
         ignoreUnknownKeys = true
         coerceInputValues = true
