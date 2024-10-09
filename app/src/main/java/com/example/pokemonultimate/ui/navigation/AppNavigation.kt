@@ -39,7 +39,7 @@ import com.example.pokemonultimate.ui.screens.BoostersScreen
 import com.example.pokemonultimate.ui.screens.CollectionScreen
 import com.example.pokemonultimate.ui.screens.home.HomeScreen
 import com.example.pokemonultimate.ui.screens.home.HomeViewModel
-import com.example.pokemonultimate.ui.screens.ConnectionScreen
+import com.example.pokemonultimate.ui.screens.connection.ConnectionScreen
 import com.example.pokemonultimate.ui.screens.inscription.InscriptionScreen
 
 const val ICON_SIZE = 24
