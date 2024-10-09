@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,6 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -69,11 +71,13 @@ fun InscriptionScreen(
     navController: NavHostController,
     viewModel: InscriptionViewModel = viewModel()
 ) {
-    val username by viewModel.username
+    val email by viewModel.email
     val password by viewModel.password
     val confirmPassword by viewModel.confirmPassword
-    val showBottomSheet by viewModel.showBottomSheet
+    val isLoading by viewModel.isLoading
+    val errorMessage by viewModel.errorInscriptionMessage
 
+    val showBottomSheet by viewModel.showBottomSheet
 
 
     Column(
@@ -89,11 +93,11 @@ fun InscriptionScreen(
 
         WelcomeText()
 
-        // Utilisation de CustomTextField pour le nom d'utilisateur
+        // Utilisation de CustomTextField pour le mail utilisateur
         CustomTextField(
-            label = stringResource(id = R.string.username),
-            value = username,
-            onValueChange = { viewModel.onUsernameChanged(it) },
+            label = stringResource(id = R.string.email),
+            value = email,
+            onValueChange = { viewModel.onEmailChanged(it) },
             leadingIconRes = R.drawable.ic_user,
             isPasswordField = false
         )
@@ -116,13 +120,24 @@ fun InscriptionScreen(
             isPasswordField = true
         )
 
+        Box(
+            modifier = Modifier
+                .fillMaxWidth().height(48.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = Padding.HUGE.dp, vertical = 0.dp)
+            )
+        }
+
         ButtonSignup()
         if (showBottomSheet) BottomBar(viewModel)
         OrView()
         GoogleView()
         SigninView(navController)
-
-
     }
 }
 

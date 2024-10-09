@@ -5,17 +5,18 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    id("com.google.gms.google-services")
     id("kotlin-parcelize")
     id("kotlin-kapt")
     alias(libs.plugins.hilt)
 }
-
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
     localPropertiesFile.inputStream().use { localProperties.load(it) }
 }
 
+val firebaseClientId: String = localProperties.getProperty("FIREBASE_CLIENT_ID") ?: "\"\""
 val apiKey: String = localProperties.getProperty("API_KEY") ?: "\"\""
 
 android {
@@ -35,6 +36,7 @@ android {
         }
 
         buildConfigField("String", "API_KEY", "\"$apiKey\"")
+        buildConfigField("String", "FIREBASE_CLIENT_ID", "\"$firebaseClientId\"")
     }
 
     buildTypes {
@@ -102,6 +104,21 @@ dependencies {
     // Coil (Image Loading)
     implementation(libs.coil.compose)
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth.ktx)
+
+    //Google
+    implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth)
+
+
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
+    // okHttp3
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     // OkHttp3 (Networking)
     implementation(libs.okhttp)
 

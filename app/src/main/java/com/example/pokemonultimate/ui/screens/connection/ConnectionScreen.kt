@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -31,12 +32,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.pokemonultimate.R
 import com.example.pokemonultimate.ui.navigation.ButtonNavigation
+import com.example.pokemonultimate.ui.navigation.MainNavigation
 import com.example.pokemonultimate.ui.utils.ArrowStyle
 import com.example.pokemonultimate.ui.utils.CustomTextField
 import com.example.pokemonultimate.ui.utils.OrView
@@ -49,8 +52,9 @@ fun ConnectionScreen(
     navController: NavHostController,
     viewModel: ConnectionViewModel = viewModel()
 ) {
-    val username by viewModel.username
+    val email by viewModel.email
     val password by viewModel.password
+    val errorMessage by viewModel.errorConnectionMessage
 
     Column(
         modifier = Modifier
@@ -65,11 +69,11 @@ fun ConnectionScreen(
 
         WelcomeBackText()
 
-        // Utilisation de CustomTextField pour le nom d'utilisateur
+        // Utilisation de CustomTextField pour le mail utilisateur
         CustomTextField(
-            label = stringResource(id = R.string.username),
-            value = username,
-            onValueChange = { viewModel.onUsernameChanged(it) },
+            label = stringResource(id = R.string.email),
+            value = email,
+            onValueChange = { viewModel.onEmailChangedChanged(it) },
             leadingIconRes = R.drawable.ic_user,
             isPasswordField = false
         )
@@ -83,7 +87,20 @@ fun ConnectionScreen(
             isPasswordField = true
         )
 
-        ButtonSignin(navController)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth().height(48.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = Padding.HUGE.dp, vertical = 0.dp)
+            )
+        }
+
+        ButtonSignin(navController, viewModel)
         OrView()
         GoogleSigninView()
         SignupView(navController)
@@ -141,16 +158,20 @@ fun WelcomeBackText() {
 
 
 @Composable
-fun ButtonSignin(navController: NavHostController) {
+fun ButtonSignin(navController: NavHostController, viewModel: ConnectionViewModel) {
+
     Button(
         onClick = {
-
+            viewModel.signInWithEmailAndPassword(viewModel.email.value,viewModel.password.value){ success ->
+                if(success){
+                    navController.navigate(MainNavigation.HomeDestination);
+                }
+            }
         },
         modifier = Modifier
             .padding(horizontal = 120.dp)
-            .padding(top = 60.dp)
+            .padding(top = 30.dp)
             .fillMaxWidth()
-            .padding(top = 32.dp)
 
     ) {
         Text(
