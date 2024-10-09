@@ -17,6 +17,8 @@ navigationCompose = "2.8.1"
 lottie = "6.5.0"
 playServicesAuth = "21.2.0"
 serialization = "1.7.2"
+firebaseBom = "33.4.0"
+firebaseAuth = "23.0.0"
 
 
 [libraries]

@@ -17,13 +17,6 @@ if (localPropertiesFile.exists()) {
 }
 
 val firebaseClientId: String = localProperties.getProperty("FIREBASE_CLIENT_ID") ?: "\"\""
-
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.inputStream().use { localProperties.load(it) }
-}
-
 val apiKey: String = localProperties.getProperty("API_KEY") ?: "\"\""
 
 android {
