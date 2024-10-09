@@ -27,7 +27,7 @@ open class ApiResponse<T>(
     val data: @RawValue T? = null,
     val error: ApiError? = null,
     val page: Int = 0,
-    val pages: Int = 0,
+    val totalCount: Int,
     @SerialName("response_at")
     val responseAt: Long = 0,
     val total: Int = 0,

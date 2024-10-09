@@ -1,9 +1,22 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    id("kotlin-parcelize")
+    id("kotlin-kapt")
+    alias(libs.plugins.hilt)
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { localProperties.load(it) }
+}
+
+val apiKey: String = localProperties.getProperty("API_KEY") ?: "\"\""
 
 android {
     namespace = "com.example.pokemonultimate"
@@ -20,6 +33,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -39,6 +54,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
@@ -48,6 +64,9 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+    hilt {
+        enableAggregatingTask = true
     }
 }
 
@@ -72,5 +91,39 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.lottie)
     implementation(libs.kotlinx.serialization.json)
+
+    /* Data */
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.1")
     implementation(kotlin("reflect"))
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
+    // okHttp3
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+    // Paging
+    implementation("androidx.paging:paging-compose:3.3.2")
+    implementation("androidx.paging:paging-runtime:3.3.2")
+
+    // Room
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-paging:2.6.1")
+
+    // Dagger - Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    kapt(libs.androidx.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+kapt {
+    correctErrorTypes = true
 }

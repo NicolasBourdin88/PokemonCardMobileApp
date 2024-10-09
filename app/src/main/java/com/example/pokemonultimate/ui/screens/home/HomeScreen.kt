@@ -1,5 +1,6 @@
-package com.example.pokemonultimate.ui.screens
+package com.example.pokemonultimate.ui.screens.home
 
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
@@ -40,6 +42,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.AsyncImage
 import com.example.pokemonultimate.R
 import com.example.pokemonultimate.ui.theme.cardElectricFirstColor
 import com.example.pokemonultimate.ui.theme.cardElectricSecondColor
@@ -56,14 +61,83 @@ import com.example.pokemonultimate.ui.utils.setFirstToUpperCase
 
 private const val DEFAULT_WITH_POKEMON_CELL = 200
 private const val DEFAULT_PADDING_BOTTOM_POKEMON_CELL = 40
-private const val NUMBER_OF_COLUMN = 2
+
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    homeViewModel: HomeViewModel,
+) {
+    var notInSearchMode: Boolean by remember {
+        mutableStateOf(true)
+    }
+    var querySearch: String? by remember {
+        mutableStateOf(null)
+    }
+
     Column {
-        TitleText("What Are You Looking For", modifier = Modifier.padding(start = 8.dp))
-        HomeSearchBar()
-        ListCardPokemonType()
+        if (notInSearchMode) TitleText("What Are You Looking For")
+        HomeSearchBar(
+            onSearch = { query ->
+                notInSearchMode = query.isEmpty()
+                if (!notInSearchMode) querySearch = query
+            }
+        )
+        if (notInSearchMode) {
+            ListCardPokemonType()
+        } else if (querySearch != null) {
+            ListCardSearchResult(homeViewModel, query = querySearch!!)
+        } else {
+            Log.e("Error", "C'est louche")
+        }
+    }
+}
+
+@Composable
+fun ListCardSearchResult(
+    homeViewModel: HomeViewModel,
+    query: String
+) {
+    val pager = homeViewModel.getFlow(query)
+    val lazyPagingItems = pager.collectAsLazyPagingItems()
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 150.dp),
+        modifier = Modifier.padding(horizontal = Padding.NORMAL.dp),
+    ) {
+        when (lazyPagingItems.loadState.refresh) {
+            is LoadState.Loading -> {
+                item {
+                    Text("Loading...")
+                }
+            }
+
+            is LoadState.Error -> {
+                val error = lazyPagingItems.loadState.refresh as LoadState.Error
+                item {
+                    Text("Error: ${error.error.localizedMessage}")
+                }
+            }
+
+            is LoadState.NotLoading -> {
+                if (lazyPagingItems.itemCount == 0) {
+                    item {
+                        Text("No results found.")
+                    }
+                }
+            }
+        }
+
+        items(lazyPagingItems.itemCount) { index ->
+            val pokemonCellInfo = lazyPagingItems[index]
+            pokemonCellInfo?.let {
+                AsyncImage(
+                    it.images.large,
+                    contentDescription = "Card",
+                    modifier = Modifier
+                        .width(100.dp)
+                        .padding(Padding.NORMAL.dp)
+                )
+            }
+        }
     }
 }
 
@@ -127,11 +201,10 @@ private fun CardBackground(pokemonCellInfo: PokemonCellInfo) {
 @Composable
 private fun ListCardPokemonType() {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(NUMBER_OF_COLUMN),
-        modifier = Modifier.padding(horizontal = Padding.NORMAL.dp)
+        columns = GridCells.Adaptive(minSize = 150.dp),
+        modifier = Modifier.padding(horizontal = Padding.NORMAL.dp),
     ) {
-        items(PokemonCellInfo.entries.size) { position ->
-            val pokemonCellInfo = PokemonCellInfo.entries[position]
+        items(PokemonCellInfo.entries) { pokemonCellInfo ->
             PokemonCard(pokemonCellInfo)
         }
     }
@@ -139,7 +212,7 @@ private fun ListCardPokemonType() {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun HomeSearchBar() {
+private fun HomeSearchBar(onSearch: (query: String) -> Unit) {
     var text by remember {
         mutableStateOf("")
     }
@@ -153,19 +226,22 @@ private fun HomeSearchBar() {
         inputField = {
             SearchBarDefaults.InputField(
                 query = text,
-                onQueryChange = { text = it },
-                onSearch = { expanded = false },
+                onQueryChange = {
+                    text = it
+                    onSearch.invoke(it)
+                },
+                onSearch = { onSearch.invoke(it) },
                 expanded = expanded,
                 onExpandedChange = { expanded = it },
                 placeholder = { Text("Search card") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                trailingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             )
         },
         colors = SearchBarColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             dividerColor = MaterialTheme.colorScheme.secondaryContainer
         ),
-        expanded = expanded,
+        expanded = false,
         onExpandedChange = { expanded = it },
     ) {}
 }

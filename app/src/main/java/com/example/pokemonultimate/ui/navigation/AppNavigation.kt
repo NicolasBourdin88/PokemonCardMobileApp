@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -36,7 +37,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion.toDestination
 import com.example.pokemonultimate.ui.screens.BoostersScreen
 import com.example.pokemonultimate.ui.screens.CollectionScreen
-import com.example.pokemonultimate.ui.screens.HomeScreen
+import com.example.pokemonultimate.ui.screens.home.HomeScreen
+import com.example.pokemonultimate.ui.screens.home.HomeViewModel
 
 const val ICON_SIZE = 24
 
@@ -79,7 +81,8 @@ fun AppNavigation() {
                 modifier = Modifier.padding(paddingValues)
             ) {
                 composable<MainNavigation.HomeDestination> {
-                    HomeScreen()
+                    val viewModel = hiltViewModel<HomeViewModel>()
+                    HomeScreen(viewModel)
                 }
                 composable<MainNavigation.CollectionDestination> {
                     CollectionScreen()

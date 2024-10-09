@@ -154,7 +154,8 @@ object ApiController {
             ?: ApiResponse<Any>(
                 result = ApiResponseStatus.ERROR,
                 error = apiError,
-                translatedError = translatedError
+                translatedError = translatedError,
+                totalCount = -1,
             ) as T
     }
 
