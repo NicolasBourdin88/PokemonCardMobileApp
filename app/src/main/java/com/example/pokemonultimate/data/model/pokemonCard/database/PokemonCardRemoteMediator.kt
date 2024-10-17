@@ -1,4 +1,4 @@
-package com.example.pokemonultimate.data.model.pokemonCardModel.database
+package com.example.pokemonultimate.data.model.pokemonCard.database
 
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
@@ -8,8 +8,8 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import coil.network.HttpException
 import com.example.pokemonultimate.data.api.ApiRepository
-import com.example.pokemonultimate.data.model.pokemonCardModel.PokemonCardEntity
-import com.example.pokemonultimate.data.model.pokemonCardModel.RemoteKey
+import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
+import com.example.pokemonultimate.data.model.pokemonCard.RemoteKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.IOException
@@ -46,7 +46,7 @@ class PokemonCardRemoteMediator(
             }
 
             withContext(Dispatchers.IO) {
-                val apiResponse = ApiRepository.search(
+                val apiResponse = ApiRepository.getSearch(
                     page = loadKey,
                     pageSize = state.config.pageSize,
                     query = query,

@@ -1,10 +1,10 @@
-package com.example.pokemonultimate.data.model.pokemonCardModel.database
+package com.example.pokemonultimate.data.model.pokemonCard.database
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.pokemonultimate.data.model.pokemonCardModel.RemoteKey
+import com.example.pokemonultimate.data.model.pokemonCard.RemoteKey
 
 @Dao
 interface RemoteKeyDao {

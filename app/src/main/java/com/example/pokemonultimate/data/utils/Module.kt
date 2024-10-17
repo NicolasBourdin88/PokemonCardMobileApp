@@ -3,7 +3,7 @@ package com.example.pokemonultimate.data.utils
 import android.content.Context
 import androidx.paging.ExperimentalPagingApi
 import androidx.room.Room
-import com.example.pokemonultimate.data.model.pokemonCardModel.database.PokemonCardDataBase
+import com.example.pokemonultimate.data.model.pokemonCard.database.PokemonCardDataBase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

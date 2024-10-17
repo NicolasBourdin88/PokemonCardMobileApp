@@ -9,9 +9,9 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.pokemonultimate.data.api.ApiRepository
-import com.example.pokemonultimate.data.model.pokemonCardModel.PokemonCardEntity
-import com.example.pokemonultimate.data.model.pokemonCardModel.database.PokemonCardRemoteMediator
-import com.example.pokemonultimate.data.model.pokemonCardModel.database.PokemonCardDataBase
+import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
+import com.example.pokemonultimate.data.model.pokemonCard.database.PokemonCardRemoteMediator
+import com.example.pokemonultimate.data.model.pokemonCard.database.PokemonCardDataBase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,7 +66,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getFilters(filterCategories: FilterCategories) {
-        val response = ApiRepository.filters(filterCategories)
+        val response = ApiRepository.getFilters(filterCategories)
         _filters.value = response.data ?: emptyList()
     }
 
