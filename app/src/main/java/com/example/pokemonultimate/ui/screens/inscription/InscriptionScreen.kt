@@ -48,18 +48,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.pokemonultimate.R
 import com.example.pokemonultimate.ui.navigation.ButtonNavigation
-import com.example.pokemonultimate.ui.theme.cardElectricFirstColor
-import com.example.pokemonultimate.ui.theme.cardElectricSecondColor
-import com.example.pokemonultimate.ui.theme.cardFireFirstColor
-import com.example.pokemonultimate.ui.theme.cardFireSecondColor
-import com.example.pokemonultimate.ui.theme.cardIceFirstColor
-import com.example.pokemonultimate.ui.theme.cardIceSecondColor
-import com.example.pokemonultimate.ui.theme.cardNormalFirstColor
-import com.example.pokemonultimate.ui.theme.cardNormalSecondColor
-import com.example.pokemonultimate.ui.theme.cardPlantFirstColor
-import com.example.pokemonultimate.ui.theme.cardPlantSecondColor
-import com.example.pokemonultimate.ui.theme.cardWaterFirstColor
-import com.example.pokemonultimate.ui.theme.cardWaterSecondColor
+import com.example.pokemonultimate.ui.theme.*
 import com.example.pokemonultimate.ui.utils.ArrowStyle
 import com.example.pokemonultimate.ui.utils.CustomTextField
 import com.example.pokemonultimate.ui.utils.OrView
@@ -379,12 +368,12 @@ private enum class PokemonCellProfil(
         ),
     PLANT(
         pokemonCellImage = R.drawable.image_card_plant,
-        brush = Brush.linearGradient(listOf(cardPlantFirstColor, cardPlantSecondColor)),
+        brush = Brush.linearGradient(listOf(cardGrassFirstColor,cardGrassSecondColor)),
 
         ),
     ELECTRIC(
         pokemonCellImage = R.drawable.image_card_electric,
-        brush = Brush.linearGradient(listOf(cardElectricFirstColor, cardElectricSecondColor)),
+        brush = Brush.linearGradient(listOf(cardLightningFirstColor, cardLightningSecondColor)),
 
         ),
     WATER(
