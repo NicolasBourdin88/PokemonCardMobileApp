@@ -1,5 +1,6 @@
 package com.example.pokemonultimate.ui.navigation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,8 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -23,7 +27,9 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -37,8 +43,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion.toDestination
 import com.example.pokemonultimate.ui.screens.BoostersScreen
 import com.example.pokemonultimate.ui.screens.collection.CollectionNavigation
+import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
 import com.example.pokemonultimate.ui.screens.home.HomeScreen
 import com.example.pokemonultimate.ui.screens.home.HomeViewModel
+import com.example.pokemonultimate.ui.utils.Padding
 
 const val ICON_SIZE = 24
 
@@ -54,19 +62,46 @@ fun AppNavigation() {
 
     val configuration = LocalConfiguration.current
     val isPortrait by remember { mutableStateOf(configuration.screenWidthDp < 500) }
+    val shouldDisplayBackAction = remember { mutableStateOf(false) }
+    val currentBackNavController = remember { mutableStateOf(navController) }
 
     Scaffold(
         bottomBar = {
             if (isPortrait) BottomBarNavigation(currentDestination, navController)
         },
         topBar = {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Button(modifier = Modifier.padding(top = 54.dp, end = 16.dp), onClick = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = Padding.NORMAL.dp,
+                        end = Padding.NORMAL.dp,
+                        top = Padding.ULTRA_HUGE.dp
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (shouldDisplayBackAction.value) {
+                    IconButton(onClick = {
+                        if (currentBackNavController.value.previousBackStackEntry != null) {
+                            currentBackNavController.value.navigateUp()
+                        }
+                    }) {
+                        Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(onClick = {
 
-                }) {
-                    Text("Se connecter")
+                    }) {
+                        Text("Se connecter")
+                    }
                 }
             }
+
         }
     ) { paddingValues ->
         Row(
@@ -81,13 +116,24 @@ fun AppNavigation() {
                 modifier = Modifier.padding(paddingValues)
             ) {
                 composable<MainNavigation.HomeDestination> {
+                    shouldDisplayBackAction.value = false
                     val viewModel = hiltViewModel<HomeViewModel>()
                     HomeScreen(viewModel)
                 }
                 composable<MainNavigation.CollectionDestination> {
-                    CollectionNavigation()
+                    val viewModel = hiltViewModel<CollectionViewModel>()
+                    shouldDisplayBackAction.value = false
+                    CollectionNavigation(
+                        collectionViewModel = viewModel,
+                        currentController = {
+                            currentBackNavController.value = it
+                        },
+                        displayBackAction = {
+                            shouldDisplayBackAction.value = it
+                        })
                 }
                 composable<MainNavigation.BoostersDestination> {
+                    shouldDisplayBackAction.value = false
                     BoostersScreen()
                 }
             }

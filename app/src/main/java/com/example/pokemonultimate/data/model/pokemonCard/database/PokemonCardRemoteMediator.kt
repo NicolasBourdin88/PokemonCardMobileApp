@@ -17,10 +17,11 @@ import okio.IOException
 @OptIn(ExperimentalPagingApi::class)
 class PokemonCardRemoteMediator(
     private val pokemonCardDb: PokemonCardDataBase,
-    val query: String?,
-    val filtersTypes: List<String>,
-    val filtersSubTypes: List<String>,
-    val filtersSuperTypes: List<String>,
+    val query: String? = null,
+    val filtersTypes: List<String> = emptyList(),
+    val filtersSubTypes: List<String> = emptyList(),
+    val filtersSuperTypes: List<String> = emptyList(),
+    val setId: String? = null,
 ) : RemoteMediator<Int, PokemonCardEntity>() {
     private var page = 1
     private var shouldGoNextPage: Boolean? = null
@@ -53,6 +54,7 @@ class PokemonCardRemoteMediator(
                     filtersTypes = filtersTypes,
                     filtersSubTypes = filtersSubTypes,
                     filtersSuperTypes = filtersSuperTypes,
+                    setId = setId,
                 )
 
                 shouldGoNextPage = apiResponse.totalCount < 10

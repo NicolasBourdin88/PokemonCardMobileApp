@@ -11,7 +11,8 @@ object ApiRoutes {
         filtersSubTypes: List<String>,
         filtersSuperTypes: List<String>,
         page: Int,
-        pageSize: Int
+        pageSize: Int,
+        setId: String?
     ): String {
         var url = "${API}cards?q=("
         val baseUrl = url
@@ -20,7 +21,17 @@ object ApiRoutes {
         url += filtersTypes.addFilters(FilterCategories.TYPES, url == baseUrl)
         url += filtersSubTypes.addFilters(FilterCategories.SUBTYPES, url == baseUrl)
         url += filtersSuperTypes.addFilters(FilterCategories.SUPERTYPE, url == baseUrl)
+
+        if (!setId.isNullOrEmpty()) {
+            url += if (url == baseUrl) {
+                "set.id:\"$setId\""
+            } else {
+                " AND set.id:\"$setId\""
+            }
+        }
+
         url += ")&orderBy=number&page=$page&pageSize=$pageSize"
+
 
         return url
     }

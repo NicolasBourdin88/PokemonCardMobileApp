@@ -33,7 +33,7 @@ sealed class CollectionNavigation : NavigationDestination() {
     data object SetDestination : CollectionNavigation()
 
     @Serializable
-    data object CardListDestination : CollectionNavigation()
+    data class CardListDestination(val setImage: String, val setId: String) : CollectionNavigation()
 
     @Serializable
     data object CardDestination : CollectionNavigation()
