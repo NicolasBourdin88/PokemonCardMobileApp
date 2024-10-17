@@ -8,4 +8,5 @@ enum class Padding(val dp: Dp) {
     NORMAL(8.dp),
     BIG(16.dp),
     HUGE(32.dp),
+    ULTRA_HUGE(40.dp),
 }

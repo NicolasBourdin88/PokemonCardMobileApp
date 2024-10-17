@@ -1,18 +1,36 @@
 package com.example.pokemonultimate.data.api
 
 import com.example.pokemonultimate.data.model.pokemonCardModel.PokemonCardEntity
+import com.example.pokemonultimate.ui.screens.home.FilterCategories
 
 object ApiRepository {
     fun search(
         query: String?,
-        filters: String?,
+        filtersTypes: List<String>,
+        filtersSubTypes: List<String>,
+        filtersSuperTypes: List<String>,
         page: Int,
         pageSize: Int
-    ): ApiResponse<List<PokemonCardEntity>> =
+    ): ApiResponse<List<PokemonCardEntity>> {
         with(ApiController) {
             return callApi(
-                ApiRoutes.search(query, filters, page, pageSize),
+                ApiRoutes.search(
+                    query,
+                    filtersTypes,
+                    filtersSubTypes,
+                    filtersSuperTypes,
+                    page,
+                    pageSize
+                ),
                 ApiController.ApiMethod.GET
             )
         }
+    }
+
+    fun filters(filterCategories: FilterCategories): ApiResponse<List<String>> {
+        return ApiController.callApi(
+            ApiRoutes.filters(filterCategories),
+            method = ApiController.ApiMethod.GET
+        )
+    }
 }

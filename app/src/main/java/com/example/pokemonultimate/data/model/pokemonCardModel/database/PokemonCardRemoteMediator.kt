@@ -1,4 +1,4 @@
-package com.example.pokemonultimate.data.model.pokemonCardModel
+package com.example.pokemonultimate.data.model.pokemonCardModel.database
 
 import android.util.Log
 import androidx.paging.ExperimentalPagingApi
@@ -8,7 +8,8 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import coil.network.HttpException
 import com.example.pokemonultimate.data.api.ApiRepository
-import com.example.pokemonultimate.data.model.pokemonCardModel.database.PokemonCardDataBase
+import com.example.pokemonultimate.data.model.pokemonCardModel.PokemonCardEntity
+import com.example.pokemonultimate.data.model.pokemonCardModel.RemoteKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.IOException
@@ -17,7 +18,9 @@ import okio.IOException
 class PokemonCardRemoteMediator(
     private val pokemonCardDb: PokemonCardDataBase,
     val query: String?,
-    val filters: String?,
+    val filtersTypes: List<String>,
+    val filtersSubTypes: List<String>,
+    val filtersSuperTypes: List<String>,
 ) : RemoteMediator<Int, PokemonCardEntity>() {
     private var page = 1
     private var shouldGoNextPage: Boolean? = null
@@ -47,7 +50,9 @@ class PokemonCardRemoteMediator(
                     page = loadKey,
                     pageSize = state.config.pageSize,
                     query = query,
-                    filters = filters,
+                    filtersTypes = filtersTypes,
+                    filtersSubTypes = filtersSubTypes,
+                    filtersSuperTypes = filtersSuperTypes,
                 )
 
                 shouldGoNextPage = apiResponse.totalCount < 10

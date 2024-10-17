@@ -1,8 +1,8 @@
 package com.example.pokemonultimate.data.api
 
+import kotlinx.parcelize.RawValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.parcelize.RawValue
 
 @Serializable
 open class ApiResponse<T>(
@@ -10,7 +10,7 @@ open class ApiResponse<T>(
     val data: @RawValue T? = null,
     val error: ApiError? = null,
     val page: Int = 0,
-    val totalCount: Int,
+    val totalCount: Int = -1,
     @SerialName("response_at")
     val responseAt: Long = 0,
     val total: Int = 0,
