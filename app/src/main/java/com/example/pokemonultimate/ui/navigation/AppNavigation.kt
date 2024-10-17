@@ -36,7 +36,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion.toDestination
 import com.example.pokemonultimate.ui.screens.BoostersScreen
-import com.example.pokemonultimate.ui.screens.CollectionScreen
+import com.example.pokemonultimate.ui.screens.collection.CollectionNavigation
 import com.example.pokemonultimate.ui.screens.home.HomeScreen
 import com.example.pokemonultimate.ui.screens.home.HomeViewModel
 
@@ -85,7 +85,7 @@ fun AppNavigation() {
                     HomeScreen(viewModel)
                 }
                 composable<MainNavigation.CollectionDestination> {
-                    CollectionScreen()
+                    CollectionNavigation()
                 }
                 composable<MainNavigation.BoostersDestination> {
                     BoostersScreen()
@@ -176,14 +176,17 @@ private fun IconNavigation(isSelected: Boolean, navigationItem: NavigationItem) 
     )
 }
 
-private fun NavHostController.navigateToSelectedItem(destination: MainNavigation) {
+fun NavHostController.navigateToSelectedItem(destination: NavigationDestination) {
     navigate(destination) {
         popUpTo(this@navigateToSelectedItem.graph.findStartDestination().id) {
             saveState = true
         }
         // Avoid multiple copies of the same destination when re-selecting the same item
         launchSingleTop = true
+
         // Restore state when re-selecting a previously selected item
-        restoreState = true
+        if (destination != MainNavigation.CollectionDestination) {
+            restoreState = true
+        }
     }
 }

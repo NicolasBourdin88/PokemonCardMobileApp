@@ -48,4 +48,8 @@ object ApiRoutes {
         }
         return "${API}$filter"
     }
+
+    fun sets(): String {
+        return "${API}sets"
+    }
 }
