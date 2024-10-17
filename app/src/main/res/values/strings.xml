@@ -15,6 +15,7 @@
     <string name="have_account">Already have account ?</string>
     <string name="signup">Sign up</string>
     <string name="or">OR</string>
+    <string name="loading">Loading...</string>
     <string name="user_icon">User icon</string>
     <string name="password_icon">Password icon</string>
     <string name="google_icon">Google icon</string>

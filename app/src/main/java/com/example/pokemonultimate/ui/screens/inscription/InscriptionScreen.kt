@@ -133,7 +133,11 @@ fun InscriptionScreen(
             )
         }
 
-        ButtonSignup()
+        ButtonSignup(viewModel = viewModel) { isSuccess ->
+            if (isSuccess) {
+                navController.navigate(ButtonNavigation.ConnectionDestination.route)
+            }
+        }
         if (showBottomSheet) BottomBar(viewModel)
         OrView()
         GoogleView()
@@ -270,24 +274,47 @@ fun WelcomeText() {
 
 }
 
-
 @Composable
-fun ButtonSignup() {
+fun ButtonSignup(viewModel: InscriptionViewModel, onResult: (Boolean) -> Unit) {
+    val email by viewModel.email
+    val password by viewModel.password
+    val confirmPassword by viewModel.confirmPassword
+    val isLoading by viewModel.isLoading
+
     Button(
-        onClick = { },
+        onClick = {
+            if (!isLoading) {
+                viewModel.registerWithEmailAndPassword(
+                    email = email,
+                    password = password,
+                    confirmPassword = confirmPassword,
+                    onResult = onResult
+                )
+            }
+        },
         modifier = Modifier
             .padding(horizontal = 120.dp)
             .fillMaxWidth()
-            .padding(top = 32.dp)
-
+            .padding(top = 32.dp),
+        enabled = !isLoading
     ) {
-        Text(
-            text = stringResource(R.string.signup),
-            fontFamily = fontFamilyAvenir,
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
+        if (isLoading) {
+
+            Text(
+                text = stringResource(R.string.loading),
+                fontFamily = fontFamilyAvenir,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+        } else {
+            Text(
+                text = stringResource(R.string.signup),
+                fontFamily = fontFamilyAvenir,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+        }
     }
 }
+
 
 
 @Composable
@@ -335,7 +362,6 @@ fun SigninView(navController: NavHostController) {
         )
     }
 }
-
 
 private enum class PokemonCellProfil(
     @DrawableRes val pokemonCellImage: Int,
