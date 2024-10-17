@@ -1,4 +1,5 @@
 package com.example.pokemonultimate.ui.theme
+
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF006874)
@@ -76,11 +77,32 @@ val surfaceContainerHighestDark = Color(0xFF303637)
 val cardFireFirstColor = Color(0XFFE02A02)
 val cardFireSecondColor = Color(0XFFFFBD15)
 
-val cardPlantFirstColor = Color(0XFF9EFED0)
-val cardPlantSecondColor = Color(0XFF038E00)
+val cardGrassFirstColor = Color(0XFF9EFED0)
+val cardGrassSecondColor = Color(0XFF038E00)
 
-val cardElectricFirstColor = Color(0XFFFFC700)
-val cardElectricSecondColor = Color(0XFFFFDC5F)
+val cardLightningFirstColor = Color(0XFFFFC700)
+val cardLightningSecondColor = Color(0XFFFFDC5F)
 
 val cardWaterFirstColor = Color(0XFFC0F6FA)
 val cardWaterSecondColor = Color(0XFF03A4E8)
+
+val cardColorlessFirstColor = Color(0XFFD3D3D3)
+val cardColorlessSecondColor = Color(0XFFFFFFFF)
+
+val cardDarknessFirstColor = Color(0XFF4A4A4A)
+val cardDarknessSecondColor = Color(0XFF000000)
+
+val cardDragonFirstColor = Color(0XFF7038F8)
+val cardDragonSecondColor = Color(0XFF4A007F)
+
+val cardFairyFirstColor = Color(0XFFFFC0CB)
+val cardFairySecondColor = Color(0XFFF489B5)
+
+val cardFightingFirstColor = Color(0XFFC03028)
+val cardFightingSecondColor = Color(0XFF7D1F1A)
+
+val cardMetalFirstColor = Color(0XFFB8B8D0)
+val cardMetalSecondColor = Color(0XFF9090A0)
+
+val cardPsychicFirstColor = Color(0XFFFF6666)
+val cardPsychicSecondColor = Color(0XFFAA0088)

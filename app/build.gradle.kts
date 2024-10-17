@@ -93,7 +93,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     /* Data */
-    implementation("androidx.compose.runtime:runtime-livedata:1.7.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.3")
     implementation(kotlin("reflect"))
 
     // Coil
@@ -118,12 +118,6 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
 }
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
 kapt {
     correctErrorTypes = true
 }
