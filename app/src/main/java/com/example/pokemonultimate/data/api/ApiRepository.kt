@@ -10,6 +10,7 @@ object ApiRepository {
         filtersTypes: List<String>,
         filtersSubTypes: List<String>,
         filtersSuperTypes: List<String>,
+        setId: String? = null,
         page: Int,
         pageSize: Int
     ): ApiResponse<List<PokemonCardEntity>> {
@@ -21,7 +22,8 @@ object ApiRepository {
                     filtersSubTypes,
                     filtersSuperTypes,
                     page,
-                    pageSize
+                    pageSize,
+                    setId,
                 ),
                 ApiController.ApiMethod.GET
             )

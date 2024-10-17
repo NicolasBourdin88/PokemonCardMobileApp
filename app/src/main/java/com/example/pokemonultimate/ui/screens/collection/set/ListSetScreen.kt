@@ -46,24 +46,24 @@ import com.example.pokemonultimate.ui.utils.TitleText
 import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
 
 @Composable
-fun ListSetScreen(navController: NavHostController) {
+fun ListSetScreen(navController: NavHostController, collectionViewModel: CollectionViewModel) {
     Column {
         TitleText("Your Collection")
-        ListCollections(navController = navController)
         SearchBarCollection(
             onSearch = {
 
             }
         )
+        ListCollections(navController = navController, collectionViewModel = collectionViewModel)
     }
 }
 
 @Composable
 fun ListCollections(
-    homeViewModel: CollectionViewModel = viewModel(),
+    collectionViewModel: CollectionViewModel,
     navController: NavHostController
 ) {
-    val sets by homeViewModel.setsFlow.collectAsState(initial = emptyList())
+    val sets by collectionViewModel.setsFlow.collectAsState(initial = emptyList())
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
@@ -83,7 +83,12 @@ fun ItemSet(set: Set, navController: NavHostController) {
             .fillMaxWidth()
             .padding(horizontal = Padding.NORMAL.dp)
             .clickable {
-                navController.navigateToSelectedItem(CollectionNavigation.CardListDestination)
+                navController.navigateToSelectedItem(
+                    CollectionNavigation.CardListDestination(
+                        set.images.logo,
+                        set.id
+                    )
+                )
             }
     ) {
         AsyncImage(
