@@ -1,6 +1,5 @@
 package com.example.pokemonultimate.ui.screens.home
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

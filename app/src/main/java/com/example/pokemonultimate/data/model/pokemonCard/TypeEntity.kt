@@ -1,4 +1,4 @@
-package com.example.pokemonultimate.data.model.pokemonCardModel
+package com.example.pokemonultimate.data.model.pokemonCard
 
 import androidx.compose.ui.graphics.Brush
 import androidx.room.Entity

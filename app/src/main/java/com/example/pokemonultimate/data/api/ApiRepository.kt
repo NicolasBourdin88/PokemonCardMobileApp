@@ -1,10 +1,10 @@
 package com.example.pokemonultimate.data.api
 
-import com.example.pokemonultimate.data.model.pokemonCardModel.PokemonCardEntity
+import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
 import com.example.pokemonultimate.ui.screens.home.FilterCategories
 
 object ApiRepository {
-    fun search(
+    fun getSearch(
         query: String?,
         filtersTypes: List<String>,
         filtersSubTypes: List<String>,
@@ -27,7 +27,7 @@ object ApiRepository {
         }
     }
 
-    fun filters(filterCategories: FilterCategories): ApiResponse<List<String>> {
+    fun getFilters(filterCategories: FilterCategories): ApiResponse<List<String>> {
         return ApiController.callApi(
             ApiRoutes.filters(filterCategories),
             method = ApiController.ApiMethod.GET

@@ -1,10 +1,10 @@
-package com.example.pokemonultimate.data.model.pokemonCardModel.database
+package com.example.pokemonultimate.data.model.pokemonCard.database
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.example.pokemonultimate.data.model.pokemonCardModel.PokemonCardEntity
+import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
 
 @Dao
 interface PokemonDao {

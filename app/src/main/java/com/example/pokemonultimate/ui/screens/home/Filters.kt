@@ -21,9 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
-import com.example.pokemonultimate.data.model.pokemonCardModel.ColorType
-import com.example.pokemonultimate.ui.theme.cardWaterFirstColor
-import com.example.pokemonultimate.ui.theme.cardWaterSecondColor
+import com.example.pokemonultimate.data.model.pokemonCard.ColorType
 import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.setFirstToUpperCase
 
