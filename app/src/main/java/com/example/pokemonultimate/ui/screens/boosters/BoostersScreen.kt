@@ -1,6 +1,5 @@
 package com.example.pokemonultimate.ui.screens.boosters
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -12,7 +11,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pokemonultimate.R
 import com.example.pokemonultimate.ui.utils.TitleText
+import kotlinx.coroutines.delay
 
 @Preview
 @Composable
@@ -61,11 +63,21 @@ fun Booster(height: Int = 350, width: Int = 200) {
             modifier = Modifier
                 .width(width.dp),
         ) {
+            var rotate: Float by remember { mutableFloatStateOf(0f) }
+            if (isSwipe) {
+                LaunchedEffect(Unit) {
+                    while (rotate < 10f) {
+                        rotate += if (rotate < 0.5f) 0.3f else 0.5f
+                        delay(10)
+                    }
+                }
+            }
             Image(
                 painter = painterResource(R.drawable.piece_of_boosters),
                 contentDescription = "Piece in aluminium of booster",
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .rotate(rotate),
                 contentScale = ContentScale.FillWidth
             )
             Box(
@@ -74,7 +86,6 @@ fun Booster(height: Int = 350, width: Int = 200) {
                     .padding(horizontal = 2.dp)
                     .fillMaxWidth(),
             ) {
-                val rotate = if (isSwipe) 90f else 0f
                 SecondQuadrilateral(modifier = Modifier.rotate(rotate))
                 Quadrilateral()
             }
@@ -138,25 +149,3 @@ fun SecondQuadrilateral(modifier: Modifier) {
 fun PreviewQuadrilateral() {
     Quadrilateral()
 }
-
-//@Preview
-//@Composable
-//fun SliderMinimalExample() {
-//    var sliderPosition = remember { mutableFloatStateOf(0f) }
-//    var isDragging = remember { mutableStateOf(false) }
-//
-//    Box(
-//
-//    ) {
-//        Log.e("nicolas", "SliderMinimalExample - : ${isDragging.value}")
-//        Slider(
-//            value = sliderPosition.floatValue,
-//            onValueChange = {
-//                if (isDragging.value) {  // Seul un clic suivi d'un glissement permet de changer la valeur
-//                    sliderPosition.floatValue = it
-//                }
-//            },
-//            modifier = Modifier.fillMaxWidth()
-//        )
-//    }
-//}
