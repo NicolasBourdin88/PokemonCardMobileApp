@@ -71,45 +71,48 @@ android {
 }
 
 dependencies {
+    // Kotlin
     implementation(kotlin("reflect"))
+    implementation(libs.kotlinx.serialization.json)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
+    // Jetpack Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.test.manifest)
+
+    // AndroidX
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.graphics.shapes)
+
+    // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.lottie)
-    implementation(libs.kotlinx.serialization.json)
 
-    /* Data */
-    implementation("androidx.compose.runtime:runtime-livedata:1.7.3")
-    implementation(kotlin("reflect"))
+    // Coil (Image Loading)
+    implementation(libs.coil.compose)
 
-    // Coil
-    implementation("io.coil-kt:coil-compose:2.7.0")
-
-    // okHttp3
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    // OkHttp3 (Networking)
+    implementation(libs.okhttp)
 
     // Paging
-    implementation("androidx.paging:paging-compose:3.3.2")
-    implementation("androidx.paging:paging-runtime:3.3.2")
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime)
 
     // Room
-    kapt("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    implementation("androidx.room:room-paging:2.6.1")
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
 
     // Dagger - Hilt
     implementation(libs.hilt.android)
@@ -117,6 +120,8 @@ dependencies {
     kapt(libs.androidx.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
+    // Animations
+    implementation(libs.lottie)
 }
 kapt {
     correctErrorTypes = true
