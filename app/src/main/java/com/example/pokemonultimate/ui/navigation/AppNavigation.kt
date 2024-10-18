@@ -1,6 +1,5 @@
 package com.example.pokemonultimate.ui.navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -41,7 +39,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion.toDestination
-import com.example.pokemonultimate.ui.screens.BoostersScreen
+import com.example.pokemonultimate.ui.screens.boosters.BoostersScreen
 import com.example.pokemonultimate.ui.screens.collection.CollectionNavigation
 import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
 import com.example.pokemonultimate.ui.screens.home.HomeScreen
