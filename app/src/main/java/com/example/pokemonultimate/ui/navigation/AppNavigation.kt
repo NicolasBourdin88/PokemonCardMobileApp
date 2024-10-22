@@ -1,6 +1,5 @@
 package com.example.pokemonultimate.ui.navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,7 +28,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -74,9 +72,9 @@ fun AppNavigation() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        start = Padding.NORMAL.dp,
-                        end = Padding.NORMAL.dp,
-                        top = Padding.ULTRA_HUGE.dp
+                        start = Padding.MINI.dp,
+                        end = Padding.MINI.dp,
+                        top = Padding.GIANT.dp
                     ),
                 verticalAlignment = Alignment.CenterVertically,
             ) {

@@ -4,9 +4,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 enum class Padding(val dp: Dp) {
-    SMALL(4.dp),
-    NORMAL(8.dp),
-    BIG(16.dp),
+    MICRO(4.dp),
+    MINI(8.dp),
+    SMALL(12.dp),
+    MEDIUM(16.dp),
+    LARGE(24.dp),
     HUGE(32.dp),
-    ULTRA_HUGE(40.dp),
+    GIANT(48.dp),
 }

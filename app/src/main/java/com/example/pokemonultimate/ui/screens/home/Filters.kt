@@ -36,7 +36,7 @@ fun ListFilters(
     LazyRow {
         itemsIndexed(filters) { position, filterText ->
             val modifier = if (position == 0) {
-                Modifier.padding(start = Padding.ULTRA_HUGE.dp)
+                Modifier.padding(start = Padding.GIANT.dp)
             } else {
                 Modifier
             }
@@ -66,12 +66,12 @@ private fun GradientInputChip(text: String, onDismiss: (String) -> Unit, modifie
         .clickable {
             onDismiss.invoke(text)
         }
-        .padding(all = Padding.SMALL.dp)) {
+        .padding(all = Padding.MICRO.dp)) {
         Row(
             Modifier
                 .background(brush = background)
                 .padding(
-                    vertical = Padding.SMALL.dp, horizontal = Padding.BIG.dp
+                    vertical = Padding.MICRO.dp, horizontal = Padding.MEDIUM.dp
                 ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -84,7 +84,7 @@ private fun GradientInputChip(text: String, onDismiss: (String) -> Unit, modifie
                 contentDescription = "Close button",
                 Modifier
                     .size(InputChipDefaults.AvatarSize)
-                    .padding(start = Padding.NORMAL.dp),
+                    .padding(start = Padding.MINI.dp),
             )
         }
     }
