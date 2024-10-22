@@ -1,6 +1,5 @@
 package com.example.pokemonultimate.ui.screens.boosters
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -12,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.input.pointer.pointerInput
@@ -39,13 +41,19 @@ import kotlinx.coroutines.delay
 fun BoostersScreen() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         TitleText("Want To Open A Booster ?")
-        Booster(height = 450, width = 200)
+        Booster(height = 500, width = 250)
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Button(onClick = {
+                // TODO
+            }) {
+                Text("Open", modifier = Modifier.padding(horizontal = Padding.LARGE.dp))
+            }
+        }
     }
 }
 
-@Preview
 @Composable
-fun Booster(height: Int = 450, width: Int = 200) {
+fun Booster(height: Int = 500, width: Int = 250) {
     val swipeThreshold = 100f
     var isSwipe: Boolean by remember { mutableStateOf(false) }
 
@@ -60,45 +68,48 @@ fun Booster(height: Int = 450, width: Int = 200) {
                         isSwipe = true
                     }
                 }
-            }, horizontalAlignment = Alignment.CenterHorizontally
+            },
     ) {
-        Box(
-            Modifier
-                .height(height.dp)
-                .width(width.dp)
-        ) {
-            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
+            Box(
+                Modifier
+                    .height(height.dp)
+                    .width(width.dp)
+            ) {
                 BottomBooster(height, width)
+                TopBooster(isSwipe)
             }
-            TopBooster(isSwipe)
+            Image(
+                painter = painterResource(R.drawable.place_holder_cut),
+                contentDescription = "Place holder cut",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .rotate(-3.5F)
+                    .padding(top = 55.dp)
+            )
         }
     }
 }
 
-@Preview
 @Composable
-fun BottomBooster(height: Int = 450, width: Int = 200) {
-    Column {
-        BottomBoosterPart(
+fun BottomBooster(height: Int = 500, width: Int = 250) {
+    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+        BottomBoosterContent(
             modifier = Modifier
-                .height((height - 75).dp)
+                .height((height - 97).dp)
                 .width(width.dp)
                 .padding(horizontal = 4.dp)
         )
-        Image(
-            painter = painterResource(R.drawable.piece_of_boosters),
-            contentDescription = "Piece in aluminium of booster",
+        AluminiumBoosterPiece(
             modifier = Modifier
                 .fillMaxWidth()
-                .rotate(180F),
-            contentScale = ContentScale.FillWidth
+                .rotate(180F)
         )
     }
 }
 
 @Composable
 fun TopBooster(isSwipe: Boolean) {
-    Log.e("nicolas", "TopBooster recomposition")
     var rotate: Float by remember { mutableFloatStateOf(0f) }
 
     if (isSwipe) {
@@ -111,32 +122,51 @@ fun TopBooster(isSwipe: Boolean) {
     }
 
     Column(modifier = Modifier.rotate(rotate)) {
-        Image(
-            painter = painterResource(R.drawable.piece_of_boosters),
-            contentDescription = "Piece in aluminium of booster",
-            modifier = Modifier
-                .fillMaxWidth(),
-            contentScale = ContentScale.FillWidth
-        )
+        AluminiumBoosterPiece(modifier = Modifier.fillMaxWidth())
         TopBoosterPart(modifier = Modifier.padding(horizontal = 4.dp))
     }
 }
 
 @Composable
-fun BottomBoosterPart(modifier: Modifier = Modifier) {
-    Canvas(modifier = modifier) {
-        val path = Path().apply {
-            moveTo(0f, size.height)
-            lineTo(size.width, size.height)
-            lineTo(size.width, 30f)
-            lineTo(0f, 70f)
-            close()
+fun BottomBoosterContent(modifier: Modifier = Modifier) {
+    Box {
+        Canvas(modifier = modifier) {
+            val path = Path().apply {
+                moveTo(0f, size.height)
+                lineTo(size.width, size.height)
+                lineTo(size.width, 30f)
+                lineTo(0f, 70f)
+                close()
+            }
+
+            val colorStops = arrayOf(
+                0.3f to Color(0XFF77B4FB),
+                1f to Color(0XFF130086),
+            )
+
+            drawPath(
+                path = path,
+                brush = Brush.linearGradient(colorStops = colorStops)
+            )
         }
 
-        drawPath(
-            path = path,
-            color = Color.Blue
-        )
+        Column {
+            Image(
+                painter = painterResource(R.drawable.pokemon_logo),
+                contentDescription = "Logo pokemon",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = Padding.HUGE.dp),
+            )
+            Image(
+                painter = painterResource(R.drawable.image_card_lightning),
+                contentDescription = "Illustration booster",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(all = Padding.HUGE.dp),
+                contentScale = ContentScale.FillWidth,
+            )
+        }
     }
 }
 
@@ -156,7 +186,17 @@ fun TopBoosterPart(modifier: Modifier = Modifier) {
 
         drawPath(
             path = path,
-            color = Color.Yellow
+            color = Color(0XFF77B4FB),
         )
     }
+}
+
+@Composable
+private fun AluminiumBoosterPiece(modifier: Modifier) {
+    Image(
+        painter = painterResource(R.drawable.piece_of_boosters),
+        contentDescription = "Piece in aluminium of booster",
+        modifier = modifier,
+        contentScale = ContentScale.FillWidth
+    )
 }
