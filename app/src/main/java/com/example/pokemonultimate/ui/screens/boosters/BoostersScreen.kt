@@ -38,13 +38,13 @@ import kotlinx.coroutines.delay
 fun BoostersScreen() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         TitleText("Want To Open A Booster ?")
-        Booster2(height = 450, width = 200)
+        Booster(height = 450, width = 200)
     }
 }
 
 @Preview
 @Composable
-fun Booster2(height: Int = 450, width: Int = 200) {
+fun Booster(height: Int = 450, width: Int = 200) {
     val swipeThreshold = 100f
     var isSwipe: Boolean by remember { mutableStateOf(false) }
 
@@ -77,7 +77,7 @@ fun Booster2(height: Int = 450, width: Int = 200) {
 @Composable
 fun BottomBooster(height: Int = 450, width: Int = 200) {
     Column {
-        Quadrilateral(
+        BottomBoosterPart(
             modifier = Modifier
                 .height((height - 75).dp)
                 .width(width.dp)
@@ -116,74 +116,12 @@ fun TopBooster(isSwipe: Boolean) {
                 .fillMaxWidth(),
             contentScale = ContentScale.FillWidth
         )
-        SecondQuadrilateral(modifier = Modifier.padding(horizontal = 4.dp))
+        TopBoosterPart(modifier = Modifier.padding(horizontal = 4.dp))
     }
 }
 
 @Composable
-fun Booster(height: Int = 350, width: Int = 200) {
-    val swipeThreshold = 100f
-    var isSwipe: Boolean by remember { mutableStateOf(false) }
-
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .pointerInput(Unit) {
-                detectHorizontalDragGestures { change, dragAmount ->
-                    change.consume()
-                    if (dragAmount > swipeThreshold || dragAmount < -swipeThreshold) {
-                        isSwipe = true
-                    }
-                }
-            },
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Column(
-            modifier = Modifier
-                .width(width.dp),
-        ) {
-            var rotate: Float by remember { mutableFloatStateOf(0f) }
-            if (isSwipe) {
-                LaunchedEffect(Unit) {
-                    while (rotate < 10f) {
-                        rotate += if (rotate < 0.5f) 0.3f else 0.5f
-                        delay(10)
-                    }
-                }
-            }
-            Image(
-                painter = painterResource(R.drawable.piece_of_boosters),
-                contentDescription = "Piece in aluminium of booster",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .rotate(rotate),
-                contentScale = ContentScale.FillWidth
-            )
-            Box(
-                modifier = Modifier
-                    .height(height.dp)
-                    .padding(horizontal = 2.dp)
-                    .fillMaxWidth(),
-            ) {
-                SecondQuadrilateral(modifier = Modifier.rotate(rotate))
-                Quadrilateral()
-            }
-            Image(
-                painter = painterResource(R.drawable.piece_of_boosters),
-                contentDescription = "Piece in aluminium of booster",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .rotate(180F),
-                contentScale = ContentScale.FillWidth
-            )
-        }
-    }
-}
-
-
-@Composable
-fun Quadrilateral(modifier: Modifier = Modifier) {
+fun BottomBoosterPart(modifier: Modifier = Modifier) {
     Canvas(modifier = modifier) {
         val path = Path().apply {
             moveTo(0f, size.height)
@@ -201,7 +139,7 @@ fun Quadrilateral(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SecondQuadrilateral(modifier: Modifier = Modifier) {
+fun TopBoosterPart(modifier: Modifier = Modifier) {
     Canvas(
         modifier = modifier
             .fillMaxSize()
