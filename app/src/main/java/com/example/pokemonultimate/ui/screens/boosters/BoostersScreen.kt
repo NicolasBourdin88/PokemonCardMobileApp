@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pokemonultimate.R
+import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.TitleText
 import kotlinx.coroutines.delay
 
@@ -51,6 +52,7 @@ fun Booster(height: Int = 450, width: Int = 200) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(top = Padding.MEDIUM.dp)
             .pointerInput(Unit) {
                 detectHorizontalDragGestures { change, dragAmount ->
                     change.consume()
