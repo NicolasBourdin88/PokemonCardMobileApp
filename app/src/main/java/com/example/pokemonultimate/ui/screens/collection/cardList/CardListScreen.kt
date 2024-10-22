@@ -40,7 +40,7 @@ private fun Header(setImage: String) {
             setImage,
             contentDescription = "Set image",
             modifier = Modifier
-                .padding(Padding.NORMAL.dp)
+                .padding(Padding.MINI.dp)
                 .fillMaxSize(),
             contentScale = ContentScale.Fit,
             alpha = 0.1F,
@@ -61,7 +61,7 @@ fun ListCardSearchResult(
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
-        modifier = Modifier.padding(horizontal = Padding.NORMAL.dp),
+        modifier = Modifier.padding(horizontal = Padding.MINI.dp),
     ) {
         when (lazyPagingItems.loadState.refresh) {
             is LoadState.Loading -> {
@@ -94,7 +94,7 @@ fun ListCardSearchResult(
                     contentDescription = "Card",
                     modifier = Modifier
                         .width(100.dp)
-                        .padding(Padding.NORMAL.dp),
+                        .padding(Padding.MINI.dp),
                     contentScale = ContentScale.FillWidth,
                 )
             }

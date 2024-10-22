@@ -156,7 +156,7 @@ fun ListCardSearchResult(
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
-        modifier = Modifier.padding(horizontal = Padding.NORMAL.dp),
+        modifier = Modifier.padding(horizontal = Padding.MINI.dp),
     ) {
         when (lazyPagingItems.loadState.refresh) {
             is LoadState.Loading -> {
@@ -189,7 +189,7 @@ fun ListCardSearchResult(
                     contentDescription = "Card",
                     modifier = Modifier
                         .width(100.dp)
-                        .padding(Padding.NORMAL.dp),
+                        .padding(Padding.MINI.dp),
                     contentScale = ContentScale.FillWidth,
                 )
             }
@@ -228,7 +228,7 @@ private fun CardBackground(pokemonCellInfo: PokemonCellInfo) {
     Card(
         Modifier
             .fillMaxWidth()
-            .padding(Padding.NORMAL.dp)
+            .padding(Padding.MINI.dp)
             .height(200.dp),
     ) {
         Row(
@@ -260,7 +260,7 @@ private fun CardBackground(pokemonCellInfo: PokemonCellInfo) {
 private fun ListCardPokemonType(onCardClick: (String) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
-        modifier = Modifier.padding(horizontal = Padding.NORMAL.dp),
+        modifier = Modifier.padding(horizontal = Padding.MINI.dp),
     ) {
         items(PokemonCellInfo.entries) { pokemonCellInfo ->
             PokemonCard(pokemonCellInfo, onCardClick = {
@@ -281,7 +281,7 @@ private fun HomeSearchBar(onSearch: (query: String) -> Unit, onFilterClicked: ()
     SearchBar(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = Padding.NORMAL.dp, start = Padding.BIG.dp, end = Padding.BIG.dp),
+            .padding(bottom = Padding.MINI.dp, start = Padding.MEDIUM.dp, end = Padding.MEDIUM.dp),
         windowInsets = WindowInsets(top = 0.dp),
         inputField = {
             SearchBarDefaults.InputField(

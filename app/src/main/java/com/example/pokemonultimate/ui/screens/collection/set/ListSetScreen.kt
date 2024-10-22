@@ -34,7 +34,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.pokemonultimate.data.model.sets.Set
@@ -67,7 +66,7 @@ fun ListCollections(
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
-        modifier = Modifier.padding(horizontal = Padding.NORMAL.dp),
+        modifier = Modifier.padding(horizontal = Padding.MINI.dp),
     ) {
         items(sets) { set ->
             ItemSet(set, navController)
@@ -81,7 +80,7 @@ fun ItemSet(set: Set, navController: NavHostController) {
         modifier = Modifier
             .height(120.dp)
             .fillMaxWidth()
-            .padding(horizontal = Padding.NORMAL.dp)
+            .padding(horizontal = Padding.MINI.dp)
             .clickable {
                 navController.navigateToSelectedItem(
                     CollectionNavigation.CardListDestination(
@@ -95,7 +94,7 @@ fun ItemSet(set: Set, navController: NavHostController) {
             set.images.logo,
             contentDescription = "Set image",
             modifier = Modifier
-                .padding(Padding.NORMAL.dp)
+                .padding(Padding.MINI.dp)
                 .height(70.dp)
                 .fillMaxWidth(),
             contentScale = ContentScale.Fit,
@@ -111,7 +110,7 @@ fun ItemSet(set: Set, navController: NavHostController) {
                 fontFamily = fontFamilyAvenir,
                 fontWeight = FontWeight.Black,
                 fontSize = 14.sp,
-                modifier = Modifier.padding(start = Padding.NORMAL.dp)
+                modifier = Modifier.padding(start = Padding.MINI.dp)
             )
         }
     }
@@ -128,7 +127,7 @@ fun SearchBarCollection(onSearch: (query: String) -> Unit) {
     SearchBar(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = Padding.NORMAL.dp, start = Padding.BIG.dp, end = Padding.BIG.dp),
+            .padding(bottom = Padding.MINI.dp, start = Padding.MEDIUM.dp, end = Padding.MEDIUM.dp),
         windowInsets = WindowInsets(top = 0.dp),
         inputField = {
             SearchBarDefaults.InputField(

@@ -74,7 +74,7 @@ fun DisplayBottomSheetFilter(
             mutableStateOf(null)
         }
 
-        Column(Modifier.padding(bottom = Padding.BIG.dp)) {
+        Column(Modifier.padding(bottom = Padding.MEDIUM.dp)) {
 
             when (filterScreenToDisplay) {
                 FilterCategories.SUBTYPES -> {
@@ -127,7 +127,7 @@ fun DisplayBottomSheetFilter(
                             textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = Padding.NORMAL.dp)
+                                .padding(vertical = Padding.MINI.dp)
                                 .clickable {
                                     filterScreenToDisplay = filterCategories
                                 },
@@ -155,7 +155,7 @@ fun ButtonFilters(
         enabled = numberOfFilters > 0,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Padding.BIG.dp),
+            .padding(horizontal = Padding.MEDIUM.dp),
         colors = ButtonDefaults.buttonColors(
             contentColor = buttonColorFont,
             containerColor = buttonColorContainer,
@@ -198,7 +198,7 @@ fun ListCheckableCategories(
         SearchBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = Padding.NORMAL.dp, start = Padding.BIG.dp, end = Padding.BIG.dp),
+                .padding(bottom = Padding.MINI.dp, start = Padding.MEDIUM.dp, end = Padding.MEDIUM.dp),
             windowInsets = WindowInsets(top = 0.dp),
             inputField = {
                 SearchBarDefaults.InputField(
@@ -231,7 +231,7 @@ fun ListCheckableCategories(
             onExpandedChange = { expanded = it },
         ) {}
         Box(contentAlignment = Alignment.BottomCenter) {
-            LazyColumn(modifier = Modifier.padding(bottom = Padding.ULTRA_HUGE.dp)) {
+            LazyColumn(modifier = Modifier.padding(bottom = Padding.GIANT.dp)) {
                 items(filtersListFromApi) { filterName ->
                     if (currentFilters.contains(filterName)) {
                         mutableList.add(filterName)
