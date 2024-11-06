@@ -1,9 +1,10 @@
 package com.example.pokemonultimate.ui.screens.boosters
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,26 +35,24 @@ import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.TitleText
 import kotlinx.coroutines.delay
 
+const val BOOSTER_WIDTH = 250
+const val BOOSTER_TOP_HEIGHT = 25
+const val BOOSTER_BOTTOM_HEIGHT = 370
+const val BOOSTER_ALUMINIUM_HEIGHT = 50
+
 @Preview
 @Composable
 fun BoostersScreen() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         TitleText("Want To Open A Booster ?")
-        Booster(height = 500, width = 250)
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Button(onClick = {
-                // TODO
-            }) {
-                Text("Open", modifier = Modifier.padding(horizontal = Padding.LARGE.dp))
-            }
-        }
+        Booster()
     }
 }
 
 @Composable
-fun Booster(height: Int = 500, width: Int = 250) {
+fun Booster() {
     val swipeThreshold = 100f
-    var isSwipe: Boolean by remember { mutableStateOf(false) }
+    var hasSwiped: Boolean by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -65,7 +62,7 @@ fun Booster(height: Int = 500, width: Int = 250) {
                 detectHorizontalDragGestures { change, dragAmount ->
                     change.consume()
                     if (dragAmount > swipeThreshold || dragAmount < -swipeThreshold) {
-                        isSwipe = true
+                        hasSwiped = true
                     }
                 }
             },
@@ -73,11 +70,10 @@ fun Booster(height: Int = 500, width: Int = 250) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
             Box(
                 Modifier
-                    .height(height.dp)
-                    .width(width.dp)
+                    .width(BOOSTER_WIDTH.dp)
             ) {
-                BottomBooster(height, width)
-                TopBooster(isSwipe)
+                BottomBooster()
+                TopBooster(hasSwiped)
             }
             Image(
                 painter = painterResource(R.drawable.place_holder_cut),
@@ -92,19 +88,18 @@ fun Booster(height: Int = 500, width: Int = 250) {
 }
 
 @Composable
-fun BottomBooster(height: Int = 500, width: Int = 250) {
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-        BottomBoosterContent(
-            modifier = Modifier
-                .height((height - 97).dp)
-                .width(width.dp)
-                .padding(horizontal = 4.dp)
-        )
-        AluminiumBoosterPiece(
-            modifier = Modifier
-                .fillMaxWidth()
-                .rotate(180F)
-        )
+fun BottomBooster() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Column(
+            Modifier
+                .padding(top = BOOSTER_ALUMINIUM_HEIGHT.dp)
+        ) {
+            BottomBoosterContentPart()
+            AluminiumBoosterPiece(modifier = Modifier.rotate(180F))
+        }
     }
 }
 
@@ -122,64 +117,82 @@ fun TopBooster(isSwipe: Boolean) {
     }
 
     Column(modifier = Modifier.rotate(rotate)) {
-        AluminiumBoosterPiece(modifier = Modifier.fillMaxWidth())
-        TopBoosterPart(modifier = Modifier.padding(horizontal = 4.dp))
+        AluminiumBoosterPiece()
+        TopBoosterContentPart()
     }
 }
 
+@Preview
 @Composable
-fun BottomBoosterContent(modifier: Modifier = Modifier) {
-    Box {
-        Canvas(modifier = modifier) {
+fun BottomBoosterContentPart() {
+    val colorStops = arrayOf(
+        0.3f to Color(0XFF77B4FB),
+        1f to Color(0XFF130086),
+    )
+
+    Column(
+        Modifier
+            .padding(horizontal = 4.dp)
+            .width(BOOSTER_WIDTH.dp)
+    ) {
+        Canvas(
+            modifier = Modifier
+                .height(BOOSTER_TOP_HEIGHT.dp)
+                .fillMaxWidth()
+        ) {
             val path = Path().apply {
                 moveTo(0f, size.height)
                 lineTo(size.width, size.height)
-                lineTo(size.width, 30f)
-                lineTo(0f, 70f)
+                lineTo(size.width, 0f)
                 close()
             }
 
-            val colorStops = arrayOf(
-                0.3f to Color(0XFF77B4FB),
-                1f to Color(0XFF130086),
-            )
-
-            drawPath(
-                path = path,
-                brush = Brush.linearGradient(colorStops = colorStops)
-            )
+            drawPath(path = path, color = Color(0XFF77B4FB))
         }
 
-        Column {
-            Image(
-                painter = painterResource(R.drawable.pokemon_logo),
-                contentDescription = "Logo pokemon",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = Padding.HUGE.dp),
-            )
-            Image(
-                painter = painterResource(R.drawable.image_card_lightning),
-                contentDescription = "Illustration booster",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = Padding.HUGE.dp),
-                contentScale = ContentScale.FillWidth,
-            )
+
+        Column(
+            Modifier
+                .height(BOOSTER_BOTTOM_HEIGHT.dp)
+                .background(brush = Brush.linearGradient(colorStops = colorStops))
+        ) {
+            BoosterIllustration()
         }
     }
 }
 
 @Composable
-fun TopBoosterPart(modifier: Modifier = Modifier) {
+private fun BoosterIllustration() {
+    Column {
+        Image(
+            painter = painterResource(R.drawable.pokemon_logo),
+            contentDescription = "Logo pokemon",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = Padding.HUGE.dp),
+        )
+        Image(
+            painter = painterResource(R.drawable.image_card_lightning),
+            contentDescription = "Illustration booster",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = Padding.HUGE.dp),
+            contentScale = ContentScale.FillWidth,
+        )
+    }
+}
+
+@Composable
+fun TopBoosterContentPart() {
     Canvas(
-        modifier = modifier
-            .fillMaxSize()
+        modifier = Modifier
+            .padding(horizontal = Padding.MICRO.dp)
+            .fillMaxWidth()
+            .height(BOOSTER_TOP_HEIGHT.dp)
     ) {
         val path = Path().apply {
             moveTo(0f, 0f)
-            lineTo(0f, 70f)
-            lineTo(size.width, 30f)
+            lineTo(0f, size.height)
             lineTo(size.width, 0f)
             close()
         }
@@ -192,11 +205,13 @@ fun TopBoosterPart(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun AluminiumBoosterPiece(modifier: Modifier) {
+private fun AluminiumBoosterPiece(modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(R.drawable.piece_of_boosters),
         contentDescription = "Piece in aluminium of booster",
-        modifier = modifier,
-        contentScale = ContentScale.FillWidth
+        modifier = modifier
+            .height(BOOSTER_ALUMINIUM_HEIGHT.dp)
+            .fillMaxWidth(),
+        contentScale = ContentScale.FillBounds
     )
 }

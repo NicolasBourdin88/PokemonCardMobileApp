@@ -22,7 +22,7 @@ sealed class MainNavigation : NavigationDestination() {
     data object BoostersDestination : MainNavigation()
 
     companion object {
-        val startDestination = HomeDestination
+        val startDestination = BoostersDestination
     }
 }
 
