@@ -34,6 +34,7 @@ import com.example.pokemonultimate.R
 import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.TitleText
 import kotlinx.coroutines.delay
+import kotlin.math.absoluteValue
 
 const val BOOSTER_WIDTH = 250
 const val BOOSTER_TOP_HEIGHT = 25
@@ -53,18 +54,34 @@ fun BoostersScreen() {
 fun Booster() {
     val swipeThreshold = 100f
     var hasSwiped: Boolean by remember { mutableStateOf(false) }
+    var swipeOffset by remember { mutableFloatStateOf(0f) }
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = Padding.MEDIUM.dp)
             .pointerInput(Unit) {
-                detectHorizontalDragGestures { change, dragAmount ->
-                    change.consume()
-                    if (dragAmount > swipeThreshold || dragAmount < -swipeThreshold) {
-                        hasSwiped = true
+                detectHorizontalDragGestures(
+                    onDragStart = {
+                        swipeOffset = 0f // Réinitialiser au début du glissement
+                        hasSwiped = false
+                    },
+                    onHorizontalDrag = { change, dragAmount ->
+                        change.consume()
+                        swipeOffset += dragAmount
+
+                        Log.e("nicolas", "Booster - swipeOffset: $swipeOffset")
+                        // Met à jour `hasSwiped` si le seuil est atteint
+                        if (swipeOffset.absoluteValue > swipeThreshold) {
+                            hasSwiped = true
+                        }
+                    },
+                    onDragEnd = {
+                        // Remet à zéro si nécessaire quand le glissement est terminé
+                        swipeOffset = 0f
+                        hasSwiped = false
                     }
-                }
+                )
             },
     ) {
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
