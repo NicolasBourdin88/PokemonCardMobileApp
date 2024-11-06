@@ -1,6 +1,5 @@
 package com.example.pokemonultimate.ui.screens.inscription
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,23 +32,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.pokemonultimate.R
-import com.example.pokemonultimate.ui.navigation.ButtonNavigation
-import com.example.pokemonultimate.ui.theme.*
-import com.example.pokemonultimate.ui.utils.ArrowStyle
+import com.example.pokemonultimate.data.model.PokemonCellProfil
+import com.example.pokemonultimate.ui.navigation.AuthenticationNavigation
 import com.example.pokemonultimate.ui.utils.CustomTextField
 import com.example.pokemonultimate.ui.utils.OrView
 import com.example.pokemonultimate.ui.utils.Padding
@@ -58,15 +55,18 @@ import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
 @Composable
 fun InscriptionScreen(
     navController: NavHostController,
-    viewModel: InscriptionViewModel = viewModel()
+    viewModel: InscriptionViewModel,
+    onSuccess: () -> Unit,
 ) {
     val email by viewModel.email
     val password by viewModel.password
     val confirmPassword by viewModel.confirmPassword
-    val isLoading by viewModel.isLoading
     val errorMessage by viewModel.errorInscriptionMessage
 
     val showBottomSheet by viewModel.showBottomSheet
+
+    LocalContext.current
+
 
 
     Column(
@@ -76,9 +76,8 @@ fun InscriptionScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        ArrowStyle(navController)
 
-        PikachuWithButtonPlus { viewModel.toggleBottomSheet() }
+        PikachuWithButtonPlus(viewModel, { viewModel.toggleBottomSheet() })
 
         WelcomeText()
 
@@ -111,7 +110,8 @@ fun InscriptionScreen(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth().height(48.dp),
+                .fillMaxWidth()
+                .height(48.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -122,11 +122,14 @@ fun InscriptionScreen(
             )
         }
 
+
         ButtonSignup(viewModel = viewModel) { isSuccess ->
             if (isSuccess) {
-                navController.navigate(ButtonNavigation.ConnectionDestination.route)
+                onSuccess()
             }
         }
+
+
         if (showBottomSheet) BottomBar(viewModel)
         OrView()
         GoogleView()
@@ -162,7 +165,10 @@ fun BottomBar(viewModel: InscriptionViewModel) {
             ) {
                 items(PokemonCellProfil.entries.size) { position ->
                     val pokemonCellProfil = PokemonCellProfil.entries[position]
-                    ImagePokemon(pokemonCellProfil)
+                    ImagePokemon(
+                        pokemonCellProfil = pokemonCellProfil,
+                        onClick = { viewModel.onImageSelected(pokemonCellProfil) }
+                    )
                 }
             }
         }
@@ -173,13 +179,14 @@ fun BottomBar(viewModel: InscriptionViewModel) {
 
 
 @Composable
-private fun ImagePokemon(pokemonCellProfil: PokemonCellProfil) {
+private fun ImagePokemon(pokemonCellProfil: PokemonCellProfil, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .clip(CircleShape)
             .aspectRatio(1f)
-            .background(brush = pokemonCellProfil.brush),
+            .background(brush = pokemonCellProfil.brush)
+            .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Image(
@@ -191,34 +198,55 @@ private fun ImagePokemon(pokemonCellProfil: PokemonCellProfil) {
 }
 
 @Composable
-fun PikachuWithButtonPlus(onButtonClick: () -> Unit) {
+fun PikachuWithButtonPlus(viewModel: InscriptionViewModel, onButtonClick: () -> Unit) {
+    val selectedImage by viewModel.selectedImage
+
     Box(
         modifier = Modifier
             .size(150.dp)
             .offset(y = 20.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .size(130.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary)
-                .align(Alignment.Center)
-                .clipToBounds()
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_pikachu),
-                contentDescription = stringResource(id = R.string.content_logo_profil_empty),
-                colorFilter = ColorFilter.tint(Color.White),
-                contentScale = ContentScale.Crop,
+        if (selectedImage == null) {
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .graphicsLayer {
-                        scaleX = -1f
-                        translationY = 90f
-                        translationX = -22f
-                    }
-            )
+                    .size(130.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+                    .align(Alignment.Center)
+                    .clipToBounds()
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_pikachu),
+                    contentDescription = stringResource(id = R.string.content_logo_profil_empty),
+                    colorFilter = ColorFilter.tint(Color.White),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer {
+                            scaleX = -1f
+                            translationY = 90f
+                            translationX = -22f
+                        }
+                )
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(130.dp)
+                    .clip(CircleShape)
+                    .background(brush = selectedImage!!.brush)
+                    .align(Alignment.Center),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = selectedImage!!.pokemonCellImage),
+                    contentDescription = stringResource(id = R.string.selected_image),
+                    modifier = Modifier.size(96.dp)
+                )
+            }
         }
+
+        // Bouton "+" pour ouvrir la Bottom Sheet
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -226,8 +254,6 @@ fun PikachuWithButtonPlus(onButtonClick: () -> Unit) {
                 .size(30.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.onPrimaryContainer)
-
-
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_plus),
@@ -241,6 +267,7 @@ fun PikachuWithButtonPlus(onButtonClick: () -> Unit) {
         }
     }
 }
+
 
 @Composable
 fun WelcomeText() {
@@ -265,18 +292,12 @@ fun WelcomeText() {
 
 @Composable
 fun ButtonSignup(viewModel: InscriptionViewModel, onResult: (Boolean) -> Unit) {
-    val email by viewModel.email
-    val password by viewModel.password
-    val confirmPassword by viewModel.confirmPassword
     val isLoading by viewModel.isLoading
 
     Button(
         onClick = {
             if (!isLoading) {
                 viewModel.registerWithEmailAndPassword(
-                    email = email,
-                    password = password,
-                    confirmPassword = confirmPassword,
                     onResult = onResult
                 )
             }
@@ -288,7 +309,6 @@ fun ButtonSignup(viewModel: InscriptionViewModel, onResult: (Boolean) -> Unit) {
         enabled = !isLoading
     ) {
         if (isLoading) {
-
             Text(
                 text = stringResource(R.string.loading),
                 fontFamily = fontFamilyAvenir,
@@ -303,7 +323,6 @@ fun ButtonSignup(viewModel: InscriptionViewModel, onResult: (Boolean) -> Unit) {
         }
     }
 }
-
 
 
 @Composable
@@ -345,48 +364,9 @@ fun SigninView(navController: NavHostController) {
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.clickable {
-                navController.navigate(ButtonNavigation.ConnectionDestination.route)
-
+                navController.navigate(AuthenticationNavigation.SignInDestination)
             }
         )
     }
 }
-
-private enum class PokemonCellProfil(
-    @DrawableRes val pokemonCellImage: Int,
-    val brush: Brush,
-) {
-    ICE(
-        pokemonCellImage = R.drawable.image_card_ice,
-        brush = Brush.linearGradient(listOf(cardIceFirstColor, cardIceSecondColor)),
-
-        ),
-    FIRE(
-        pokemonCellImage = R.drawable.image_card_fire,
-        brush = Brush.linearGradient(listOf(cardFireFirstColor, cardFireSecondColor)),
-
-        ),
-    PLANT(
-        pokemonCellImage = R.drawable.image_card_plant,
-        brush = Brush.linearGradient(listOf(cardGrassFirstColor, cardGrassSecondColor)),
-
-        ),
-    ELECTRIC(
-        pokemonCellImage = R.drawable.image_card_electric,
-        brush = Brush.linearGradient(listOf(cardLightningFirstColor, cardLightningSecondColor)),
-
-        ),
-    WATER(
-        pokemonCellImage = R.drawable.image_card_water,
-        brush = Brush.linearGradient(listOf(cardWaterFirstColor, cardWaterSecondColor)),
-
-        ),
-    NORMAL(
-        pokemonCellImage = R.drawable.image_card_normal,
-        brush = Brush.linearGradient(listOf(cardNormalFirstColor, cardNormalSecondColor)),
-    ),
-
-}
-
-
 

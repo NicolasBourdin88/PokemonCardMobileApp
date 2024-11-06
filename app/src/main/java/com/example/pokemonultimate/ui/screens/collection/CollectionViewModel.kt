@@ -11,7 +11,7 @@ import androidx.paging.map
 import com.example.pokemonultimate.data.api.ApiRepository
 import com.example.pokemonultimate.data.api.ApiResponse
 import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
-import com.example.pokemonultimate.data.model.pokemonCard.database.PokemonCardDataBase
+import com.example.pokemonultimate.data.model.database.DataBase
 import com.example.pokemonultimate.data.model.pokemonCard.database.PokemonCardRemoteMediator
 import com.example.pokemonultimate.data.model.sets.Set
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CollectionViewModel @Inject constructor(
-    private val pokemonCardsDb: PokemonCardDataBase
+    private val pokemonCardsDb: DataBase
 ) : ViewModel() {
     private val _setsFlow = MutableStateFlow<List<Set>>(emptyList())
     val setsFlow: StateFlow<List<Set>> = _setsFlow

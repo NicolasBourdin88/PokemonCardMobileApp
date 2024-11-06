@@ -9,9 +9,9 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.pokemonultimate.data.api.ApiRepository
+import com.example.pokemonultimate.data.model.database.DataBase
 import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
 import com.example.pokemonultimate.data.model.pokemonCard.database.PokemonCardRemoteMediator
-import com.example.pokemonultimate.data.model.pokemonCard.database.PokemonCardDataBase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val pokemonCardsDb: PokemonCardDataBase
+    private val pokemonCardsDb: DataBase
 ) : ViewModel() {
     private val _filters = MutableStateFlow<List<String>>(emptyList())
 

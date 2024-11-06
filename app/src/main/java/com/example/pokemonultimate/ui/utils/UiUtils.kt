@@ -1,7 +1,5 @@
 package com.example.pokemonultimate.ui.utils
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,7 +25,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.example.pokemonultimate.R
 
 
@@ -90,25 +87,6 @@ fun CustomTextField(
             KeyboardOptions.Default
         }
     )
-}
-
-@Composable
-fun ArrowStyle(navController: NavHostController) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_arrowleft),
-            contentDescription = stringResource(id = R.string.user_icon),
-            modifier = Modifier
-                .padding(start = Padding.MEDIUM.dp, top = Padding.MINI.dp)
-                .size(30.dp)
-                .clickable {
-                    navController.popBackStack()
-                }
-        )
-    }
 }
 
 @Composable

@@ -20,5 +20,6 @@
     <string name="password_icon">Password icon</string>
     <string name="google_icon">Google icon</string>
     <string name="plus_icon">Plus icon</string>
+    <string name="selected_image">Profil picture</string>
     <string name="arrowleft_icon">Arrow left icon</string>
 </resources>

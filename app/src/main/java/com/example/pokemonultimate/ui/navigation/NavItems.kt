@@ -21,10 +21,34 @@ sealed class MainNavigation : NavigationDestination() {
     @Serializable
     data object BoostersDestination : MainNavigation()
 
+    @Serializable
+    data object UserDestination : MainNavigation()
+
+    @Serializable
+    data object AuthenticationDestination : MainNavigation()
+
+
     companion object {
         val startDestination = BoostersDestination
     }
 }
+
+
+@Serializable
+sealed class AuthenticationNavigation : NavigationDestination() {
+
+    @Serializable
+    data object SignInDestination : AuthenticationNavigation()
+
+    @Serializable
+    data object SignUpDestination : AuthenticationNavigation()
+
+    companion object {
+        val startDestination = SignInDestination
+    }
+}
+
+
 
 @Serializable
 sealed class CollectionNavigation : NavigationDestination() {
@@ -41,11 +65,6 @@ sealed class CollectionNavigation : NavigationDestination() {
     companion object {
         val startDestination = SetDestination
     }
-}
-
-sealed class ButtonNavigation(val route: String) {
-    object ConnectionDestination : ButtonNavigation("connection")
-    object InscriptionDestination : ButtonNavigation("inscription")
 }
 
 

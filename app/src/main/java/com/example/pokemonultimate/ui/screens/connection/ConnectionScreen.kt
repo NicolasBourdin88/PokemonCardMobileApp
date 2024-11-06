@@ -38,9 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.pokemonultimate.R
-import com.example.pokemonultimate.ui.navigation.ButtonNavigation
-import com.example.pokemonultimate.ui.navigation.MainNavigation
-import com.example.pokemonultimate.ui.utils.ArrowStyle
+import com.example.pokemonultimate.ui.navigation.AuthenticationNavigation
 import com.example.pokemonultimate.ui.utils.CustomTextField
 import com.example.pokemonultimate.ui.utils.OrView
 import com.example.pokemonultimate.ui.utils.Padding
@@ -50,7 +48,8 @@ import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
 @Composable
 fun ConnectionScreen(
     navController: NavHostController,
-    viewModel: ConnectionViewModel = viewModel()
+    viewModel: ConnectionViewModel = viewModel(),
+    onSuccess: () -> Unit,
 ) {
     val email by viewModel.email
     val password by viewModel.password
@@ -63,7 +62,6 @@ fun ConnectionScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        ArrowStyle(navController)
 
         PikachuWithCircle()
 
@@ -89,7 +87,8 @@ fun ConnectionScreen(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth().height(48.dp),
+                .fillMaxWidth()
+                .height(48.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -100,10 +99,10 @@ fun ConnectionScreen(
             )
         }
 
-        ButtonSignin(navController, viewModel)
+        ButtonSignIn(onSuccess, viewModel = viewModel)
         OrView()
         GoogleSigninView()
-        SignupView(navController)
+        SignupView(onSuccess, navController)
     }
 
 }
@@ -156,15 +155,14 @@ fun WelcomeBackText() {
 
 }
 
-
 @Composable
-fun ButtonSignin(navController: NavHostController, viewModel: ConnectionViewModel) {
+fun ButtonSignIn(onSuccess: () -> Unit, viewModel: ConnectionViewModel) {
 
     Button(
         onClick = {
-            viewModel.signInWithEmailAndPassword(viewModel.email.value,viewModel.password.value){ success ->
-                if(success){
-                    navController.navigate(MainNavigation.HomeDestination);
+            viewModel.signInWithEmailAndPassword { success ->
+                if (success) {
+                    onSuccess()
                 }
             }
         },
@@ -210,7 +208,7 @@ fun GoogleSigninView() {
 }
 
 @Composable
-fun SignupView(navController: NavHostController) {
+fun SignupView(onSuccess: () -> Unit, navController: NavHostController) {
     Row {
         Text(
             text = stringResource(R.string.dont_account),
@@ -222,7 +220,7 @@ fun SignupView(navController: NavHostController) {
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.clickable {
-                navController.navigate(ButtonNavigation.InscriptionDestination.route)
+                navController.navigate(AuthenticationNavigation.SignUpDestination)
             }
         )
     }

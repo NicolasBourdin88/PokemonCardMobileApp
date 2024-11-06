@@ -1,12 +1,18 @@
 package com.example.pokemonultimate.ui.navigation
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -22,31 +28,39 @@ import androidx.compose.material3.NavigationRailItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.pokemonultimate.data.utils.getUserId
 import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion.toDestination
+import com.example.pokemonultimate.ui.screens.authentification.AuthViewModel
 import com.example.pokemonultimate.ui.screens.boosters.BoostersScreen
 import com.example.pokemonultimate.ui.screens.collection.CollectionNavigation
 import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
+import com.example.pokemonultimate.ui.screens.connection.ConnectionViewModel
 import com.example.pokemonultimate.ui.screens.home.HomeScreen
 import com.example.pokemonultimate.ui.screens.home.HomeViewModel
+import com.example.pokemonultimate.ui.screens.inscription.AuthenticationNavigation
+import com.example.pokemonultimate.ui.screens.inscription.InscriptionViewModel
+import com.example.pokemonultimate.ui.screens.user.UserScreen
 import com.example.pokemonultimate.ui.utils.Padding
-import com.example.pokemonultimate.ui.screens.connection.ConnectionScreen
-import com.example.pokemonultimate.ui.screens.inscription.InscriptionScreen
 
 const val ICON_SIZE = 24
 
@@ -64,15 +78,18 @@ fun AppNavigation() {
     val isPortrait by remember { mutableStateOf(configuration.screenWidthDp < 500) }
     val shouldDisplayBackAction = remember { mutableStateOf(false) }
     val currentBackNavController = remember { mutableStateOf(navController) }
+
+    val authViewModel: AuthViewModel = viewModel()
+    val isUserLoggedIn by authViewModel.isUserLoggedIn.collectAsState()
+    val userProfileImageId by authViewModel.userProfileImage.collectAsState()
     val isInFullScreen = remember { mutableStateOf(false) }
-    val isOnLoginScreen =
-        navBackStackEntry?.destination?.route == ButtonNavigation.ConnectionDestination.route ||
-                navBackStackEntry?.destination?.route == ButtonNavigation.InscriptionDestination.route
 
 
     Scaffold(
         bottomBar = {
-            if (isPortrait && !isOnLoginScreen) BottomBarNavigation(currentDestination, navController)
+            if (isPortrait && !isOnUserScreen(navBackStackEntry) && !isInFullScreen.value) {
+                BottomBarNavigation(currentDestination, navController)
+            }
         },
         topBar = {
             if (!isInFullScreen.value) {
@@ -95,15 +112,43 @@ fun AppNavigation() {
                             Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
                         }
                     }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Button(onClick = {
-
-                        }) {
-                            Text("Se connecter")
+                }
+                if (!isOnUserScreen(navBackStackEntry)) {
+                    getUserId().let { id ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            if (!isUserLoggedIn) {
+                                Button(
+                                    modifier = Modifier.padding(top = 54.dp, end = 16.dp),
+                                    onClick = {
+                                        navController.navigate(MainNavigation.AuthenticationDestination)
+                                    }
+                                ) {
+                                    Text("Sign in")
+                                }
+                            } else {
+                                userProfileImageId?.let { profile ->
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(top = 54.dp, end = 16.dp)
+                                            .size(40.dp)
+                                            .clip(CircleShape)
+                                            .background(profile.brush)
+                                            .clickable {
+                                                navController.navigate(MainNavigation.UserDestination)
+                                            },
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = profile.pokemonCellImage),
+                                            contentDescription = "Profile",
+                                            modifier = Modifier.size(36.dp)
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -114,7 +159,9 @@ fun AppNavigation() {
             Modifier
                 .fillMaxSize()
         ) {
-            if (!isPortrait && !isOnLoginScreen) RailBarNavigation(currentDestination, navController)
+            if (!isPortrait && !isOnUserScreen(navBackStackEntry) && !isInFullScreen.value) {
+                RailBarNavigation(currentDestination, navController)
+            }
 
             NavHost(
                 navController = navController,
@@ -144,16 +191,38 @@ fun AppNavigation() {
                         isInFullScreen.value = true
                     })
                 }
-                composable(ButtonNavigation.ConnectionDestination.route) {
-                    ConnectionScreen(navController)
+                composable<MainNavigation.AuthenticationDestination> {
+                    val inscriptionViewModel = hiltViewModel<InscriptionViewModel>()
+                    val connectionViewModel = hiltViewModel<ConnectionViewModel>()
+
+                    shouldDisplayBackAction.value = true
+                    AuthenticationNavigation(
+                        inscriptionViewModel = inscriptionViewModel,
+                        connectionViewModel = connectionViewModel,
+                        back = {
+                            navController.popBackStack()
+                            authViewModel.checkUserLoggedIn()
+                        }
+                    )
                 }
-                composable(ButtonNavigation.InscriptionDestination.route) {
-                    InscriptionScreen(navController)
+                composable<MainNavigation.UserDestination> {
+                    UserScreen()
                 }
             }
         }
     }
 }
+
+@Composable
+private fun isOnUserScreen(navBackStackEntry: NavBackStackEntry?): Boolean {
+    val currentDestination = navBackStackEntry?.toDestination<MainNavigation>()
+
+    return when (currentDestination) {
+        is MainNavigation.UserDestination, is MainNavigation.AuthenticationDestination -> true
+        else -> false
+    }
+}
+
 
 @Composable
 private fun RailBarNavigation(

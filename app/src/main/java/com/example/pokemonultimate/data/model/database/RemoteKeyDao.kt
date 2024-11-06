@@ -1,4 +1,5 @@
-package com.example.pokemonultimate.data.model.pokemonCard.database
+package com.example.pokemonultimate.data.model.database
+
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
