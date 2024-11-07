@@ -1,16 +1,21 @@
 package com.example.pokemonultimate.ui.screens.boosters
 
-import android.util.Log
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,11 +30,16 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.pokemonultimate.R
 import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.TitleText
@@ -52,34 +62,26 @@ fun BoostersScreen() {
 
 @Composable
 fun Booster() {
-    val swipeThreshold = 100f
+    val swipeThreshold = 500f
     var hasSwiped: Boolean by remember { mutableStateOf(false) }
     var swipeOffset by remember { mutableFloatStateOf(0f) }
-
+    val swipeProgress = (swipeOffset.absoluteValue / swipeThreshold).coerceIn(0f, 1f)
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = Padding.MEDIUM.dp)
             .pointerInput(Unit) {
                 detectHorizontalDragGestures(
-                    onDragStart = {
-                        swipeOffset = 0f // Réinitialiser au début du glissement
-                        hasSwiped = false
-                    },
                     onHorizontalDrag = { change, dragAmount ->
                         change.consume()
                         swipeOffset += dragAmount
 
-                        Log.e("nicolas", "Booster - swipeOffset: $swipeOffset")
-                        // Met à jour `hasSwiped` si le seuil est atteint
                         if (swipeOffset.absoluteValue > swipeThreshold) {
                             hasSwiped = true
                         }
                     },
                     onDragEnd = {
-                        // Remet à zéro si nécessaire quand le glissement est terminé
                         swipeOffset = 0f
-                        hasSwiped = false
                     }
                 )
             },
@@ -92,14 +94,66 @@ fun Booster() {
                 BottomBooster()
                 TopBooster(hasSwiped)
             }
-            Image(
-                painter = painterResource(R.drawable.place_holder_cut),
-                contentDescription = "Place holder cut",
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .rotate(-3.5F)
-                    .padding(top = 55.dp)
-            )
+                    .rotate(-4.5F)
+                    .padding(top = 55.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (swipeProgress > 0) {
+                    Row(
+                        modifier = Modifier
+                            .width(BOOSTER_WIDTH.dp),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .padding(top = Padding.MINI.dp)
+                                .height(2.dp)
+                                .width((BOOSTER_WIDTH * swipeProgress).dp)
+                                .background(
+                                    brush = Brush.horizontalGradient(
+                                        colors = listOf(
+                                            Color(0xFFFF4500),
+                                            Color(0xFFFF8C00),
+                                            Color(0xFFFFD700),
+                                            Color(0xFFFFFFE0),
+                                        )
+                                    )
+                                )
+                        )
+                        val preloaderLottieComposition by rememberLottieComposition(
+                            LottieCompositionSpec.RawRes(R.raw.spark_animation_lottie)
+                        )
+                        LottieAnimation(
+                            composition = preloaderLottieComposition,
+                            iterations = LottieConstants.IterateForever,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+
+                } else if (!hasSwiped) {
+                    val opacity = remember { Animatable(0f) }
+
+                    LaunchedEffect(Unit) {
+                        opacity.animateTo(
+                            targetValue = 1f,
+                            animationSpec = infiniteRepeatable(
+                                animation = tween(
+                                    durationMillis = 1000
+                                ),
+                                repeatMode = RepeatMode.Reverse
+                            )
+                        )
+                    }
+
+                    Image(
+                        painter = painterResource(R.drawable.place_holder_cut),
+                        contentDescription = "Place holder cut",
+                        modifier = Modifier.graphicsLayer(alpha = opacity.value)
+                    )
+                }
+            }
         }
     }
 }
