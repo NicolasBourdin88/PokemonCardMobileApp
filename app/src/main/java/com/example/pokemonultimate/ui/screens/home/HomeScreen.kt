@@ -338,14 +338,14 @@ private enum class PokemonCellInfo(
             .width(DEFAULT_WITH_POKEMON_CELL.dp),
     ),
     GRASS(
-        pokemonCellImage = R.drawable.image_card_plant,
+        pokemonCellImage = R.drawable.image_card_grass,
         brush = Brush.linearGradient(listOf(cardGrassFirstColor, cardGrassSecondColor)),
         modifier = Modifier
             .padding(bottom = DEFAULT_PADDING_BOTTOM_POKEMON_CELL.dp)
             .width(DEFAULT_WITH_POKEMON_CELL.dp),
     ),
     ELECTRIC(
-        pokemonCellImage = R.drawable.image_card_electric,
+        pokemonCellImage = R.drawable.image_card_lightning,
         brush = Brush.linearGradient(listOf(cardLightningFirstColor, cardLightningSecondColor)),
         modifier = Modifier
             .padding(bottom = DEFAULT_PADDING_BOTTOM_POKEMON_CELL.dp)

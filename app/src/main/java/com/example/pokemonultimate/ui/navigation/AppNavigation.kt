@@ -39,7 +39,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion.toDestination
-import com.example.pokemonultimate.ui.screens.BoostersScreen
+import com.example.pokemonultimate.ui.screens.boosters.BoostersScreen
 import com.example.pokemonultimate.ui.screens.collection.CollectionNavigation
 import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
 import com.example.pokemonultimate.ui.screens.home.HomeScreen
@@ -62,51 +62,59 @@ fun AppNavigation() {
     val isPortrait by remember { mutableStateOf(configuration.screenWidthDp < 500) }
     val shouldDisplayBackAction = remember { mutableStateOf(false) }
     val currentBackNavController = remember { mutableStateOf(navController) }
+    val isInFullScreen = remember { mutableStateOf(false) }
 
     Scaffold(
         bottomBar = {
-            if (isPortrait) BottomBarNavigation(currentDestination, navController)
+            if (isPortrait && !isInFullScreen.value) BottomBarNavigation(
+                currentDestination,
+                navController
+            )
         },
         topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = Padding.MINI.dp,
-                        end = Padding.MINI.dp,
-                        top = Padding.GIANT.dp
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (shouldDisplayBackAction.value) {
-                    IconButton(onClick = {
-                        if (currentBackNavController.value.previousBackStackEntry != null) {
-                            currentBackNavController.value.navigateUp()
-                        }
-                    }) {
-                        Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
+            if (!isInFullScreen.value) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = Padding.MINI.dp,
+                            end = Padding.MINI.dp,
+                            top = Padding.GIANT.dp
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Button(onClick = {
+                    if (shouldDisplayBackAction.value) {
+                        IconButton(onClick = {
+                            if (currentBackNavController.value.previousBackStackEntry != null) {
+                                currentBackNavController.value.navigateUp()
+                            }
+                        }) {
+                            Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
+                        }
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Button(onClick = {
 
-                    }) {
-                        Text("Se connecter")
+                        }) {
+                            Text("Se connecter")
+                        }
                     }
                 }
             }
-
         }
     ) { paddingValues ->
         Row(
             Modifier
                 .fillMaxSize()
         ) {
-            if (!isPortrait) RailBarNavigation(currentDestination, navController)
+            if (!isPortrait && !isInFullScreen.value) RailBarNavigation(
+                currentDestination,
+                navController
+            )
 
             NavHost(
                 navController = navController,
@@ -132,7 +140,9 @@ fun AppNavigation() {
                 }
                 composable<MainNavigation.BoostersDestination> {
                     shouldDisplayBackAction.value = false
-                    BoostersScreen()
+                    BoostersScreen(onBoosterOpened = {
+                        isInFullScreen.value = true
+                    })
                 }
             }
         }
@@ -225,10 +235,8 @@ fun NavHostController.navigateToSelectedItem(destination: NavigationDestination)
         popUpTo(this@navigateToSelectedItem.graph.findStartDestination().id) {
             saveState = true
         }
-        // Avoid multiple copies of the same destination when re-selecting the same item
         launchSingleTop = true
 
-        // Restore state when re-selecting a previously selected item
         if (destination != MainNavigation.CollectionDestination) {
             restoreState = true
         }
