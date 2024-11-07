@@ -8,6 +8,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,25 +18,35 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -51,21 +62,114 @@ const val BOOSTER_TOP_HEIGHT = 25
 const val BOOSTER_BOTTOM_HEIGHT = 370
 const val BOOSTER_ALUMINIUM_HEIGHT = 50
 
-@Preview
+const val COUNTDOWN_VALUE = 1f
+
 @Composable
-fun BoostersScreen() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+fun BoostersScreen(onBoosterOpened: () -> Unit) {
+    var isBoosterOpened: Boolean by remember { mutableStateOf(false) }
+    var openedBlur: Int by remember { mutableIntStateOf(0) }
+
+    if (isBoosterOpened) {
+        LaunchedEffect(Unit) {
+            delay(500)
+            while (openedBlur < 500) {
+                openedBlur += 5
+                delay(10)
+            }
+            onBoosterOpened.invoke()
+        }
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.blur(openedBlur.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+    ) {
         TitleText("Want To Open A Booster ?")
-        Booster()
+        Box {
+            var canOpenBooster: Boolean by remember { mutableStateOf(false) }
+            Booster(canOpenBooster, onBoosterOpened = {
+                isBoosterOpened = true
+            })
+            if (!canOpenBooster) {
+                Countdown(onFinish = {
+                    canOpenBooster = true
+                })
+            }
+        }
     }
 }
 
 @Composable
-fun Booster() {
+fun Countdown(onFinish: () -> Unit) {
+    Box(contentAlignment = Alignment.Center) {
+        DarkBackground()
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            var countDown: Float by remember { mutableFloatStateOf(COUNTDOWN_VALUE) }
+
+            LaunchedEffect(key1 = countDown) {
+                while (countDown > 0) {
+                    delay(10L)
+                    countDown -= 1 / 60f
+                }
+                if (countDown <= 0) onFinish()
+            }
+
+            Text(
+                text = countDown.toInt().toString(),
+                fontSize = 40.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Black,
+                modifier = Modifier.padding(bottom = Padding.LARGE.dp)
+            )
+            Box(contentAlignment = Alignment.Center) {
+                CircleCountDown(countDown)
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size((BOOSTER_WIDTH / 4).dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CircleCountDown(countDown: Float) {
+    Canvas(modifier = Modifier.size((BOOSTER_WIDTH / 2).dp)) {
+        drawArc(
+            color = Color.White,
+            startAngle = 270f,
+            sweepAngle = (360f * (countDown / COUNTDOWN_VALUE)) * -1,
+            useCenter = false,
+            style = Stroke(width = 20f)
+        )
+    }
+}
+
+@Composable
+fun DarkBackground() {
+    val boosterHeight = BOOSTER_TOP_HEIGHT + BOOSTER_BOTTOM_HEIGHT + BOOSTER_ALUMINIUM_HEIGHT * 2
+    Box(
+        Modifier
+            .width(BOOSTER_WIDTH.dp)
+            .height(boosterHeight.dp)
+            .blur(50.dp, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+            .background(Color.Black.copy(alpha = 0.7f))
+    )
+}
+
+@Composable
+fun Booster(canOpenBooster: Boolean, onBoosterOpened: () -> Unit) {
     val swipeThreshold = 500f
     var hasSwiped: Boolean by remember { mutableStateOf(false) }
     var swipeOffset by remember { mutableFloatStateOf(0f) }
     val swipeProgress = (swipeOffset.absoluteValue / swipeThreshold).coerceIn(0f, 1f)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -74,9 +178,9 @@ fun Booster() {
                 detectHorizontalDragGestures(
                     onHorizontalDrag = { change, dragAmount ->
                         change.consume()
-                        swipeOffset += dragAmount
-
+                        if (canOpenBooster && hasSwiped == false) swipeOffset += dragAmount
                         if (swipeOffset.absoluteValue > swipeThreshold) {
+                            onBoosterOpened.invoke()
                             hasSwiped = true
                         }
                     },
@@ -94,67 +198,85 @@ fun Booster() {
                 BottomBooster()
                 TopBooster(hasSwiped)
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .rotate(-4.5F)
-                    .padding(top = 55.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                if (swipeProgress > 0) {
-                    Row(
-                        modifier = Modifier
-                            .width(BOOSTER_WIDTH.dp),
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .padding(top = Padding.MINI.dp)
-                                .height(2.dp)
-                                .width((BOOSTER_WIDTH * swipeProgress).dp)
-                                .background(
-                                    brush = Brush.horizontalGradient(
-                                        colors = listOf(
-                                            Color(0xFFFF4500),
-                                            Color(0xFFFF8C00),
-                                            Color(0xFFFFD700),
-                                            Color(0xFFFFFFE0),
-                                        )
-                                    )
-                                )
-                        )
-                        val preloaderLottieComposition by rememberLottieComposition(
-                            LottieCompositionSpec.RawRes(R.raw.spark_animation_lottie)
-                        )
-                        LottieAnimation(
-                            composition = preloaderLottieComposition,
-                            iterations = LottieConstants.IterateForever,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-
-                } else if (!hasSwiped) {
-                    val opacity = remember { Animatable(0f) }
-
-                    LaunchedEffect(Unit) {
-                        opacity.animateTo(
-                            targetValue = 1f,
-                            animationSpec = infiniteRepeatable(
-                                animation = tween(
-                                    durationMillis = 1000
-                                ),
-                                repeatMode = RepeatMode.Reverse
-                            )
-                        )
-                    }
-
-                    Image(
-                        painter = painterResource(R.drawable.place_holder_cut),
-                        contentDescription = "Place holder cut",
-                        modifier = Modifier.graphicsLayer(alpha = opacity.value)
-                    )
-                }
-            }
+            PlaceHolder(swipeProgress, hasSwiped, canOpenBooster)
         }
+    }
+}
+
+@Composable
+private fun PlaceHolder(
+    swipeProgress: Float,
+    hasSwiped: Boolean,
+    canOpenBooster: Boolean
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .rotate(-4.5F)
+            .padding(top = 55.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        if (swipeProgress > 0) {
+            CutLineAnimation(swipeProgress)
+        } else if (!hasSwiped && canOpenBooster) {
+            CutPlaceHolder()
+        }
+    }
+}
+
+@Composable
+private fun CutPlaceHolder() {
+    val opacity = remember { Animatable(0f) }
+
+    LaunchedEffect(Unit) {
+        opacity.animateTo(
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(
+                    durationMillis = 1000
+                ),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
+    }
+
+    Image(
+        painter = painterResource(R.drawable.place_holder_cut),
+        contentDescription = "Place holder cut",
+        modifier = Modifier.graphicsLayer(alpha = opacity.value)
+    )
+}
+
+@Composable
+private fun CutLineAnimation(swipeProgress: Float) {
+    Row(
+        modifier = Modifier
+            .width(BOOSTER_WIDTH.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(top = Padding.MINI.dp)
+                .height(2.dp)
+                .width((BOOSTER_WIDTH * swipeProgress).dp)
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFFFF4500),
+                            Color(0xFFFF8C00),
+                            Color(0xFFFFD700),
+                            Color(0xFFFFFFE0),
+                        )
+                    )
+                )
+        )
+        val preloaderLottieComposition by rememberLottieComposition(
+            LottieCompositionSpec.RawRes(R.raw.spark_animation_lottie)
+        )
+        LottieAnimation(
+            composition = preloaderLottieComposition,
+            iterations = LottieConstants.IterateForever,
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
 
