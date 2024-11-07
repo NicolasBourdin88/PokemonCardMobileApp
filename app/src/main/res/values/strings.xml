@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Pokemon Ultimate</string>
+    <string name="set_information">Set Information</string>
+    <string name="number_of_cards">Number of cards</string>
+    <string name="position_in_set">Position in set</string>
+    <string name="logo_collection">Logo</string>
+    <string name="price_last_update">Price Last Update</string>
+    <string name="market_price">Market Price</string>
+    <string name="mid_price">Mid Price</string>
+    <string name="low_price">Low Price</string>
+    <string name="lock_card_rotation">Lock card rotation</string>
+    <string name="button_market_link">Market Link</string>
+    <string name="button_collection">Collection</string>
+    <string name="from">From</string>
 </resources>
