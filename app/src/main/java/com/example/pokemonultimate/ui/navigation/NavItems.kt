@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.navigation.NavBackStackEntry
 import com.example.pokemonultimate.R
+import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
 import com.example.pokemonultimate.ui.navigation.MainNavigation.HomeDestination
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
@@ -21,6 +22,10 @@ sealed class MainNavigation : NavigationDestination() {
     @Serializable
     data object BoostersDestination : MainNavigation()
 
+    @Serializable
+    data object CardDestination : MainNavigation()
+
+
     companion object {
         val startDestination = BoostersDestination
     }
@@ -36,7 +41,7 @@ sealed class CollectionNavigation : NavigationDestination() {
     data class CardListDestination(val setImage: String, val setId: String) : CollectionNavigation()
 
     @Serializable
-    data object CardDestination : CollectionNavigation()
+    data class CardDestination(val jsonCard: String, val withButtonCollection: Boolean = true) : CollectionNavigation()
 
     companion object {
         val startDestination = SetDestination

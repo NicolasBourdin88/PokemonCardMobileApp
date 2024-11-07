@@ -1,5 +1,6 @@
 package com.example.pokemonultimate.ui.screens.collection.cardList
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,18 +15,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
+import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
+import com.example.pokemonultimate.ui.navigation.CollectionNavigation
 import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
 import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.TitleText
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @Composable
-fun CardListScreen(setId: String, setImage: String, collectionViewModel: CollectionViewModel) {
+fun CardListScreen(
+    setId: String,
+    setImage: String,
+    collectionViewModel: CollectionViewModel,
+    navController: NavHostController
+) {
     Column {
         Header(setImage)
-        ListCardSearchResult(setId = setId, collectionViewModel = collectionViewModel)
+        ListCardSearchResult(
+            setId = setId,
+            collectionViewModel = collectionViewModel,
+            navController = navController
+        )
     }
 }
 
@@ -53,10 +68,9 @@ private fun Header(setImage: String) {
 fun ListCardSearchResult(
     collectionViewModel: CollectionViewModel,
     setId: String,
+    navController: NavHostController,
 ) {
-    val pager = collectionViewModel.getFlow(
-        setId = setId,
-    )
+    val pager = collectionViewModel.getFlow(setId = setId)
     val lazyPagingItems = pager.collectAsLazyPagingItems()
 
     LazyVerticalGrid(
@@ -94,7 +108,13 @@ fun ListCardSearchResult(
                     contentDescription = "Card",
                     modifier = Modifier
                         .width(100.dp)
-                        .padding(Padding.MINI.dp),
+                        .padding(Padding.MINI.dp)
+                        .clickable {
+                            val jsonCard = Json.Default.encodeToString<PokemonCardEntity>(it)
+                            navController.navigate(
+                                CollectionNavigation.CardDestination(jsonCard, false)
+                            )
+                        },
                     contentScale = ContentScale.FillWidth,
                 )
             }

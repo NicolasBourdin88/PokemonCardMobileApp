@@ -40,6 +40,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion.toDestination
 import com.example.pokemonultimate.ui.screens.boosters.BoostersScreen
+import com.example.pokemonultimate.ui.screens.card.CardScreen
 import com.example.pokemonultimate.ui.screens.collection.CollectionNavigation
 import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
 import com.example.pokemonultimate.ui.screens.home.HomeScreen
@@ -143,6 +144,9 @@ fun AppNavigation() {
                     BoostersScreen(onBoosterOpened = {
                         isInFullScreen.value = true
                     })
+                }
+                composable<MainNavigation.CardDestination> {
+                    shouldDisplayBackAction.value = true
                 }
             }
         }
