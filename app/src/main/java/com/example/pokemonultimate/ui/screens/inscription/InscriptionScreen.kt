@@ -1,5 +1,6 @@
 package com.example.pokemonultimate.ui.screens.inscription
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,8 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -45,10 +48,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.pokemonultimate.R
-import com.example.pokemonultimate.data.model.PokemonCellProfil
+import com.example.pokemonultimate.data.model.PokemonCellProfile
 import com.example.pokemonultimate.ui.navigation.AuthenticationNavigation
 import com.example.pokemonultimate.ui.utils.CustomTextField
-import com.example.pokemonultimate.ui.utils.OrView
+import com.example.pokemonultimate.ui.utils.SeparatorAuthenticationOption
 import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
 
@@ -62,12 +65,7 @@ fun InscriptionScreen(
     val password by viewModel.password
     val confirmPassword by viewModel.confirmPassword
     val errorMessage by viewModel.errorInscriptionMessage
-
     val showBottomSheet by viewModel.showBottomSheet
-
-    LocalContext.current
-
-
 
     Column(
         modifier = Modifier
@@ -75,13 +73,9 @@ fun InscriptionScreen(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-
-        PikachuWithButtonPlus(viewModel, { viewModel.toggleBottomSheet() })
-
+        PikachuWithButtonPlus(viewModel) { viewModel.toggleBottomSheet() }
         WelcomeText()
 
-        // Utilisation de CustomTextField pour le mail utilisateur
         CustomTextField(
             label = stringResource(id = R.string.email),
             value = email,
@@ -90,7 +84,6 @@ fun InscriptionScreen(
             isPasswordField = false
         )
 
-        // Utilisation de CustomTextField pour le mot de passe
         CustomTextField(
             label = stringResource(id = R.string.password),
             value = password,
@@ -99,7 +92,6 @@ fun InscriptionScreen(
             isPasswordField = true
         )
 
-        // Utilisation de CustomTextField pour la confirmation du mot de passe
         CustomTextField(
             label = stringResource(id = R.string.confirm_password),
             value = confirmPassword,
@@ -118,30 +110,25 @@ fun InscriptionScreen(
                 text = errorMessage,
                 color = MaterialTheme.colorScheme.error,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = Padding.HUGE.dp, vertical = 0.dp)
+                modifier = Modifier.padding(horizontal = Padding.HUGE.dp)
             )
         }
 
-
-        ButtonSignup(viewModel = viewModel) { isSuccess ->
-            if (isSuccess) {
-                onSuccess()
-            }
+        ButtonSignUp(viewModel = viewModel) { isSuccess ->
+            if (isSuccess) onSuccess()
         }
 
-
-        if (showBottomSheet) BottomBar(viewModel)
-        OrView()
+        if (showBottomSheet) BottomSheet(viewModel)
+        SeparatorAuthenticationOption()
         GoogleView()
-        SigninView(navController)
+        SignInView(navController)
     }
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomBar(viewModel: InscriptionViewModel) {
-
+fun BottomSheet(viewModel: InscriptionViewModel) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
 
     ModalBottomSheet(
@@ -156,42 +143,38 @@ fun BottomBar(viewModel: InscriptionViewModel) {
             contentAlignment = Alignment.Center
         ) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
+                columns = GridCells.Adaptive(minSize = 75.dp),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = Padding.MEDIUM.dp),
                 verticalArrangement = Arrangement.spacedBy(Padding.MEDIUM.dp),
                 horizontalArrangement = Arrangement.spacedBy(Padding.MEDIUM.dp)
             ) {
-                items(PokemonCellProfil.entries.size) { position ->
-                    val pokemonCellProfil = PokemonCellProfil.entries[position]
+                items(PokemonCellProfile.entries) { profile ->
                     ImagePokemon(
-                        pokemonCellProfil = pokemonCellProfil,
-                        onClick = { viewModel.onImageSelected(pokemonCellProfil) }
+                        pokemonCellProfile = profile,
+                        onClick = { viewModel.onImageSelected(profile) }
                     )
                 }
             }
         }
-
-
     }
 }
 
-
 @Composable
-private fun ImagePokemon(pokemonCellProfil: PokemonCellProfil, onClick: () -> Unit) {
+private fun ImagePokemon(pokemonCellProfile: PokemonCellProfile, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .clip(CircleShape)
             .aspectRatio(1f)
-            .background(brush = pokemonCellProfil.brush)
+            .background(brush = pokemonCellProfile.brush)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(pokemonCellProfil.pokemonCellImage),
-            contentDescription = pokemonCellProfil.name,
+            painter = painterResource(pokemonCellProfile.pokemonCellImage),
+            contentDescription = pokemonCellProfile.name,
             modifier = Modifier.size(72.dp),
         )
     }
@@ -246,7 +229,6 @@ fun PikachuWithButtonPlus(viewModel: InscriptionViewModel, onButtonClick: () -> 
             }
         }
 
-        // Bouton "+" pour ouvrir la Bottom Sheet
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -268,7 +250,6 @@ fun PikachuWithButtonPlus(viewModel: InscriptionViewModel, onButtonClick: () -> 
     }
 }
 
-
 @Composable
 fun WelcomeText() {
     Column(
@@ -278,34 +259,40 @@ fun WelcomeText() {
     ) {
         Text(
             text = stringResource(id = R.string.welcome),
-            fontSize = 36.sp, fontFamily = fontFamilyAvenir, fontWeight = FontWeight.Normal,
+            fontSize = 36.sp,
+            fontFamily = fontFamilyAvenir,
+            fontWeight = FontWeight.Normal,
         )
 
         Text(
             text = stringResource(id = R.string.create_account),
-            fontSize = 16.sp, fontFamily = fontFamilyAvenir,
+            fontSize = 16.sp,
+            fontFamily = fontFamilyAvenir,
             modifier = Modifier.padding(bottom = Padding.MINI.dp)
         )
     }
-
 }
 
 @Composable
-fun ButtonSignup(viewModel: InscriptionViewModel, onResult: (Boolean) -> Unit) {
+fun ButtonSignUp(viewModel: InscriptionViewModel, onResult: (Boolean) -> Unit) {
     val isLoading by viewModel.isLoading
+    val context = LocalContext.current
 
     Button(
         onClick = {
             if (!isLoading) {
                 viewModel.registerWithEmailAndPassword(
-                    onResult = onResult
+                    context = context,
+                    onResult = onResult,
+                    onFail = { errorMessage ->
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    }
                 )
             }
         },
         modifier = Modifier
-            .padding(horizontal = 120.dp)
-            .fillMaxWidth()
-            .padding(top = 32.dp),
+            .width(160.dp)
+            .padding(top = Padding.HUGE.dp),
         enabled = !isLoading
     ) {
         if (isLoading) {
@@ -324,23 +311,19 @@ fun ButtonSignup(viewModel: InscriptionViewModel, onResult: (Boolean) -> Unit) {
     }
 }
 
-
 @Composable
 fun GoogleView() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = Padding.HUGE.dp)
-            .clickable {
-
-            },
+            .padding(bottom = Padding.HUGE.dp),
         horizontalArrangement = Arrangement.Center
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_google),
             contentDescription = stringResource(id = R.string.google_icon),
             modifier = Modifier
-                .padding(end = 16.dp)
+                .padding(end = Padding.MEDIUM.dp)
                 .size(24.dp),
             tint = Color.Unspecified
         )
@@ -352,11 +335,11 @@ fun GoogleView() {
 }
 
 @Composable
-fun SigninView(navController: NavHostController) {
+fun SignInView(navController: NavHostController) {
     Row {
         Text(
             text = stringResource(R.string.have_account),
-            modifier = Modifier.padding(end = 8.dp),
+            modifier = Modifier.padding(end = Padding.MINI.dp),
             color = MaterialTheme.colorScheme.secondary
         )
         Text(
@@ -369,4 +352,3 @@ fun SigninView(navController: NavHostController) {
         )
     }
 }
-

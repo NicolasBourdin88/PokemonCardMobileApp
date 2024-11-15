@@ -1,5 +1,6 @@
 package com.example.pokemonultimate.ui.screens.connection
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -29,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,8 +43,8 @@ import androidx.navigation.NavHostController
 import com.example.pokemonultimate.R
 import com.example.pokemonultimate.ui.navigation.AuthenticationNavigation
 import com.example.pokemonultimate.ui.utils.CustomTextField
-import com.example.pokemonultimate.ui.utils.OrView
 import com.example.pokemonultimate.ui.utils.Padding
+import com.example.pokemonultimate.ui.utils.SeparatorAuthenticationOption
 import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
 
 
@@ -61,13 +64,9 @@ fun ConnectionScreen(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-
-        PikachuWithCircle()
-
+        NoProfileSelectedIllustration()
         WelcomeBackText()
 
-        // Utilisation de CustomTextField pour le mail utilisateur
         CustomTextField(
             label = stringResource(id = R.string.email),
             value = email,
@@ -76,7 +75,6 @@ fun ConnectionScreen(
             isPasswordField = false
         )
 
-        // Utilisation de CustomTextField pour le mot de passe
         CustomTextField(
             label = stringResource(id = R.string.password),
             value = password,
@@ -95,21 +93,19 @@ fun ConnectionScreen(
                 text = errorMessage,
                 color = MaterialTheme.colorScheme.error,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = Padding.HUGE.dp, vertical = 0.dp)
+                modifier = Modifier.padding(horizontal = Padding.HUGE.dp)
             )
         }
 
         ButtonSignIn(onSuccess, viewModel = viewModel)
-        OrView()
-        GoogleSigninView()
-        SignupView(onSuccess, navController)
+        SeparatorAuthenticationOption()
+        GoogleSignInView()
+        SignUpView(navController)
     }
-
 }
 
-
 @Composable
-fun PikachuWithCircle() {
+fun NoProfileSelectedIllustration() {
     Box(
         modifier = Modifier
             .padding(top = Padding.HUGE.dp)
@@ -124,12 +120,11 @@ fun PikachuWithCircle() {
             contentDescription = stringResource(id = R.string.content_logo_profil_empty),
             colorFilter = ColorFilter.tint(Color.White),
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .graphicsLayer {
-                    scaleX = -1f
-                    translationY = 90f
-                    translationX = -22f
-                }
+            modifier = Modifier.graphicsLayer {
+                scaleX = -1f
+                translationY = 90f
+                translationX = -22f
+            }
         )
     }
 }
@@ -143,34 +138,41 @@ fun WelcomeBackText() {
     ) {
         Text(
             text = stringResource(id = R.string.welcome_back),
-            fontSize = 36.sp, fontFamily = fontFamilyAvenir, fontWeight = FontWeight.Normal,
+            fontSize = 36.sp,
+            fontFamily = fontFamilyAvenir,
+            fontWeight = FontWeight.Normal,
         )
 
         Text(
             text = stringResource(id = R.string.login_text),
-            fontSize = 16.sp, fontFamily = fontFamilyAvenir,
+            fontSize = 16.sp,
+            fontFamily = fontFamilyAvenir,
             modifier = Modifier.padding(bottom = Padding.MEDIUM.dp)
         )
     }
-
 }
 
 @Composable
 fun ButtonSignIn(onSuccess: () -> Unit, viewModel: ConnectionViewModel) {
+    val context = LocalContext.current
 
     Button(
         onClick = {
-            viewModel.signInWithEmailAndPassword { success ->
-                if (success) {
-                    onSuccess()
+            viewModel.signInWithEmailAndPassword(
+                context = context,
+                onResult = { success ->
+                    if (success) {
+                        onSuccess()
+                    }
+                },
+                onFail = { errorMessage ->
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 }
-            }
+            )
         },
         modifier = Modifier
-            .padding(horizontal = 120.dp)
-            .padding(top = 30.dp)
-            .fillMaxWidth()
-
+            .padding(top = Padding.HUGE.dp)
+            .width(160.dp)
     ) {
         Text(
             text = stringResource(R.string.signin),
@@ -182,24 +184,22 @@ fun ButtonSignIn(onSuccess: () -> Unit, viewModel: ConnectionViewModel) {
 
 
 @Composable
-fun GoogleSigninView() {
+fun GoogleSignInView() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = Padding.HUGE.dp)
-            .clickable {
-
-            },
+            .padding(bottom = Padding.HUGE.dp),
         horizontalArrangement = Arrangement.Center
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_google),
             contentDescription = stringResource(id = R.string.google_icon),
             modifier = Modifier
-                .padding(end = 16.dp)
+                .padding(end = Padding.MEDIUM.dp)
                 .size(24.dp),
             tint = Color.Unspecified
         )
+
         Text(
             text = stringResource(R.string.signin_google),
             color = MaterialTheme.colorScheme.secondary
@@ -208,13 +208,14 @@ fun GoogleSigninView() {
 }
 
 @Composable
-fun SignupView(onSuccess: () -> Unit, navController: NavHostController) {
+fun SignUpView(navController: NavHostController) {
     Row {
         Text(
             text = stringResource(R.string.dont_account),
-            modifier = Modifier.padding(end = 8.dp),
+            modifier = Modifier.padding(end = Padding.MINI.dp),
             color = MaterialTheme.colorScheme.secondary
         )
+
         Text(
             text = stringResource(R.string.signup),
             fontWeight = FontWeight.SemiBold,

@@ -11,4 +11,6 @@ enum class Padding(val dp: Dp) {
     LARGE(24.dp),
     HUGE(32.dp),
     GIANT(48.dp),
+    MASSIVE(56.dp),
+    ULTRA(72.dp)
 }

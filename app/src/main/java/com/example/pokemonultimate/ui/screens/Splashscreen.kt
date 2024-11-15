@@ -26,7 +26,7 @@ import com.example.pokemonultimate.MainActivity
 import com.example.pokemonultimate.R
 import kotlinx.coroutines.delay
 
-const val SPLASH_SCREEN_DURATION: Long = 0L
+const val SPLASH_SCREEN_DURATION: Long = 2000L
 
 @Composable
 fun SplashScreen(navController: NavController) {

@@ -6,7 +6,7 @@ import com.example.pokemonultimate.R
 import com.example.pokemonultimate.ui.theme.*
 
 
-enum class PokemonCellProfil(
+enum class PokemonCellProfile(
     @DrawableRes val pokemonCellImage: Int,
     val brush: Brush,
 ) {

@@ -1,12 +1,16 @@
 package com.example.pokemonultimate.ui.screens.connection
 
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pokemonultimate.data.model.PokemonCellProfil
+import com.example.pokemonultimate.R
+import com.example.pokemonultimate.data.model.PokemonCellProfile
 import com.example.pokemonultimate.data.model.database.DataBase
 import com.example.pokemonultimate.data.model.userModel.UserProfile
+import com.example.pokemonultimate.data.utils.CommonConstants.Companion.PROFILE_IMAGE_ID
+import com.example.pokemonultimate.data.utils.CommonConstants.Companion.USERS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,17 +21,16 @@ import javax.inject.Inject
 class ConnectionViewModel @Inject constructor(
     private val pokemonCardsDb: DataBase
 ) : ViewModel() {
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+
     private val _email = mutableStateOf("")
     val email: State<String> = _email
 
     private val _password = mutableStateOf("")
     val password: State<String> = _password
 
-    private val _isUserLoggedIn = mutableStateOf(false)
-    val isUserLoggedIn: State<Boolean> = _isUserLoggedIn
-
-
-    private val _errorConnectionMessage = mutableStateOf("");
+    private val _errorConnectionMessage = mutableStateOf("")
     val errorConnectionMessage: State<String> = _errorConnectionMessage
 
     fun onEmailChangedChanged(newValue: String) {
@@ -38,20 +41,16 @@ class ConnectionViewModel @Inject constructor(
         _password.value = newValue
     }
 
-    fun onErrorConnectionMessageChanged(newValue: String) {
-        _errorConnectionMessage.value = newValue
-    }
-
-
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-
-    fun signInWithEmailAndPassword(onResult: (Boolean) -> Unit) {
+    fun signInWithEmailAndPassword(
+        context: Context,
+        onResult: (Boolean) -> Unit,
+        onFail: (String) -> Unit
+    ) {
         val email = _email.value
         val password = _password.value
 
         if (email.isEmpty() || password.isEmpty()) {
-            _errorConnectionMessage.value = "Les champs email et mot de passe ne peuvent pas être vides."
+            onFail(context.getString(R.string.email_password_empty))
             onResult(false)
             return
         }
@@ -60,21 +59,26 @@ class ConnectionViewModel @Inject constructor(
             if (task.isSuccessful) {
                 val userId = auth.currentUser?.uid
                 if (userId != null) {
-                    // Vérifie si l'utilisateur est déjà dans la base de données locale
                     checkUserInLocalDb(userId) { isUserInLocalDb ->
                         if (!isUserInLocalDb) {
-                            // Si l'utilisateur n'est pas trouvé localement, récupère depuis Firestore
-                            fetchUserFromFireStoreAndSaveLocally(userId) { success ->
-                                onResult(success)
-                            }
+                            fetchUserFromFireStoreAndSaveLocally(
+                                userId = userId,
+                                context = context,
+                                onComplete = { success ->
+                                    if (success) {
+                                        onResult(true)
+                                    } else {
+                                        onResult(false)
+                                    }
+                                }
+                            )
                         } else {
-                            // L'utilisateur est déjà dans la base de données locale
                             onResult(true)
                         }
                     }
                 }
             } else {
-                _errorConnectionMessage.value = "Erreur de connexion : ${task.exception?.message}"
+                onFail(context.getString(R.string.connection_error) + task.exception?.message)
                 onResult(false)
             }
         }
@@ -87,37 +91,47 @@ class ConnectionViewModel @Inject constructor(
         }
     }
 
-    private fun fetchUserFromFireStoreAndSaveLocally(userId: String, onComplete: (Boolean) -> Unit) {
-        firestore.collection("users").document(userId).get()
+    private fun fetchUserFromFireStoreAndSaveLocally(
+        context: Context,
+        userId: String,
+        onComplete: (Boolean) -> Unit
+    ) {
+        firestore.collection(USERS).document(userId).get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    val profileImageId = document.getString("profileImageId")
-                    val profileImage = profileImageId?.let { PokemonCellProfil.valueOf(it) }
+                    val profileImageId = document.getString(PROFILE_IMAGE_ID)
+                    val profileImage = profileImageId?.let { PokemonCellProfile.valueOf(it) }
                     if (profileImage != null) {
                         saveUserProfileLocally(userId, profileImage) {
                             onComplete(true)
                         }
                     } else {
-                        _errorConnectionMessage.value = "Erreur : L'image de profil n'est pas valide."
+                        _errorConnectionMessage.value =
+                            context.getString(R.string.picture_not_valid)
                         onComplete(false)
                     }
                 } else {
-                    _errorConnectionMessage.value = "Erreur : Profil utilisateur non trouvé dans Firestore."
+                    _errorConnectionMessage.value =
+                        context.getString(R.string.user_not_found_firestore)
                     onComplete(false)
                 }
             }
-            .addOnFailureListener { e ->
-                _errorConnectionMessage.value = "Erreur lors de la récupération depuis Firestore : ${e.message}"
+            .addOnFailureListener {
+                _errorConnectionMessage.value = context.getString(R.string.error_fetch_firestore)
                 onComplete(false)
             }
     }
 
-
-    private fun saveUserProfileLocally(userId: String, imageId: PokemonCellProfil, onComplete: () -> Unit) {
+    private fun saveUserProfileLocally(
+        userId: String,
+        imageId: PokemonCellProfile,
+        onComplete: () -> Unit
+    ) {
         viewModelScope.launch {
             val userProfile = UserProfile(userId, imageId)
             pokemonCardsDb.userProfileDao.insertUserProfile(userProfile)
             onComplete()
         }
     }
+
 }

@@ -21,5 +21,13 @@
     <string name="google_icon">Google icon</string>
     <string name="plus_icon">Plus icon</string>
     <string name="selected_image">Profil picture</string>
-    <string name="arrowleft_icon">Arrow left icon</string>
+    <string name="arrow_left_icon">Arrow left icon</string>
+    <string name="email_password_empty">The email and password fields cannot be empty.</string>
+    <string name="connection_error">Connection error:</string>
+    <string name="inscription_error">Inscription error:</string>
+    <string name="picture_not_valid">Error: The profile picture is not valid.</string>
+    <string name="user_not_found_firestore">Error: User profile not found in FireStore.</string>
+    <string name="error_fetch_firestore">Error: while retrieving from FireStore</string>
+    <string name="password_not_match">The passwords do not match</string>
+    <string name="register_firestore">Registration error in FireStore</string>
 </resources>

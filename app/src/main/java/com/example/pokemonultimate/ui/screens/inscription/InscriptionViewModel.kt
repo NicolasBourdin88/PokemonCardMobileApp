@@ -1,12 +1,16 @@
 package com.example.pokemonultimate.ui.screens.inscription
 
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pokemonultimate.data.model.PokemonCellProfil
+import com.example.pokemonultimate.R
+import com.example.pokemonultimate.data.model.PokemonCellProfile
 import com.example.pokemonultimate.data.model.database.DataBase
 import com.example.pokemonultimate.data.model.userModel.UserProfile
+import com.example.pokemonultimate.data.utils.CommonConstants.Companion.PROFILE_IMAGE_ID
+import com.example.pokemonultimate.data.utils.CommonConstants.Companion.USERS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +21,7 @@ import javax.inject.Inject
 class InscriptionViewModel @Inject constructor(
     private val pokemonCardsDb: DataBase
 ) : ViewModel() {
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     private val _email = mutableStateOf("")
     val email: State<String> = _email
@@ -38,17 +43,11 @@ class InscriptionViewModel @Inject constructor(
     private val _errorInscriptionMessage = mutableStateOf("")
     val errorInscriptionMessage: State<String> = _errorInscriptionMessage
 
-    private val _selectedImage = mutableStateOf<PokemonCellProfil?>(null)
-    val selectedImage: State<PokemonCellProfil?> = _selectedImage
+    private val _selectedImage = mutableStateOf<PokemonCellProfile?>(null)
+    val selectedImage: State<PokemonCellProfile?> = _selectedImage
 
-    private val _isUserLoggedIn = mutableStateOf(false)
-    val isUserLoggedIn: State<Boolean> = _isUserLoggedIn
-
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-
-
-    fun onImageSelected(pokemonCellProfil: PokemonCellProfil) {
-        _selectedImage.value = pokemonCellProfil
+    fun onImageSelected(pokemonCellProfile: PokemonCellProfile) {
+        _selectedImage.value = pokemonCellProfile
     }
 
     fun onEmailChanged(newValue: String) {
@@ -63,24 +62,20 @@ class InscriptionViewModel @Inject constructor(
         _confirmPassword.value = newValue
     }
 
-    fun onErrorInscriptionMessageChanged(newValue: String) {
-        _errorInscriptionMessage.value = newValue
-    }
-
-    fun registerWithEmailAndPassword(onResult: (Boolean) -> Unit) {
+    fun registerWithEmailAndPassword(context: Context, onResult: (Boolean) -> Unit, onFail: (String) -> Unit) {
         val email = _email.value
         val password = _password.value
         val confirmPassword = _confirmPassword.value
         val selectedImage = _selectedImage.value
 
         if (email.isEmpty() || password.isEmpty() || selectedImage == null) {
-            _errorInscriptionMessage.value = "Tous les champs doivent être remplis"
+            onFail(context.getString(R.string.email_password_empty))
             onResult(false)
             return
         }
 
         if (password != confirmPassword) {
-            _errorInscriptionMessage.value = "Les mots de passe ne correspondent pas"
+            onFail(context.getString(R.string.password_not_match))
             onResult(false)
             return
         }
@@ -95,20 +90,19 @@ class InscriptionViewModel @Inject constructor(
                                 onResult(true)
                             }
                         } else {
-                            _errorInscriptionMessage.value = "Erreur d'enregistrement dans Firestore"
+                            onFail(context.getString(R.string.register_firestore))
                             onResult(false)
                         }
                     }
                 }
             } else {
-                _errorInscriptionMessage.value = "Erreur d'inscription: ${task.exception?.message}"
+                onFail(context.getString(R.string.inscription_error) + task.exception?.message)
                 onResult(false)
             }
         }
     }
 
-
-    private fun saveUserProfileLocally(userId: String, imageId: PokemonCellProfil, onComplete: () -> Unit) {
+    private fun saveUserProfileLocally(userId: String, imageId: PokemonCellProfile, onComplete: () -> Unit) {
         viewModelScope.launch {
                 val userProfile = UserProfile(userId, imageId)
                 pokemonCardsDb.userProfileDao.insertUserProfile(userProfile)
@@ -116,21 +110,18 @@ class InscriptionViewModel @Inject constructor(
         }
     }
 
-    private fun saveUserProfileToFireStore(userId: String, picture: PokemonCellProfil,  onComplete: (Boolean) -> Unit) {
+    private fun saveUserProfileToFireStore(userId: String, picture: PokemonCellProfile, onComplete: (Boolean) -> Unit) {
         val userDoc = hashMapOf(
-            "profileImageId" to picture.name
+            PROFILE_IMAGE_ID to picture.name
         )
-        firestore.collection("users").document(userId).set(userDoc)
+        firestore.collection(USERS).document(userId).set(userDoc)
             .addOnSuccessListener {
-                println("Utilisateur enregistré avec l'ID de l'image de profil dans Firestore")
                 onComplete(true)
             }
-            .addOnFailureListener { e ->
-                println("Erreur lors de l'enregistrement de l'utilisateur : ${e.message}")
+            .addOnFailureListener {
                 onComplete(false)
             }
     }
-
 
     fun toggleBottomSheet() {
         _showBottomSheet.value = !_showBottomSheet.value
@@ -139,6 +130,4 @@ class InscriptionViewModel @Inject constructor(
     fun closeBottomSheet() {
         _showBottomSheet.value = false
     }
-
-
 }

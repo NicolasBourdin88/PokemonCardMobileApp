@@ -27,7 +27,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.pokemonultimate.R
 
-
 fun String.setFirstToUpperCase(): String {
     return this.lowercase().replaceFirstChar { it.uppercase() }
 }
@@ -40,8 +39,11 @@ fun CustomTextField(
     leadingIconRes: Int,
     isPasswordField: Boolean = false
 ) {
-    val visualTransformation =
-        if (isPasswordField) PasswordVisualTransformation() else VisualTransformation.None
+    val visualTransformation = if (isPasswordField) {
+        PasswordVisualTransformation()
+    } else {
+        VisualTransformation.None
+    }
 
     TextField(
         singleLine = true,
@@ -90,12 +92,12 @@ fun CustomTextField(
 }
 
 @Composable
-fun OrView() {
+fun SeparatorAuthenticationOption() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 75.dp, vertical = 24.dp)
+            .padding(horizontal = Padding.ULTRA.dp, vertical = Padding.LARGE.dp)
     ) {
         HorizontalDivider(
             modifier = Modifier
@@ -106,10 +108,10 @@ fun OrView() {
 
         Text(
             text = stringResource(R.string.or),
-            modifier = Modifier.padding(horizontal = 8.dp),
+            modifier = Modifier.padding(horizontal = Padding.MINI.dp),
             color = MaterialTheme.colorScheme.secondary
-
         )
+
         HorizontalDivider(
             color = MaterialTheme.colorScheme.secondary,
             modifier = Modifier

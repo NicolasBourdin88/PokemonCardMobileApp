@@ -84,12 +84,9 @@ fun AppNavigation() {
     val userProfileImageId by authViewModel.userProfileImage.collectAsState()
     val isInFullScreen = remember { mutableStateOf(false) }
 
-
     Scaffold(
         bottomBar = {
-            if (isPortrait && !isOnUserScreen(navBackStackEntry) && !isInFullScreen.value) {
-                BottomBarNavigation(currentDestination, navController)
-            }
+            if (isPortrait && !isOnUserScreen(navBackStackEntry) && !isInFullScreen.value) BottomBarNavigation(currentDestination, navController)
         },
         topBar = {
             if (!isInFullScreen.value) {
@@ -114,14 +111,14 @@ fun AppNavigation() {
                     }
                 }
                 if (!isOnUserScreen(navBackStackEntry)) {
-                    getUserId().let { id ->
+                    getUserId().let {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.End
                         ) {
                             if (!isUserLoggedIn) {
                                 Button(
-                                    modifier = Modifier.padding(top = 54.dp, end = 16.dp),
+                                    modifier = Modifier.padding(top = Padding.MASSIVE.dp, end = Padding.MEDIUM.dp),
                                     onClick = {
                                         navController.navigate(MainNavigation.AuthenticationDestination)
                                     }
@@ -132,7 +129,7 @@ fun AppNavigation() {
                                 userProfileImageId?.let { profile ->
                                     Box(
                                         modifier = Modifier
-                                            .padding(top = 54.dp, end = 16.dp)
+                                            .padding(top = Padding.MASSIVE.dp, end = Padding.MEDIUM.dp)
                                             .size(40.dp)
                                             .clip(CircleShape)
                                             .background(profile.brush)
@@ -159,9 +156,7 @@ fun AppNavigation() {
             Modifier
                 .fillMaxSize()
         ) {
-            if (!isPortrait && !isOnUserScreen(navBackStackEntry) && !isInFullScreen.value) {
-                RailBarNavigation(currentDestination, navController)
-            }
+            if (!isPortrait && !isOnUserScreen(navBackStackEntry) && !isInFullScreen.value) RailBarNavigation(currentDestination, navController)
 
             NavHost(
                 navController = navController,

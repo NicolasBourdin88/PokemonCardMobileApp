@@ -6,3 +6,10 @@ fun getUserId() : String? {
     val userId = FirebaseAuth.getInstance().currentUser?.uid
     return userId
 }
+
+abstract class CommonConstants {
+    companion object {
+        const val USERS = "users"
+        const val PROFILE_IMAGE_ID = "profileImageId"
+    }
+}
