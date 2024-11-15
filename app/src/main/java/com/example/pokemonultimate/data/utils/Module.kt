@@ -1,7 +1,6 @@
 package com.example.pokemonultimate.data.utils
 
 import android.content.Context
-import androidx.paging.ExperimentalPagingApi
 import androidx.room.Room
 import com.example.pokemonultimate.data.model.pokemonCard.database.PokemonCardDataBase
 import dagger.Module
@@ -11,7 +10,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@OptIn(ExperimentalPagingApi::class)
 @Module
 @InstallIn(SingletonComponent::class)
 object Module {

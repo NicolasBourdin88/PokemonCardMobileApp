@@ -23,11 +23,10 @@ sealed class MainNavigation : NavigationDestination() {
     data object BoostersDestination : MainNavigation()
 
     @Serializable
-    data object CardDestination : MainNavigation()
-
+    data class CardDestination(val jsonCard: String, val withButtonCollection: Boolean = true) : MainNavigation()
 
     companion object {
-        val startDestination = BoostersDestination
+        val startDestination = HomeDestination
     }
 }
 

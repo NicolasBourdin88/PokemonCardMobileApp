@@ -38,6 +38,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion.toDestination
 import com.example.pokemonultimate.ui.screens.boosters.BoostersScreen
 import com.example.pokemonultimate.ui.screens.card.CardScreen
@@ -125,7 +126,7 @@ fun AppNavigation() {
                 composable<MainNavigation.HomeDestination> {
                     shouldDisplayBackAction.value = false
                     val viewModel = hiltViewModel<HomeViewModel>()
-                    HomeScreen(viewModel)
+                    HomeScreen(viewModel,navController)
                 }
                 composable<MainNavigation.CollectionDestination> {
                     val viewModel = hiltViewModel<CollectionViewModel>()
@@ -147,7 +148,12 @@ fun AppNavigation() {
                 }
                 composable<MainNavigation.CardDestination> {
                     shouldDisplayBackAction.value = true
+                    val cardDestination: MainNavigation.CardDestination = it.toRoute()
+                    CardScreen(cardDestination.jsonCard, cardDestination.withButtonCollection, navController)
+
                 }
+
+
             }
         }
     }

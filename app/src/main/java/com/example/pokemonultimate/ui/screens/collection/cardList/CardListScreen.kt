@@ -75,7 +75,7 @@ fun ListCardSearchResult(
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
-        modifier = Modifier.padding(horizontal = Padding.MINI.dp),
+        modifier = Modifier.padding(horizontal = Padding.MINI.dp)
     ) {
         when (lazyPagingItems.loadState.refresh) {
             is LoadState.Loading -> {

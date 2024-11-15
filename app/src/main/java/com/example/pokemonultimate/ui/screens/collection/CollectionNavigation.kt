@@ -42,7 +42,7 @@ fun CollectionNavigation(
         composable<CollectionNavigation.CardDestination> {
             val cardDestination: CollectionNavigation.CardDestination = it.toRoute()
             displayBackAction.invoke(true)
-            CardScreen(cardDestination.jsonCard, cardDestination.withButtonCollection)
+            CardScreen(cardDestination.jsonCard, cardDestination.withButtonCollection, navController)
         }
     }
 }

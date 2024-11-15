@@ -24,6 +24,8 @@ data class PokemonCardEntity(
     val images: ImagePokemonEntity,
     @SerialName("tcgplayer")
     val tcgPlayer: TcgPlayerEntity? = null,
+    @SerialName("cardmarket")
+    val cardMarket: CardMarketEntity? = null,
 ) {
     @Serializable
     enum class SuperType {
@@ -95,6 +97,16 @@ data class PokemonCardEntity(
 
         @TypeConverter
         fun fromJsonToTcgPlayerEntity(json: String?): TcgPlayerEntity? {
+            return json?.let { Json.decodeFromString(it) }
+        }
+
+        @TypeConverter
+        fun fromCardMarketEntityToJson(cardMarket: CardMarketEntity?): String? {
+            return cardMarket?.let { Json.encodeToString(it) }
+        }
+
+        @TypeConverter
+        fun fromJsonToCardMarketEntity(json: String?): CardMarketEntity? {
             return json?.let { Json.decodeFromString(it) }
         }
     }
