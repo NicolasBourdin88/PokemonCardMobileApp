@@ -51,7 +51,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pokemonultimate.data.utils.getUserId
 import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion.toDestination
 import com.example.pokemonultimate.ui.screens.authentification.AuthViewModel
-import com.example.pokemonultimate.ui.screens.boosters.BoostersScreen
+import com.example.pokemonultimate.ui.screens.boosters.BoostersNavigation
 import com.example.pokemonultimate.ui.screens.collection.CollectionNavigation
 import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
 import com.example.pokemonultimate.ui.screens.connection.ConnectionViewModel
@@ -178,13 +178,19 @@ fun AppNavigation() {
                         },
                         displayBackAction = {
                             shouldDisplayBackAction.value = it
-                        })
+                        }
+                    )
                 }
                 composable<MainNavigation.BoostersDestination> {
                     shouldDisplayBackAction.value = false
-                    BoostersScreen(onBoosterOpened = {
-                        isInFullScreen.value = true
-                    })
+                    BoostersNavigation(
+                        currentController = {
+                            currentBackNavController.value = it
+                        },
+                        setFullScreen = {
+                            isInFullScreen.value = true
+                        }
+                    )
                 }
                 composable<MainNavigation.AuthenticationDestination> {
                     val inscriptionViewModel = hiltViewModel<InscriptionViewModel>()

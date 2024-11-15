@@ -62,6 +62,23 @@ sealed class CollectionNavigation : NavigationDestination() {
     }
 }
 
+@Serializable
+sealed class OpeningBoostersNavigation : NavigationDestination() {
+
+    @Serializable
+    data object BoosterDestination : OpeningBoostersNavigation()
+
+    @Serializable
+    data class DrawCardDestination(val setId: String) : OpeningBoostersNavigation()
+
+    @Serializable
+    data object DisplayDrawnCardDestination : OpeningBoostersNavigation()
+
+    companion object {
+        val startDestination = BoosterDestination
+    }
+}
+
 enum class NavigationItem(
     val label: String,
     @DrawableRes val selectedIcon: Int,

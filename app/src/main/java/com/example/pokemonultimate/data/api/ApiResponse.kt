@@ -1,7 +1,6 @@
 package com.example.pokemonultimate.data.api
 
 import kotlinx.parcelize.RawValue
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,14 +8,10 @@ open class ApiResponse<T>(
     val result: ApiResponseStatus = ApiResponseStatus.UNKNOWN,
     val data: @RawValue T? = null,
     val error: ApiError? = null,
-    val page: Int = 0,
-    val totalCount: Int = -1,
-    @SerialName("response_at")
-    val responseAt: Long = 0,
-    val total: Int = 0,
     var translatedError: Int = 0,
-    @SerialName("items_per_page")
-    val itemsPerPage: Int = 0,
+    val page: Int = 0, // page actuel
+    val count: Int = 0, // nombre de carte sur la page
+    val totalCount: Int = -1, // nombre total de cartes possible sur toutes les pages
 ) {
 
     fun isSuccess() = result == ApiResponseStatus.SUCCESS
