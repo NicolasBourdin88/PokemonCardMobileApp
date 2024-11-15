@@ -12,7 +12,4 @@ open class ApiResponse<T>(
     val page: Int = 0, // page actuel
     val count: Int = 0, // nombre de carte sur la page
     val totalCount: Int = -1, // nombre total de cartes possible sur toutes les pages
-) {
-
-    fun isSuccess() = result == ApiResponseStatus.SUCCESS
-}
+)
