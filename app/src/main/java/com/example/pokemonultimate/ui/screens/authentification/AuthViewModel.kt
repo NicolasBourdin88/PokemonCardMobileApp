@@ -11,9 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(
-    private val pokemonCardsDb: DataBase
-) : ViewModel() {
+class AuthViewModel @Inject constructor(private val pokemonCardsDb: DataBase) : ViewModel() {
 
     val isUserLoggedIn: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val userProfileImage: MutableStateFlow<PokemonCellProfile?> = MutableStateFlow(null)

@@ -15,7 +15,7 @@ fun AuthenticationNavigation(
     navController: NavHostController = rememberNavController(),
     inscriptionViewModel: InscriptionViewModel,
     connectionViewModel: ConnectionViewModel,
-    back: () -> Unit,
+    onSuccess: () -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -26,7 +26,7 @@ fun AuthenticationNavigation(
                 navController,
                 viewModel = connectionViewModel,
                 onSuccess = {
-                    back.invoke()
+                    onSuccess.invoke()
                 }
             )
         }
@@ -35,7 +35,7 @@ fun AuthenticationNavigation(
                 navController,
                 viewModel = inscriptionViewModel,
                 onSuccess = {
-                    back.invoke()
+                    onSuccess.invoke()
                 }
             )
         }

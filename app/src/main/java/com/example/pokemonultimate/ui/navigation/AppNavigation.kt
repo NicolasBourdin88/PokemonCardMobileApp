@@ -194,7 +194,7 @@ fun AppNavigation() {
                     AuthenticationNavigation(
                         inscriptionViewModel = inscriptionViewModel,
                         connectionViewModel = connectionViewModel,
-                        back = {
+                        onSuccess = {
                             navController.popBackStack()
                             authViewModel.checkUserLoggedIn()
                         }

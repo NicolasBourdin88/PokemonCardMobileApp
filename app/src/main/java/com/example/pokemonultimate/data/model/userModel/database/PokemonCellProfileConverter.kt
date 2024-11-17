@@ -5,8 +5,8 @@ import com.example.pokemonultimate.data.model.PokemonCellProfile
 
 class PokemonCellProfileConverter {
     @TypeConverter
-    fun fromPokemonCellProfile(profil: PokemonCellProfile): String {
-        return profil.name
+    fun fromPokemonCellProfile(profile: PokemonCellProfile): String {
+        return profile.name
     }
 
     @TypeConverter

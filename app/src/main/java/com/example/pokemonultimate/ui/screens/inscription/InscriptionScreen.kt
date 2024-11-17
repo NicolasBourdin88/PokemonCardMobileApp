@@ -73,7 +73,7 @@ fun InscriptionScreen(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        PikachuWithButtonPlus(viewModel) { viewModel.toggleBottomSheet() }
+        ProfileWithButtonPlus(viewModel) { viewModel.toggleBottomSheet() }
         WelcomeText()
 
         CustomTextField(
@@ -181,7 +181,7 @@ private fun ImagePokemon(pokemonCellProfile: PokemonCellProfile, onClick: () -> 
 }
 
 @Composable
-fun PikachuWithButtonPlus(viewModel: InscriptionViewModel, onButtonClick: () -> Unit) {
+fun ProfileWithButtonPlus(viewModel: InscriptionViewModel, onButtonClick: () -> Unit) {
     val selectedImage by viewModel.selectedImage
 
     Box(

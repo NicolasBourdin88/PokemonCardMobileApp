@@ -7,7 +7,7 @@ fun getUserId() : String? {
     return userId
 }
 
-abstract class CommonConstants {
+abstract class UserUtils {
     companion object {
         const val USERS = "users"
         const val PROFILE_IMAGE_ID = "profileImageId"

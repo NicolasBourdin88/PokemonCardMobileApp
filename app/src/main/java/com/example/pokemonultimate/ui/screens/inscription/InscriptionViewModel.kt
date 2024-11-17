@@ -9,8 +9,8 @@ import com.example.pokemonultimate.R
 import com.example.pokemonultimate.data.model.PokemonCellProfile
 import com.example.pokemonultimate.data.model.database.DataBase
 import com.example.pokemonultimate.data.model.userModel.UserProfile
-import com.example.pokemonultimate.data.utils.CommonConstants.Companion.PROFILE_IMAGE_ID
-import com.example.pokemonultimate.data.utils.CommonConstants.Companion.USERS
+import com.example.pokemonultimate.data.utils.UserUtils.Companion.PROFILE_IMAGE_ID
+import com.example.pokemonultimate.data.utils.UserUtils.Companion.USERS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,9 +18,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class InscriptionViewModel @Inject constructor(
-    private val pokemonCardsDb: DataBase
-) : ViewModel() {
+class InscriptionViewModel @Inject constructor(private val pokemonCardsDb: DataBase) : ViewModel() {
+
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     private val _email = mutableStateOf("")
@@ -62,7 +61,11 @@ class InscriptionViewModel @Inject constructor(
         _confirmPassword.value = newValue
     }
 
-    fun registerWithEmailAndPassword(context: Context, onResult: (Boolean) -> Unit, onFail: (String) -> Unit) {
+    fun registerWithEmailAndPassword(
+        context: Context,
+        onResult: (Boolean) -> Unit,
+        onFail: (String) -> Unit
+    ) {
         val email = _email.value
         val password = _password.value
         val confirmPassword = _confirmPassword.value
@@ -102,15 +105,23 @@ class InscriptionViewModel @Inject constructor(
         }
     }
 
-    private fun saveUserProfileLocally(userId: String, imageId: PokemonCellProfile, onComplete: () -> Unit) {
+    private fun saveUserProfileLocally(
+        userId: String,
+        imageId: PokemonCellProfile,
+        onComplete: () -> Unit
+    ) {
         viewModelScope.launch {
-                val userProfile = UserProfile(userId, imageId)
-                pokemonCardsDb.userProfileDao.insertUserProfile(userProfile)
-                onComplete()
+            val userProfile = UserProfile(userId, imageId)
+            pokemonCardsDb.userProfileDao.insertUserProfile(userProfile)
+            onComplete()
         }
     }
 
-    private fun saveUserProfileToFireStore(userId: String, picture: PokemonCellProfile, onComplete: (Boolean) -> Unit) {
+    private fun saveUserProfileToFireStore(
+        userId: String,
+        picture: PokemonCellProfile,
+        onComplete: (Boolean) -> Unit
+    ) {
         val userDoc = hashMapOf(
             PROFILE_IMAGE_ID to picture.name
         )

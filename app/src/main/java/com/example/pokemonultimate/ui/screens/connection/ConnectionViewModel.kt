@@ -9,8 +9,8 @@ import com.example.pokemonultimate.R
 import com.example.pokemonultimate.data.model.PokemonCellProfile
 import com.example.pokemonultimate.data.model.database.DataBase
 import com.example.pokemonultimate.data.model.userModel.UserProfile
-import com.example.pokemonultimate.data.utils.CommonConstants.Companion.PROFILE_IMAGE_ID
-import com.example.pokemonultimate.data.utils.CommonConstants.Companion.USERS
+import com.example.pokemonultimate.data.utils.UserUtils.Companion.PROFILE_IMAGE_ID
+import com.example.pokemonultimate.data.utils.UserUtils.Companion.USERS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,9 +18,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ConnectionViewModel @Inject constructor(
-    private val pokemonCardsDb: DataBase
-) : ViewModel() {
+class ConnectionViewModel @Inject constructor(private val pokemonCardsDb: DataBase) : ViewModel() {
+
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
@@ -133,5 +132,4 @@ class ConnectionViewModel @Inject constructor(
             onComplete()
         }
     }
-
 }

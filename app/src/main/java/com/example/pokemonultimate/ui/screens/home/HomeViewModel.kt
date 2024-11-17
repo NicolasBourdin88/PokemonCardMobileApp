@@ -22,9 +22,8 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val pokemonCardsDb: DataBase
-) : ViewModel() {
+class HomeViewModel @Inject constructor(private val pokemonCardsDb: DataBase) : ViewModel() {
+
     private val _filters = MutableStateFlow<List<String>>(emptyList())
 
     fun getFlow(

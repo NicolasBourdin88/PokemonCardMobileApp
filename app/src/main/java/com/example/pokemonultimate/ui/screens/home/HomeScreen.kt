@@ -65,13 +65,12 @@ private const val DEFAULT_PADDING_BOTTOM_POKEMON_CELL = 40
 
 
 @Composable
-fun HomeScreen(
-    homeViewModel: HomeViewModel,
-) {
+fun HomeScreen(homeViewModel: HomeViewModel) {
+
     var querySearch: String? by remember { mutableStateOf(null) }
-    var filtersTypes = remember { mutableStateListOf<String>() }
-    var filtersSubTypes = remember { mutableStateListOf<String>() }
-    var filtersSuperTypes = remember { mutableStateListOf<String>() }
+    val filtersTypes = remember { mutableStateListOf<String>() }
+    val filtersSubTypes = remember { mutableStateListOf<String>() }
+    val filtersSuperTypes = remember { mutableStateListOf<String>() }
     var displayBottomSheet: Boolean by remember { mutableStateOf(false) }
     var notInSearchMode: Boolean by remember { mutableStateOf(true) }
 
