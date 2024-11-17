@@ -20,7 +20,7 @@ data class PokemonCardEntity(
     val set: SetEntity,
     val number: String,
     val artist: String? = null,
-    val rarity: String? = null,
+    val rarity: Rarity,
     val images: ImagePokemonEntity,
     @SerialName("tcgplayer")
     val tcgPlayer: TcgPlayerEntity? = null,

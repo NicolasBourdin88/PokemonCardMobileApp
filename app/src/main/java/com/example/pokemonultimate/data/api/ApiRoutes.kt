@@ -36,6 +36,12 @@ object ApiRoutes {
         return url
     }
 
+    fun set(setId: String, page: Int, pageSize: Int): String {
+        var url = "${API}cards?q=(set.id:\"$setId\""
+        url += ")&orderBy=number&page=$page&pageSize=$pageSize"
+        return url
+    }
+
     private fun List<String>.addFilters(filters: FilterCategories, isFirst: Boolean): String {
         if (isNotEmpty()) {
             var returnedValue = ""

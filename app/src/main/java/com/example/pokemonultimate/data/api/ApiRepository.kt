@@ -1,5 +1,6 @@
 package com.example.pokemonultimate.data.api
 
+import com.example.pokemonultimate.data.api.ApiController.callApi
 import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
 import com.example.pokemonultimate.data.model.sets.Set
 import com.example.pokemonultimate.ui.screens.home.FilterCategories
@@ -28,6 +29,14 @@ object ApiRepository {
                 ApiController.ApiMethod.GET
             )
         }
+    }
+
+    fun getCardsFromSet(
+        setId: String,
+        page: Int,
+        pageSize: Int
+    ): ApiResponse<List<PokemonCardEntity>> {
+        return callApi(ApiRoutes.set(setId, page, pageSize), ApiController.ApiMethod.GET)
     }
 
     fun getFilters(filterCategories: FilterCategories): ApiResponse<List<String>> {
