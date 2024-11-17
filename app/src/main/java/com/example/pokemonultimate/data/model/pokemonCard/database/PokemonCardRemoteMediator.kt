@@ -8,6 +8,7 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import coil.network.HttpException
 import com.example.pokemonultimate.data.api.ApiRepository
+import com.example.pokemonultimate.data.model.database.DataBase
 import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
 import com.example.pokemonultimate.data.model.pokemonCard.RemoteKey
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +17,7 @@ import okio.IOException
 
 @OptIn(ExperimentalPagingApi::class)
 class PokemonCardRemoteMediator(
-    private val pokemonCardDb: PokemonCardDataBase,
+    private val pokemonCardDb: DataBase,
     val query: String? = null,
     val filtersTypes: List<String> = emptyList(),
     val filtersSubTypes: List<String> = emptyList(),

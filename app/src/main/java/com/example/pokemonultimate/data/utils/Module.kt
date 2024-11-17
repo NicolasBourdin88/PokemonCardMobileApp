@@ -1,9 +1,10 @@
 package com.example.pokemonultimate.data.utils
 
 import android.content.Context
+import androidx.compose.material3.DatePickerState
 import androidx.paging.ExperimentalPagingApi
 import androidx.room.Room
-import com.example.pokemonultimate.data.model.pokemonCard.database.PokemonCardDataBase
+import com.example.pokemonultimate.data.model.database.DataBase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,10 +19,10 @@ object Module {
 
     @Provides
     @Singleton
-    fun providePokemonCardsDatabase(@ApplicationContext context: Context): PokemonCardDataBase {
+    fun providePokemonCardsDatabase(@ApplicationContext context: Context): DataBase {
         return Room.databaseBuilder(
             context = context,
-            klass = PokemonCardDataBase::class.java,
+            klass = DataBase::class.java,
             name = "pokemonCard.db"
         ).build()
     }

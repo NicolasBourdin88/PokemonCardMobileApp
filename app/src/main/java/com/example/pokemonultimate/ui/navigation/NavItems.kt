@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.navigation.NavBackStackEntry
 import com.example.pokemonultimate.R
-import com.example.pokemonultimate.ui.navigation.MainNavigation.HomeDestination
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -21,8 +20,28 @@ sealed class MainNavigation : NavigationDestination() {
     @Serializable
     data object BoostersDestination : MainNavigation()
 
+    @Serializable
+    data object UserDestination : MainNavigation()
+
+    @Serializable
+    data object AuthenticationDestination : MainNavigation()
+
     companion object {
         val startDestination = BoostersDestination
+    }
+}
+
+@Serializable
+sealed class AuthenticationNavigation : NavigationDestination() {
+
+    @Serializable
+    data object SignInDestination : AuthenticationNavigation()
+
+    @Serializable
+    data object SignUpDestination : AuthenticationNavigation()
+
+    companion object {
+        val startDestination = SignInDestination
     }
 }
 
@@ -67,13 +86,12 @@ enum class NavigationItem(
         unselectedIcon = R.drawable.ic_boosters_unselected,
         destination = MainNavigation.BoostersDestination
     ),
+
 }
 
 @Serializable
 sealed class NavigationDestination {
-
     companion object {
-
         inline fun <reified T : NavigationDestination> NavBackStackEntry.toDestination(): T? {
             return toDestination(T::class, backStackEntry = this)
         }

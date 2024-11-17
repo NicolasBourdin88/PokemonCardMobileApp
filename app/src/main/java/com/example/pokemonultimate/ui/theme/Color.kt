@@ -37,7 +37,6 @@ val surfaceContainerLowLight = Color(0xFFEFF5F6)
 val surfaceContainerLight = Color(0xFFE9EFF0)
 val surfaceContainerHighLight = Color(0xFFE3E9EA)
 val surfaceContainerHighestLight = Color(0xFFDEE3E5)
-
 val primaryDark = Color(0xFF82D3E0)
 val onPrimaryDark = Color(0xFF00363D)
 val primaryContainerDark = Color(0xFF004F58)
@@ -85,6 +84,12 @@ val cardLightningSecondColor = Color(0XFFFFDC5F)
 
 val cardWaterFirstColor = Color(0XFFC0F6FA)
 val cardWaterSecondColor = Color(0XFF03A4E8)
+
+val cardIceFirstColor = Color(0xFFADFFF7)
+val cardIceSecondColor = Color(0xFF3CD7C9)
+
+val cardNormalFirstColor = Color(0xFFCFAE00)
+val cardNormalSecondColor = Color(0xFFFDEBA7)
 
 val cardColorlessFirstColor = Color(0XFFD3D3D3)
 val cardColorlessSecondColor = Color(0XFFFFFFFF)

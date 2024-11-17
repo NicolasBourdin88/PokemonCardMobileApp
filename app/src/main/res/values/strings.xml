@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">Pokemon Ultimate</string>
+    <string name="content_logo_profil_empty">logo profil</string>
+    <string name="welcome_back">Welcome back !</string>
+    <string name="welcome">Welcome !</string>
+    <string name="login_text">Login to your account</string>
+    <string name="create_account">Create your account</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="signin">Sign in</string>
+    <string name="signin_google">Sign in with Google</string>
+    <string name="signup_google">Sign up with Google</string>
+    <string name="dont_account">Don\'t have an account ?</string>
+    <string name="have_account">Already have account ?</string>
+    <string name="signup">Sign up</string>
+    <string name="or">OR</string>
+    <string name="loading">Loading...</string>
+    <string name="user_icon">User icon</string>
+    <string name="password_icon">Password icon</string>
+    <string name="google_icon">Google icon</string>
+    <string name="plus_icon">Plus icon</string>
+    <string name="selected_image">Profil picture</string>
+    <string name="arrow_left_icon">Arrow left icon</string>
+    <string name="email_password_empty">The email and password fields cannot be empty.</string>
+    <string name="connection_error">Connection error:</string>
+    <string name="inscription_error">Inscription error:</string>
+    <string name="picture_not_valid">Error: The profile picture is not valid.</string>
+    <string name="user_not_found_firestore">Error: User profile not found in FireStore.</string>
+    <string name="error_fetch_firestore">Error: while retrieving from FireStore</string>
+    <string name="password_not_match">The passwords do not match</string>
+    <string name="register_firestore">Registration error in FireStore</string>
 </resources>
