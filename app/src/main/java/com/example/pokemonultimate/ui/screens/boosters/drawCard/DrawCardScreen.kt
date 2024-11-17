@@ -3,11 +3,11 @@ package com.example.pokemonultimate.ui.screens.boosters.drawCard
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,10 +27,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -45,32 +48,37 @@ import kotlinx.coroutines.delay
 
 @SuppressLint("UseOfNonLambdaOffsetOverload")
 @Composable
-fun DrawCardScreen(setId: String, drawCardViewModel: DrawCardViewModel = viewModel()) {
+fun DrawCardScreen(
+    setId: String, drawCardViewModel: DrawCardViewModel = viewModel(), onFinish: () -> Unit
+) {
     LaunchedEffect(setId) { drawCardViewModel.getCardsToDraw(setId) }
 
     val cards by drawCardViewModel.cardToDisplay.collectAsState()
-    var indexCardToDisplay by remember { mutableIntStateOf(0) }
+    var indexCardToDisplay by rememberSaveable { mutableIntStateOf(1) }
+    val textButton = remember(indexCardToDisplay) { getButtonText(cards, indexCardToDisplay) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Box(
-            modifier = Modifier
-                .background(Color.Red)
-                .fillMaxWidth()
-                .padding(horizontal = Padding.GIANT.dp)
-        ) {
-            cards.forEachIndexed { index, pokemonCardEntity ->
-                DisplayCard(indexCardToDisplay, cards.size, index, pokemonCardEntity)
+        val shouldDisplayResumed = indexCardToDisplay > cards.size && cards.isNotEmpty()
+        Box(modifier = Modifier.animateContentSize()) {
+            if (shouldDisplayResumed) {
+                DisplayResume(cards)
+            } else {
+                DisplayDrawnCard(cards, indexCardToDisplay)
             }
-
-            DisplayFirstCard(cards, indexCardToDisplay)
         }
 
         Button(
-            onClick = { indexCardToDisplay++ },
+            onClick = {
+                if (textButton != "Add to collection") {
+                    indexCardToDisplay++
+                } else {
+                    onFinish.invoke()
+                }
+            },
             modifier = Modifier
                 .padding(
                     top = Padding.GIANT.dp,
@@ -78,10 +86,59 @@ fun DrawCardScreen(setId: String, drawCardViewModel: DrawCardViewModel = viewMod
                     start = Padding.HUGE.dp,
                     end = Padding.HUGE.dp
                 )
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            enabled = cards.isNotEmpty(),
         ) {
-            Text("Next card")
+            Text(textButton)
         }
+    }
+}
+
+@Composable
+private fun DisplayResume(cards: List<PokemonCardEntity>) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 100.dp),
+        modifier = Modifier.padding(horizontal = Padding.MINI.dp),
+    ) {
+        items(cards) {
+            AsyncImage(
+                model = it.images.large,
+                contentDescription = it.name,
+                modifier = Modifier
+                    .padding(Padding.MICRO.dp)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.FillWidth,
+            )
+        }
+    }
+}
+
+fun getButtonText(listCards: List<PokemonCardEntity>, indexCardToDisplay: Int): String {
+    return if (listCards.isEmpty() || indexCardToDisplay < listCards.lastIndex + 1) {
+        "Next card"
+    } else if (indexCardToDisplay == listCards.size) {
+        "Show result"
+    } else {
+        "Add to collection"
+    }
+}
+
+@Composable
+private fun DisplayDrawnCard(
+    cards: List<PokemonCardEntity>, indexCardToDisplay: Int
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Padding.GIANT.dp)
+    ) {
+        cards.forEachIndexed { index, pokemonCardEntity ->
+            if (index != cards.lastIndex) {
+                DisplayCard(indexCardToDisplay, cards.size, index, pokemonCardEntity)
+            }
+        }
+
+        DisplayFirstCard(cards, indexCardToDisplay)
     }
 }
 
@@ -96,19 +153,23 @@ fun DisplayCard(
     val shouldDisplayNextCard = indexCardToDisplay > numberOfCards - currentCardIndex
     val offsetX by animateDpAsState(
         targetValue = if (shouldDisplayNextCard) 500.dp else 0.dp,
-        animationSpec = tween(durationMillis = 300), label = ""
+        animationSpec = tween(durationMillis = 300),
+        label = ""
     )
     val offsetY by animateDpAsState(
         targetValue = if (shouldDisplayNextCard) (-100).dp else 0.dp,
-        animationSpec = tween(durationMillis = 300), label = ""
+        animationSpec = tween(durationMillis = 300),
+        label = ""
     )
     val rotationAngleZ by animateFloatAsState(
         targetValue = if (shouldDisplayNextCard) 15f else 0f,
-        animationSpec = tween(durationMillis = 300), label = ""
+        animationSpec = tween(durationMillis = 300),
+        label = ""
     )
     val rotationAngleX by animateFloatAsState(
         targetValue = if (shouldDisplayNextCard) -30f else 0f,
-        animationSpec = tween(durationMillis = 300), label = ""
+        animationSpec = tween(durationMillis = 300),
+        label = ""
     )
 
     AsyncImage(
@@ -121,6 +182,7 @@ fun DisplayCard(
                 rotationZ = rotationAngleZ
                 rotationY = rotationAngleX
             },
+        placeholder = painterResource(R.drawable.back_card),
         contentScale = ContentScale.FillWidth,
     )
 }
@@ -133,30 +195,32 @@ fun DisplayFirstCard(cards: List<PokemonCardEntity>, indexCardToDisplay: Int) {
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     LaunchedEffect(cards.firstOrNull()) {
-        cards.firstOrNull()?.images?.large?.let { imageUrl ->
-            val request = ImageRequest.Builder(context)
-                .data(imageUrl)
-                .build()
+        cards.lastOrNull()?.images?.large?.let { imageUrl ->
+            val request = ImageRequest.Builder(context).data(imageUrl).build()
             val result = imageLoader.execute(request)
             bitmap = (result.drawable as? BitmapDrawable)?.bitmap
         }
     }
 
     val offsetX by animateDpAsState(
-        targetValue = if (indexCardToDisplay > 0) 500.dp else 0.dp,
-        animationSpec = tween(durationMillis = 300), label = ""
+        targetValue = if (indexCardToDisplay > 1) 500.dp else 0.dp,
+        animationSpec = tween(durationMillis = 300),
+        label = ""
     )
     val offsetY by animateDpAsState(
-        targetValue = if (indexCardToDisplay > 0) (-100).dp else 0.dp,
-        animationSpec = tween(durationMillis = 300), label = ""
+        targetValue = if (indexCardToDisplay > 1) (-100).dp else 0.dp,
+        animationSpec = tween(durationMillis = 300),
+        label = ""
     )
     val rotationAngleZ by animateFloatAsState(
-        targetValue = if (indexCardToDisplay > 0) 15f else 0f,
-        animationSpec = tween(durationMillis = 300), label = ""
+        targetValue = if (indexCardToDisplay > 1) 15f else 0f,
+        animationSpec = tween(durationMillis = 300),
+        label = ""
     )
     val rotationAngleX by animateFloatAsState(
-        targetValue = if (indexCardToDisplay > 0) -30f else 0f,
-        animationSpec = tween(durationMillis = 300), label = ""
+        targetValue = if (indexCardToDisplay > 1) -30f else 0f,
+        animationSpec = tween(durationMillis = 300),
+        label = ""
     )
 
 
@@ -168,8 +232,7 @@ fun DisplayFirstCard(cards: List<PokemonCardEntity>, indexCardToDisplay: Int) {
             cardFace = CardFace.Front
         }
 
-        FlipCard(
-            cardFace = cardFace,
+        FlipCard(cardFace = cardFace,
             modifier = Modifier
                 .fillMaxWidth()
                 .offset(x = offsetX, y = offsetY)
@@ -181,26 +244,23 @@ fun DisplayFirstCard(cards: List<PokemonCardEntity>, indexCardToDisplay: Int) {
                 Image(
                     bitmap = bitmap!!.asImageBitmap(),
                     contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.FillWidth,
                 )
-            }, back = {
+            },
+            back = {
                 Image(
                     painter = painterResource(R.drawable.back_card),
                     contentDescription = "Dos de carte",
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     contentScale = ContentScale.FillWidth,
                 )
-            }
-        )
+            })
     } else {
         Image(
             painter = painterResource(R.drawable.back_card),
             contentDescription = "Dos de carte",
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             contentScale = ContentScale.FillWidth,
         )
     }

@@ -27,7 +27,7 @@ sealed class MainNavigation : NavigationDestination() {
     data object AuthenticationDestination : MainNavigation()
 
     companion object {
-        val startDestination = BoostersDestination
+        val startDestination = HomeDestination
     }
 }
 
@@ -70,9 +70,6 @@ sealed class OpeningBoostersNavigation : NavigationDestination() {
 
     @Serializable
     data class DrawCardDestination(val setId: String) : OpeningBoostersNavigation()
-
-    @Serializable
-    data object DisplayDrawnCardDestination : OpeningBoostersNavigation()
 
     companion object {
         val startDestination = BoosterDestination

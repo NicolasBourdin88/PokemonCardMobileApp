@@ -1,7 +1,5 @@
 package com.example.pokemonultimate.ui.screens.boosters
 
-import android.util.Log
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -16,7 +14,7 @@ import com.example.pokemonultimate.ui.screens.boosters.drawCard.DrawCardScreen
 fun BoostersNavigation(
     navController: NavHostController = rememberNavController(),
     currentController: (NavHostController) -> Unit,
-    setFullScreen: () -> Unit,
+    setFullScreen: (Boolean) -> Unit,
 ) {
     currentController.invoke(navController)
 
@@ -25,18 +23,19 @@ fun BoostersNavigation(
         startDestination = OpeningBoostersNavigation.startDestination,
     ) {
         composable<OpeningBoostersNavigation.BoosterDestination> {
+            setFullScreen.invoke(false)
             BoostersScreen(onBoosterOpened = {
-                setFullScreen.invoke()
                 navController.navigateToSelectedItem(
                     OpeningBoostersNavigation.DrawCardDestination(setId = "swsh1")
                 )
-            }
-            )
+            })
         }
         composable<OpeningBoostersNavigation.DrawCardDestination> {
+            setFullScreen.invoke(true)
             val drawCardDestination: OpeningBoostersNavigation.DrawCardDestination = it.toRoute()
-            DrawCardScreen(drawCardDestination.setId)
+            DrawCardScreen(drawCardDestination.setId, onFinish = {
+                navController.navigate(OpeningBoostersNavigation.BoosterDestination)
+            })
         }
-        composable<OpeningBoostersNavigation.DisplayDrawnCardDestination> {}
     }
 }

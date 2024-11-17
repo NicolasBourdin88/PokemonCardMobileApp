@@ -188,7 +188,7 @@ fun AppNavigation() {
                             currentBackNavController.value = it
                         },
                         setFullScreen = {
-                            isInFullScreen.value = true
+                            isInFullScreen.value = it
                         }
                     )
                 }
