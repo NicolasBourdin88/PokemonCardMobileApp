@@ -65,14 +65,13 @@ fun FlipCard(
             front()
         } else {
             Box(
-                Modifier
-                    .graphicsLayer {
-                        if (axis == RotationAxis.AxisX) {
-                            rotationX = 180f
-                        } else {
-                            rotationY = 180f
-                        }
-                    },
+                Modifier.graphicsLayer {
+                    if (axis == RotationAxis.AxisX) {
+                        rotationX = 180f
+                    } else {
+                        rotationY = 180f
+                    }
+                },
             ) {
                 back()
             }
