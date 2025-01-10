@@ -27,8 +27,8 @@ android {
         applicationId = "com.example.pokemonultimate"
         minSdk = 25
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -69,6 +69,20 @@ android {
     }
     hilt {
         enableAggregatingTask = true
+    }
+
+    flavorDimensions += "env"
+    productFlavors {
+        create("develop") {
+            isDefault = true
+            dimension = "env"
+            versionNameSuffix = "-dev"
+        }
+        create("prod") {
+            dimension = "env"
+            applicationIdSuffix = ".prod"
+            versionNameSuffix = "-prod"
+        }
     }
 }
 
@@ -115,7 +129,6 @@ dependencies {
     //Google
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.play.services.auth)
-
 
 
     // Coil
