@@ -10,14 +10,9 @@ plugins {
     id("kotlin-kapt")
     alias(libs.plugins.hilt)
 }
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.inputStream().use { localProperties.load(it) }
-}
 
-val firebaseClientId: String = localProperties.getProperty("FIREBASE_CLIENT_ID") ?: "\"\""
-val apiKey: String = localProperties.getProperty("API_KEY") ?: "\"\""
+val firebaseClientId: String = System.getenv("FIREBASE_CLIENT_ID") ?: ""
+val apiKey: String = System.getenv("API_KEY") ?: ""
 
 android {
     namespace = "com.example.pokemonultimate"
