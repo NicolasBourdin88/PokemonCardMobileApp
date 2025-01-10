@@ -51,7 +51,7 @@ import kotlinx.coroutines.delay
 fun DrawCardScreen(
     setId: String, drawCardViewModel: DrawCardViewModel = viewModel(), onFinish: () -> Unit
 ) {
-    LaunchedEffect(setId) { drawCardViewModel.getCardsToDraw(setId) }
+    LaunchedEffect(Unit) { drawCardViewModel.getCardsToDraw(setId) }
 
     val cards by drawCardViewModel.cardToDisplay.collectAsState()
     var indexCardToDisplay by rememberSaveable { mutableIntStateOf(1) }
@@ -124,9 +124,7 @@ fun getButtonText(listCards: List<PokemonCardEntity>, indexCardToDisplay: Int): 
 }
 
 @Composable
-private fun DisplayDrawnCard(
-    cards: List<PokemonCardEntity>, indexCardToDisplay: Int
-) {
+private fun DisplayDrawnCard(cards: List<PokemonCardEntity>, indexCardToDisplay: Int) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
