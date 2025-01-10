@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "635357958054",
+    "firebase_url": "https://pokemon-ultimate-card-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "pokemon-ultimate-card",
+    "storage_bucket": "pokemon-ultimate-card.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635357958054:android:0fd5d53a4c64b6f3354967",
+        "android_client_info": {
+          "package_name": "com.example.pokemonultimate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "635357958054-o9f0fhhb2pbt0j7gau16m04gaan9sv8p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPfhhPQmktwFHmzVMxC1XnXOunC_fyRAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "635357958054-o9f0fhhb2pbt0j7gau16m04gaan9sv8p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635357958054:android:94d7c891397abde3354967",
+        "android_client_info": {
+          "package_name": "com.example.pokemonultimate.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "635357958054-o9f0fhhb2pbt0j7gau16m04gaan9sv8p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPfhhPQmktwFHmzVMxC1XnXOunC_fyRAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "635357958054-o9f0fhhb2pbt0j7gau16m04gaan9sv8p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635357958054:android:d3893ad46208a6fb354967",
+        "android_client_info": {
+          "package_name": "com.example.pokemonultimate.prod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "635357958054-o9f0fhhb2pbt0j7gau16m04gaan9sv8p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPfhhPQmktwFHmzVMxC1XnXOunC_fyRAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "635357958054-o9f0fhhb2pbt0j7gau16m04gaan9sv8p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

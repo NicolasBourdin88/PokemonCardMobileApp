@@ -224,7 +224,6 @@ private fun isOnUserScreen(navBackStackEntry: NavBackStackEntry?): Boolean {
     }
 }
 
-
 @Composable
 private fun RailBarNavigation(
     currentDestination: MainNavigation?,
