@@ -76,7 +76,7 @@ fun BoostersScreen(onBoosterOpened: () -> Unit) {
                 openedBlur += 5
                 delay(10)
             }
-            onBoosterOpened.invoke()
+            onBoosterOpened()
         }
     }
 
@@ -180,7 +180,7 @@ fun Booster(canOpenBooster: Boolean, onBoosterOpened: () -> Unit) {
                         change.consume()
                         if (canOpenBooster && hasSwiped == false) swipeOffset += dragAmount
                         if (swipeOffset.absoluteValue > swipeThreshold) {
-                            onBoosterOpened.invoke()
+                            onBoosterOpened()
                             hasSwiped = true
                         }
                     },

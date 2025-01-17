@@ -1,6 +1,5 @@
 package com.example.pokemonultimate.ui.screens.boosters.drawCard
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.compose.animation.animateContentSize
@@ -46,10 +45,11 @@ import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
 import com.example.pokemonultimate.ui.utils.Padding
 import kotlinx.coroutines.delay
 
-@SuppressLint("UseOfNonLambdaOffsetOverload")
 @Composable
 fun DrawCardScreen(
-    setId: String, drawCardViewModel: DrawCardViewModel = viewModel(), onFinish: () -> Unit
+    setId: String,
+    drawCardViewModel: DrawCardViewModel = viewModel(),
+    onFinish: () -> Unit,
 ) {
     LaunchedEffect(Unit) { drawCardViewModel.getCardsToDraw(setId) }
 
@@ -76,7 +76,7 @@ fun DrawCardScreen(
                 if (textButton != "Add to collection") {
                     indexCardToDisplay++
                 } else {
-                    onFinish.invoke()
+                    onFinish()
                 }
             },
             modifier = Modifier
@@ -140,7 +140,6 @@ private fun DisplayDrawnCard(cards: List<PokemonCardEntity>, indexCardToDisplay:
     }
 }
 
-@SuppressLint("UseOfNonLambdaOffsetOverload")
 @Composable
 fun DisplayCard(
     indexCardToDisplay: Int,
@@ -185,7 +184,6 @@ fun DisplayCard(
     )
 }
 
-@SuppressLint("UseOfNonLambdaOffsetOverload")
 @Composable
 fun DisplayFirstCard(cards: List<PokemonCardEntity>, indexCardToDisplay: Int) {
     val context = LocalContext.current
