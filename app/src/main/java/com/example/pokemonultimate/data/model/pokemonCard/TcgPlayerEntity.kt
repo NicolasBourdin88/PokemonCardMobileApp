@@ -36,4 +36,14 @@ data class TcgPlayerEntity(
                 ?: throw SerializationException("Invalid date format")
         }
     }
+
+    companion object {
+        fun mapToTcgPlayerEntity(map: Map<String, Any>): TcgPlayerEntity {
+            return TcgPlayerEntity(
+                url = map["url"] as? String ?: "",
+                updatedAt = Date(),
+                prices = null,
+            )
+        }
+    }
 }
