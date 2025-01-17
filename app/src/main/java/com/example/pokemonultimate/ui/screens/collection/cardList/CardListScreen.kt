@@ -50,10 +50,8 @@ private fun Header(setImage: String) {
 }
 
 @Composable
-fun ListCardSearchResult(
-    collectionViewModel: CollectionViewModel,
-    setId: String,
-) {
+fun ListCardSearchResult(collectionViewModel: CollectionViewModel, setId: String) {
+
     val pager = collectionViewModel.getFlow(
         setId = setId,
     )

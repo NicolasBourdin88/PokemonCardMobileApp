@@ -63,13 +63,7 @@ class ConnectionViewModel @Inject constructor(private val pokemonCardsDb: DataBa
                             fetchUserFromFireStoreAndSaveLocally(
                                 userId = userId,
                                 context = context,
-                                onComplete = { success ->
-                                    if (success) {
-                                        onResult(true)
-                                    } else {
-                                        onResult(false)
-                                    }
-                                }
+                                onComplete = { success -> onResult(success) }
                             )
                         } else {
                             onResult(true)

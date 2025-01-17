@@ -8,6 +8,10 @@ import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
 import com.example.pokemonultimate.data.model.pokemonCard.isBeforeFinalBoosterCard
 import com.example.pokemonultimate.data.model.pokemonCard.isCommonBoosterCard
 import com.example.pokemonultimate.data.model.pokemonCard.isFinalBoosterCard
+import com.example.pokemonultimate.data.utils.KEY_FIREBASE_COLLECTION
+import com.example.pokemonultimate.data.utils.getUserCards
+import com.example.pokemonultimate.data.utils.getUserId
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -65,7 +69,27 @@ class DrawCardViewModel : ViewModel() {
             boosterContent.add(commonCardList.random())
         }
 
+        saveDrawnCard(boosterContent)
+
         return boosterContent
+    }
+
+    private fun saveDrawnCard(drawnCards: List<PokemonCardEntity>) {
+        val db = FirebaseFirestore.getInstance()
+        val userId = getUserId() ?: return
+        val userDocumentRef = db.collection("users").document(userId)
+
+        getUserCards(userDocumentRef, onFinish = { userCards, documentExists ->
+            if (documentExists) {
+                drawnCards.forEach { drawnCard ->
+                    if (!userCards.contains(drawnCard)) userCards.add(drawnCard)
+                }
+
+                userDocumentRef.update(KEY_FIREBASE_COLLECTION, userCards.toList())
+            } else {
+                userDocumentRef.set(mapOf(KEY_FIREBASE_COLLECTION to drawnCards.toList()))
+            }
+        })
     }
 
     private fun getAllCollection(setId: String, onFinish: (List<PokemonCardEntity>) -> Unit) {

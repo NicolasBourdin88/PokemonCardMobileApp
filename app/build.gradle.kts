@@ -120,11 +120,9 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
 
-
     //Google
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.play.services.auth)
-
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.7.0")
