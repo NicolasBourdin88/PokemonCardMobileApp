@@ -1,5 +1,6 @@
 package com.example.pokemonultimate.ui.screens.collection
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
@@ -14,6 +15,8 @@ import com.example.pokemonultimate.data.model.database.DataBase
 import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
 import com.example.pokemonultimate.data.model.pokemonCard.database.PokemonCardRemoteMediator
 import com.example.pokemonultimate.data.model.sets.Set
+import com.example.pokemonultimate.data.utils.getUserCards
+import com.example.pokemonultimate.data.utils.getUserId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -28,9 +31,17 @@ class CollectionViewModel @Inject constructor(private val pokemonCardsDb: DataBa
 
     private val _setsFlow = MutableStateFlow<List<Set>>(emptyList())
     val setsFlow: StateFlow<List<Set>> = _setsFlow
+    private var userCards: List<PokemonCardEntity> = emptyList()
 
     init {
         getSets()
+        getUserCards()
+    }
+
+    private fun getUserCards() {
+        getUserCards(onFinish = { cards, _ ->
+            userCards = cards.toList()
+        })
     }
 
     private fun getSets() {
@@ -62,7 +73,13 @@ class CollectionViewModel @Inject constructor(private val pokemonCardsDb: DataBa
         )
     }
 
-    fun getNumberOfCardsInSet(){
-
+    fun getNumberOfCardsInSet(setId: String): Int {
+        getUserId() ?: return 0
+        val count = userCards.count { setId == it.set.id }
+        Log.e("nicolas", "getNumberOfCardsInSet - setId: ${setId}")
+        if (setId == "swsh1") {
+            Log.e("nicolas", "getNumberOfCardsInSet - $count")
+        }
+        return count
     }
 }

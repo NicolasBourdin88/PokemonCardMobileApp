@@ -69,13 +69,13 @@ fun ListCollections(
         modifier = Modifier.padding(horizontal = Padding.MINI.dp),
     ) {
         items(sets) { set ->
-            ItemSet(set, navController)
+            ItemSet(set, navController, collectionViewModel)
         }
     }
 }
 
 @Composable
-fun ItemSet(set: Set, navController: NavHostController) {
+fun ItemSet(set: Set, navController: NavHostController, collectionViewModel: CollectionViewModel) {
     Column(
         modifier = Modifier
             .height(120.dp)
@@ -105,7 +105,7 @@ fun ItemSet(set: Set, navController: NavHostController) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                "0/${set.total}",
+                "${collectionViewModel.getNumberOfCardsInSet(set.id)}/${set.total}",
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontFamily = fontFamilyAvenir,
                 fontWeight = FontWeight.Black,

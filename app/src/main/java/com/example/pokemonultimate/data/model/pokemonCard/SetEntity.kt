@@ -12,4 +12,18 @@ data class SetEntity(
     val printedTotal: Int,
     val total: Int,
     val images: ImageSetEntity,
-)
+) {
+    constructor() : this("", "", 0, 0, ImageSetEntity())
+
+    companion object {
+        fun mapToSetEntity(map: Map<String, Any>): SetEntity {
+            return SetEntity(
+                id = map["id"] as? String ?: "",
+                name = map["name"] as? String ?: "",
+                printedTotal = (map["printedTotal"] as? Long)?.toInt() ?: 0,
+                total = (map["total"] as? Long)?.toInt() ?: 0,
+                images = ImageSetEntity()
+            )
+        }
+    }
+}
