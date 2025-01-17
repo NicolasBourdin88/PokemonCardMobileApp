@@ -61,4 +61,8 @@ class CollectionViewModel @Inject constructor(private val pokemonCardsDb: DataBa
             }
         )
     }
+
+    fun getNumberOfCardsInSet(){
+
+    }
 }
