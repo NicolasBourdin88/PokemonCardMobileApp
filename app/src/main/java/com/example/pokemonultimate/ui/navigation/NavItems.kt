@@ -37,7 +37,7 @@ sealed class CollectionNavigation : NavigationDestination() {
     data object SetDestination : CollectionNavigation()
 
     @Serializable
-    data class CardListDestination(val setImage: String, val setId: String) : CollectionNavigation()
+        data class CardListDestination(val setImage: String, val setId: String, val cardFromHome:String? = null) : CollectionNavigation()
 
     @Serializable
     data class CardDestination(val jsonCard: String, val withButtonCollection: Boolean = true) : CollectionNavigation()

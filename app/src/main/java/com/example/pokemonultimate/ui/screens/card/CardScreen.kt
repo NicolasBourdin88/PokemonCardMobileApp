@@ -398,7 +398,7 @@ fun InformationCard(cardPokemon: PokemonCardEntity) {
 fun ButtonCollection(cardPokemon: PokemonCardEntity, navController: NavHostController) {
     Button(
         onClick = {
-            navController.navigate(CollectionNavigation.CardListDestination(setImage = cardPokemon.images.small, setId = cardPokemon.id))
+            navController.navigate(CollectionNavigation.CardListDestination(setImage = cardPokemon.set.images.logo, setId = cardPokemon.set.id, cardFromHome = cardPokemon.id))
         }
     ) {
         Row {

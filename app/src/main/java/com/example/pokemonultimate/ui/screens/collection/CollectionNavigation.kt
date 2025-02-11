@@ -35,6 +35,7 @@ fun CollectionNavigation(
             CardListScreen(
                 cardListDestination.setId,
                 cardListDestination.setImage,
+                cardListDestination.cardFromHome,
                 collectionViewModel = collectionViewModel,
                 navController = navController
             )

@@ -85,7 +85,8 @@ fun ItemSet(set: Set, navController: NavHostController) {
                 navController.navigateToSelectedItem(
                     CollectionNavigation.CardListDestination(
                         set.images.logo,
-                        set.id
+                        set.id,
+                        cardFromHome = null,
                     )
                 )
             }

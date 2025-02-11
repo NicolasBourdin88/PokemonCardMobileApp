@@ -44,6 +44,7 @@ import com.example.pokemonultimate.ui.screens.boosters.BoostersScreen
 import com.example.pokemonultimate.ui.screens.card.CardScreen
 import com.example.pokemonultimate.ui.screens.collection.CollectionNavigation
 import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
+import com.example.pokemonultimate.ui.screens.collection.cardList.CardListScreen
 import com.example.pokemonultimate.ui.screens.home.HomeScreen
 import com.example.pokemonultimate.ui.screens.home.HomeViewModel
 import com.example.pokemonultimate.ui.utils.Padding
@@ -126,7 +127,7 @@ fun AppNavigation() {
                 composable<MainNavigation.HomeDestination> {
                     shouldDisplayBackAction.value = false
                     val viewModel = hiltViewModel<HomeViewModel>()
-                    HomeScreen(viewModel,navController)
+                    HomeScreen(viewModel, navController)
                 }
                 composable<MainNavigation.CollectionDestination> {
                     val viewModel = hiltViewModel<CollectionViewModel>()
@@ -149,12 +150,27 @@ fun AppNavigation() {
                 composable<MainNavigation.CardDestination> {
                     shouldDisplayBackAction.value = true
                     val cardDestination: MainNavigation.CardDestination = it.toRoute()
-                    CardScreen(cardDestination.jsonCard, cardDestination.withButtonCollection, navController)
+                    CardScreen(
+                        cardDestination.jsonCard,
+                        cardDestination.withButtonCollection,
+                        navController
+                    )
 
                 }
-
-
+                composable<CollectionNavigation.CardListDestination> { backStackEntry ->
+                    val cardListDestination =
+                        backStackEntry.toRoute<CollectionNavigation.CardListDestination>()
+                    val viewModel = hiltViewModel<CollectionViewModel>()
+                    CardListScreen(
+                        setId = cardListDestination.setId,
+                        setImage = cardListDestination.setImage,
+                        cardFromHome = cardListDestination.cardFromHome,
+                        collectionViewModel = viewModel,
+                        navController = navController
+                    )
+                }
             }
+
         }
     }
 }
