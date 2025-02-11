@@ -140,6 +140,8 @@ fun AppNavigation() {
                                     Text("Sign in")
                                 }
                             } else {
+                                val user = authViewModel.getCurrentUser()
+                                println("test2222 userid "+user.userId)
                                 userProfileImageId?.let { profile ->
                                     Box(
                                         modifier = Modifier
@@ -151,7 +153,7 @@ fun AppNavigation() {
                                             .clip(CircleShape)
                                             .background(profile.brush)
                                             .clickable {
-                                                navController.navigate(MainNavigation.UserDestination)
+                                                navController.navigate(MainNavigation.UserDestination(user.userId))
                                             },
                                         contentAlignment = Alignment.Center
                                     ) {
@@ -237,9 +239,14 @@ fun AppNavigation() {
                         }
                     )
                 }
-                composable<MainNavigation.UserDestination> {
-                    UserScreen()
+                composable<MainNavigation.UserDestination> { backStackEntry ->
+                    val userDestination = backStackEntry.toDestination<MainNavigation.UserDestination>()
+                    val authenViewModel = hiltViewModel<AuthViewModel>()
+                    userDestination?.let {
+                        UserScreen(userId = it.userId, viewModel = authenViewModel)
+                    }
                 }
+
             }
         }
     }

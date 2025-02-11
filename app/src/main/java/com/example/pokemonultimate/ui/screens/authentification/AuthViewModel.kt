@@ -4,10 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokemonultimate.data.model.PokemonCellProfile
 import com.example.pokemonultimate.data.model.database.DataBase
+import com.example.pokemonultimate.data.model.userModel.UserProfile
 import com.example.pokemonultimate.data.utils.getUserId
+import com.google.firebase.firestore.auth.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,4 +38,11 @@ class AuthViewModel @Inject constructor(private val pokemonCardsDb: DataBase) : 
             userProfile?.let { userProfileImage.value = it.pokemonCell }
         }
     }
+
+    fun getCurrentUser(): UserProfile = runBlocking {
+        val userId = getUserId()!!
+        pokemonCardsDb.userProfileDao.getUserProfile(userId)!!
+    }
+
+
 }
