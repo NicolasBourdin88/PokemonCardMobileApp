@@ -22,7 +22,6 @@ class DrawCardViewModel : ViewModel() {
     private val _cardToDisplay = MutableStateFlow<List<PokemonCardEntity>>(emptyList())
     val cardToDisplay: StateFlow<List<PokemonCardEntity>> get() = _cardToDisplay
 
-
     fun getCardsToDraw(setId: String) {
         getAllCollection(
             setId = setId,

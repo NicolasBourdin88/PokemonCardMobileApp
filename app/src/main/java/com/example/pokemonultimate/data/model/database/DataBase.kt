@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
 import com.example.pokemonultimate.data.model.pokemonCard.RemoteKey
-import com.example.pokemonultimate.data.model.pokemonCard.SetEntity
 import com.example.pokemonultimate.data.model.sets.ImageSetEntity.Companion.ImageSetConverter
 import com.example.pokemonultimate.data.model.sets.Set
 import com.example.pokemonultimate.data.model.userModel.UserProfile
