@@ -31,7 +31,7 @@ class CollectionViewModel @Inject constructor(private val pokemonCardsDb: DataBa
 
     private val _setsFlow = MutableStateFlow<List<Set>>(emptyList())
     val setsFlow: StateFlow<List<Set>> = _setsFlow
-    private var userCards: List<PokemonCardEntity> = emptyList()
+    private var userCards: kotlin.collections.Set<PokemonCardEntity> = emptySet()
 
     init {
         getSets()
@@ -40,7 +40,7 @@ class CollectionViewModel @Inject constructor(private val pokemonCardsDb: DataBa
 
     private fun getUserCards() {
         getUserCards(onFinish = { cards, _ ->
-            userCards = cards.toList()
+            userCards = cards
         })
     }
 
@@ -81,5 +81,10 @@ class CollectionViewModel @Inject constructor(private val pokemonCardsDb: DataBa
             Log.e("nicolas", "getNumberOfCardsInSet - $count")
         }
         return count
+    }
+
+    fun userHaveCards(card: PokemonCardEntity) : Boolean {
+        getUserId() ?: return true
+        return userCards.count { card.id == it.id } > 0
     }
 }

@@ -12,11 +12,15 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.pokemonultimate.R
 import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
 import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.TitleText
@@ -86,13 +90,22 @@ fun ListCardSearchResult(collectionViewModel: CollectionViewModel, setId: String
 
         items(lazyPagingItems.itemCount) { index ->
             val pokemonCellInfo = lazyPagingItems[index]
+
             pokemonCellInfo?.let {
+                val alpha = if (collectionViewModel.userHaveCards(pokemonCellInfo)) 1f else 0.4f
+
                 AsyncImage(
-                    it.images.large,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(pokemonCellInfo.images.large)
+                        .placeholder(R.drawable.back_card)
+                        .error(R.drawable.back_card)
+                        .crossfade(true)
+                        .build(),
                     contentDescription = "Card",
                     modifier = Modifier
                         .width(100.dp)
-                        .padding(Padding.MINI.dp),
+                        .padding(Padding.MINI.dp)
+                        .alpha(alpha),
                     contentScale = ContentScale.FillWidth,
                 )
             }

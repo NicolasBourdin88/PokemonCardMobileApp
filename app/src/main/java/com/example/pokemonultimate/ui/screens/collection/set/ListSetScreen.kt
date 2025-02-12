@@ -1,5 +1,6 @@
 package com.example.pokemonultimate.ui.screens.collection.set
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -48,27 +49,39 @@ import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
 fun ListSetScreen(navController: NavHostController, collectionViewModel: CollectionViewModel) {
     Column {
         TitleText("Your Collection")
+
+        var querySearch: String by rememberSaveable { mutableStateOf("") }
+
         SearchBarCollection(
             onSearch = {
-
+                querySearch = it
             }
         )
-        ListCollections(navController = navController, collectionViewModel = collectionViewModel)
+        ListCollections(
+            navController = navController,
+            collectionViewModel = collectionViewModel,
+            query = querySearch,
+        )
     }
 }
 
 @Composable
 fun ListCollections(
     collectionViewModel: CollectionViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    query: String,
 ) {
     val sets by collectionViewModel.setsFlow.collectAsState(initial = emptyList())
+
+    sets.forEach {
+        Log.e("nicolas", "ListCollections - : ${it.name}")
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 150.dp),
         modifier = Modifier.padding(horizontal = Padding.MINI.dp),
     ) {
-        items(sets) { set ->
+        items(sets.filter { it.name.lowercase().contains(query.lowercase()) }) { set ->
             ItemSet(set, navController, collectionViewModel)
         }
     }
@@ -119,7 +132,7 @@ fun ItemSet(set: Set, navController: NavHostController, collectionViewModel: Col
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBarCollection(onSearch: (query: String) -> Unit) {
-    var text by remember {
+    var text by rememberSaveable {
         mutableStateOf("")
     }
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -139,10 +152,10 @@ fun SearchBarCollection(onSearch: (query: String) -> Unit) {
                 onSearch = { onSearch.invoke(it) },
                 expanded = expanded,
                 onExpandedChange = { expanded = it },
-                placeholder = { Text("Search card") },
+                placeholder = { Text("Search collection") },
                 trailingIcon = {
                     Icon(imageVector = Icons.Default.Clear,
-                        contentDescription = "filter icon",
+                        contentDescription = null,
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
