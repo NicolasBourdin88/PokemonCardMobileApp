@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.pokemonultimate.R
 import com.example.pokemonultimate.ui.theme.cardFireFirstColor
 import com.example.pokemonultimate.ui.theme.cardFireSecondColor
@@ -184,7 +186,12 @@ fun ListCardSearchResult(
             val pokemonCellInfo = lazyPagingItems[index]
             pokemonCellInfo?.let {
                 AsyncImage(
-                    it.images.large,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(pokemonCellInfo.images.large)
+                        .placeholder(R.drawable.back_card)
+                        .error(R.drawable.back_card)
+                        .crossfade(true)
+                        .build(),
                     contentDescription = "Card",
                     modifier = Modifier
                         .width(100.dp)

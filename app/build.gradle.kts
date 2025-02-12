@@ -124,11 +124,6 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.play.services.auth)
 
-    // Coil
-    implementation("io.coil-kt:coil-compose:2.7.0")
-
-    // okHttp3
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     // OkHttp3 (Networking)
     implementation(libs.okhttp)
 

@@ -20,11 +20,25 @@ data class PokemonCardEntity(
     val set: SetEntity,
     val number: String,
     val artist: String? = null,
-    val rarity: Rarity,
+    val rarity: Rarity? = null,
     val images: ImagePokemonEntity,
     @SerialName("tcgplayer")
     val tcgPlayer: TcgPlayerEntity? = null,
 ) {
+    constructor() : this(
+        id = "",
+        name = "",
+        supertype = SuperType.POKEMON,
+        subtypes = emptyList(),
+        types = emptyList(),
+        set = SetEntity(),
+        number = "",
+        artist = null,
+        rarity = Rarity.COMMON,
+        images = ImagePokemonEntity(),
+        tcgPlayer = null
+    )
+
     @Serializable
     enum class SuperType {
         @SerialName("Energy")

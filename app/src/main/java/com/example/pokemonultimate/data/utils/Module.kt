@@ -25,5 +25,4 @@ object Module {
             name = "pokemonCard.db"
         ).build()
     }
-
 }

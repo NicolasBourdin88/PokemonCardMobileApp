@@ -39,13 +39,13 @@ class DrawCardViewModel : ViewModel() {
             it.supertype == PokemonCardEntity.SuperType.ENERGY
         }
         val commonCardList = listCard.filter {
-            it.rarity.isCommonBoosterCard()
+            it.rarity?.isCommonBoosterCard() == true
         }
         val endCardList = listCard.filter {
-            it.rarity.isFinalBoosterCard()
+            it.rarity?.isFinalBoosterCard() == true
         }
         val secondToLastCardList = listCard.filter {
-            it.rarity.isBeforeFinalBoosterCard()
+            it.rarity?.isBeforeFinalBoosterCard() == true
         }
 
         if (endCardList.isNotEmpty()) {
@@ -79,7 +79,7 @@ class DrawCardViewModel : ViewModel() {
         val userId = getUserId() ?: return
         val userDocumentRef = db.collection("users").document(userId)
 
-        getUserCards(userDocumentRef, onFinish = { userCards, documentExists ->
+        getUserCards(onFinish = { userCards, documentExists ->
             if (documentExists) {
                 drawnCards.forEach { drawnCard ->
                     if (!userCards.contains(drawnCard)) userCards.add(drawnCard)
