@@ -38,6 +38,7 @@ import androidx.navigation.NavController
 import com.example.pokemonultimate.R
 import com.example.pokemonultimate.data.utils.calculateUserStats
 import com.example.pokemonultimate.data.utils.getUserCards
+import com.example.pokemonultimate.ui.navigation.MainNavigation
 import com.example.pokemonultimate.ui.navigation.UserNavigation
 import com.example.pokemonultimate.ui.screens.authentification.AuthViewModel
 import com.example.pokemonultimate.ui.utils.Padding
@@ -58,7 +59,7 @@ fun UserScreen(viewModel: AuthViewModel, navController: NavController) {
                 ShowQRCode(navController)
             }
         }
-        ButtonLogOut(viewModel)
+        ButtonLogOut(viewModel, navController)
     }
 }
 
@@ -250,10 +251,11 @@ fun ScanQRCodeFriend(navController: NavController) {
 }
 
 @Composable
-fun ButtonLogOut(viewModel: AuthViewModel) {
+fun ButtonLogOut(viewModel: AuthViewModel, navController: NavController) {
     Button(
         onClick = {
-
+            viewModel.logoutUser()
+            navController.navigate(MainNavigation.HomeDestination)
         },
         modifier = Modifier
             .width(160.dp)
@@ -264,6 +266,5 @@ fun ButtonLogOut(viewModel: AuthViewModel) {
             fontFamily = fontFamilyAvenir,
             modifier = Modifier.align(Alignment.CenterVertically)
         )
-
     }
 }

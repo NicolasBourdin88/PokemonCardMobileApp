@@ -16,4 +16,7 @@ interface UserProfileDao {
 
     @Query("SELECT * FROM user_profile")
     suspend fun getAllProfiles(): List<UserProfile>
+
+    @Query("DELETE FROM user_profile")
+    suspend fun clearUserData()
 }
