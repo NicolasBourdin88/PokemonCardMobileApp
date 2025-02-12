@@ -21,7 +21,7 @@ sealed class MainNavigation : NavigationDestination() {
     data object BoostersDestination : MainNavigation()
 
     @Serializable
-    data class UserDestination(val userId: String) : MainNavigation()
+    data object UserDestination : MainNavigation()
 
     @Serializable
     data object AuthenticationDestination : MainNavigation()

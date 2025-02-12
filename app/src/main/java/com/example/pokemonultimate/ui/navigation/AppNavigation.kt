@@ -48,6 +48,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.pokemonultimate.data.utils.getUserId
 import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion.toDestination
 import com.example.pokemonultimate.ui.screens.authentification.AuthViewModel
@@ -140,8 +141,6 @@ fun AppNavigation() {
                                     Text("Sign in")
                                 }
                             } else {
-                                val user = authViewModel.getCurrentUser()
-                                println("test2222 userid "+user.userId)
                                 userProfileImageId?.let { profile ->
                                     Box(
                                         modifier = Modifier
@@ -153,7 +152,7 @@ fun AppNavigation() {
                                             .clip(CircleShape)
                                             .background(profile.brush)
                                             .clickable {
-                                                navController.navigate(MainNavigation.UserDestination(user.userId))
+                                                navController.navigate(MainNavigation.UserDestination)
                                             },
                                         contentAlignment = Alignment.Center
                                     ) {
@@ -239,12 +238,10 @@ fun AppNavigation() {
                         }
                     )
                 }
-                composable<MainNavigation.UserDestination> { backStackEntry ->
-                    val userDestination = backStackEntry.toDestination<MainNavigation.UserDestination>()
-                    val authenViewModel = hiltViewModel<AuthViewModel>()
-                    userDestination?.let {
-                        UserScreen(userId = it.userId, viewModel = authenViewModel)
-                    }
+                composable<MainNavigation.UserDestination> {
+                    val authenticationViewModel = hiltViewModel<AuthViewModel>()
+                    shouldDisplayBackAction.value = true
+                    UserScreen(viewModel = authenticationViewModel,navController= navController)
                 }
 
             }

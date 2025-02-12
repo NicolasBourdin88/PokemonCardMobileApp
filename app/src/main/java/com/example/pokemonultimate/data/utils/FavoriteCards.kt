@@ -46,3 +46,20 @@ fun getUserCards(onFinish: (userCards: MutableSet<PokemonCardEntity>, documentEx
         onFinish(cards.toMutableSet(), document.exists())
     }
 }
+
+fun calculateUserStats(cards: Set<PokemonCardEntity>): Pair<Int, Int> {
+    val totalCards = cards.size
+
+    val completedSets = cards
+        .filter { it.set.id.isNotEmpty() }
+        .groupBy { it.set.id }
+        .count { (_, cardsInSet) ->
+            val setTotal = cardsInSet.first().set.total
+            cardsInSet.size >= setTotal
+        }
+
+    return Pair(totalCards, completedSets)
+}
+
+
+

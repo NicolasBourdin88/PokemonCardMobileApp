@@ -90,12 +90,7 @@ class CollectionViewModel @Inject constructor(
 
     fun getNumberOfCardsInSet(setId: String): Int {
         getUserId() ?: return 0
-        val count = userCards.count { setId == it.set.id }
-        Log.e("nicolas", "getNumberOfCardsInSet - setId: ${setId}")
-        if (setId == "swsh1") {
-            Log.e("nicolas", "getNumberOfCardsInSet - $count")
-        }
-        return count
+        return userCards.count { setId == it.set.id }
     }
 
     fun userHaveCards(card: PokemonCardEntity): Boolean {
