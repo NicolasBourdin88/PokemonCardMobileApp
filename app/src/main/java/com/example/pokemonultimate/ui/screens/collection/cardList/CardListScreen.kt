@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
@@ -21,6 +23,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.pokemonultimate.R
+import com.example.pokemonultimate.data.utils.getUserId
 import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
 import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.TitleText
@@ -29,7 +32,13 @@ import com.example.pokemonultimate.ui.utils.TitleText
 fun CardListScreen(setId: String, setImage: String, collectionViewModel: CollectionViewModel) {
     Column {
         Header(setImage)
-        ListCardSearchResult(setId = setId, collectionViewModel = collectionViewModel)
+        val isNetworkAvailable = collectionViewModel.isNetworkAvailable.collectAsState()
+
+        if (isNetworkAvailable.value == true) {
+            ListCardSearchResult(setId, collectionViewModel)
+        } else {
+            ListCardNoConnection(setId, collectionViewModel)
+        }
     }
 }
 
@@ -54,7 +63,41 @@ private fun Header(setImage: String) {
 }
 
 @Composable
-fun ListCardSearchResult(collectionViewModel: CollectionViewModel, setId: String) {
+fun ListCardNoConnection(setId: String, collectionViewModel: CollectionViewModel) {
+
+    val offlineCards = collectionViewModel.getOfflineCardsFromSet(setId)
+    if (offlineCards.isNotEmpty()) {
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 150.dp),
+            modifier = Modifier.padding(horizontal = Padding.MINI.dp),
+        ) {
+            items(offlineCards) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(it.images.large)
+                        .placeholder(R.drawable.back_card)
+                        .error(R.drawable.back_card)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Card",
+                    modifier = Modifier
+                        .width(100.dp)
+                        .padding(Padding.MINI.dp),
+                    contentScale = ContentScale.FillWidth,
+                )
+            }
+        }
+    } else {
+        if (getUserId() == null) {
+            Text("You need to be connected to see offline cards from your collection")
+        } else {
+            Text("No cards from this set in the collection")
+        }
+    }
+}
+
+@Composable
+fun ListCardSearchResult(setId: String, collectionViewModel: CollectionViewModel) {
 
     val pager = collectionViewModel.getFlow(
         setId = setId,

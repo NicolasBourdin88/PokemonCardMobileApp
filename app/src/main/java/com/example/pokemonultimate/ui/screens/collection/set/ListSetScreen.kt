@@ -160,6 +160,7 @@ fun SearchBarCollection(onSearch: (query: String) -> Unit) {
                             .size(24.dp)
                             .clickable {
                                 text = ""
+                                onSearch.invoke("")
                             }
                     )
                 },
