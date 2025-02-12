@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.pokemonultimate.R
-import com.example.pokemonultimate.data.utils.getUserCards
+import com.example.pokemonultimate.data.utils.getUserId
 import com.example.pokemonultimate.ui.utils.QrCodeUtils
 
 @Composable
@@ -29,11 +29,8 @@ fun ShowQRCodeScreen() {
     var qrBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     LaunchedEffect(Unit) {
-        getUserCards { userCards, _ ->
-            val imagesUrls = userCards.mapNotNull { it.images.large }.joinToString(separator = ",")
-
-            qrBitmap = QrCodeUtils.generateQrCode(imagesUrls, size = 800)
-        }
+        val userId = getUserId() ?: return@LaunchedEffect
+        qrBitmap = QrCodeUtils.generateQrCode(userId, size = 800)
     }
 
     Box(
@@ -48,6 +45,9 @@ fun ShowQRCodeScreen() {
                     .size(300.dp)
                     .clip(RoundedCornerShape(16.dp))
             )
-        } ?: Text(text = stringResource(R.string.loading_qr_code), color = MaterialTheme.colorScheme.primary)
+        } ?: Text(
+            text = stringResource(R.string.loading_qr_code),
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }

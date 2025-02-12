@@ -38,10 +38,10 @@ import androidx.navigation.NavController
 import com.example.pokemonultimate.R
 import com.example.pokemonultimate.data.utils.calculateUserStats
 import com.example.pokemonultimate.data.utils.getUserCards
+import com.example.pokemonultimate.ui.navigation.UserNavigation
 import com.example.pokemonultimate.ui.screens.authentification.AuthViewModel
 import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
-import com.example.pokemonultimate.ui.navigation.UserNavigation
 
 
 @Composable
@@ -208,7 +208,7 @@ fun ScanQRCodeFriend(navController: NavController) {
                 .background(MaterialTheme.colorScheme.secondaryContainer)
                 .padding(Padding.MINI.dp)
                 .clickable {
-                    //nav
+                    navController.navigate(UserNavigation.ScanCollectionDestination)
                 },
             contentAlignment = Alignment.TopStart
         ) {

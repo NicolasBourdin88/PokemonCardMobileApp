@@ -1,5 +1,7 @@
 package com.example.pokemonultimate.ui.screens.user
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.util.Log
 import android.view.ViewGroup
 import androidx.annotation.OptIn
@@ -12,6 +14,7 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,22 +22,36 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
+import com.example.pokemonultimate.data.utils.getUserCardsFromId
+import com.example.pokemonultimate.ui.navigation.UserNavigation
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 @OptIn(ExperimentalGetImage::class)
 @Composable
-fun ScanCollectionScreen(onScanComplete: (List<String>) -> Unit) {
+fun ScanCollectionScreen(navController: NavController) {
     val context = LocalContext.current
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
     val barcodeScanner = BarcodeScanning.getClient()
     val executor = remember { Executors.newSingleThreadExecutor() }
     var isScanning by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                (context as android.app.Activity),
+                arrayOf(Manifest.permission.CAMERA),
+                1001
+            )
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(
@@ -66,12 +83,21 @@ fun ScanCollectionScreen(onScanComplete: (List<String>) -> Unit) {
                                     barcodeScanner.process(image)
                                         .addOnSuccessListener { barcodes ->
                                             for (barcode in barcodes) {
-                                                barcode.rawValue?.let { scannedData ->
-                                                    Log.d("ScanQR", "QR Code détecté: $scannedData")
+                                                barcode.rawValue?.let { scannedUserId ->
+                                                    Log.d(
+                                                        "ScanQR",
+                                                        "QR Code détecté: $scannedUserId"
+                                                    )
                                                     isScanning = false
-                                                    val imageUrls = scannedData.split(",")
-                                                    MainScope().launch {
-                                                        onScanComplete(imageUrls)
+
+                                                    getUserCardsFromId(scannedUserId) { userCards ->
+                                                        val imageUrls =
+                                                            userCards.mapNotNull { it.images.large }
+                                                        navController.navigate(
+                                                            UserNavigation.DisplayScannedCardsDestination(
+                                                                imageUrls
+                                                            )
+                                                        )
                                                     }
                                                 }
                                             }

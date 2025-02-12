@@ -60,7 +60,7 @@ sealed class UserNavigation : NavigationDestination() {
     data object ScanCollectionDestination : UserNavigation()
 
     @Serializable
-    data object DisplayScannedCardsDestination : UserNavigation()
+    data class DisplayScannedCardsDestination(val imageUrls: List<String>) : UserNavigation()
 
     companion object {
         val startDestination = SetDestination

@@ -239,18 +239,14 @@ fun AppNavigation() {
                     )
                 }
                 composable<MainNavigation.UserDestination> {
-                    val authenticationViewModel = hiltViewModel<AuthViewModel>()
                     shouldDisplayBackAction.value = true
                     UserNavigation(
-                        navController=navController,
-
                         currentController = {
                             currentBackNavController.value = it
                         },
                         displayBackAction = {
                             shouldDisplayBackAction.value = it
                         },
-                        viewModel = authenticationViewModel
                     )
 
                 }
