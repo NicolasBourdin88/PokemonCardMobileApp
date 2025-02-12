@@ -11,20 +11,37 @@ import androidx.paging.map
 import com.example.pokemonultimate.data.api.ApiRepository
 import com.example.pokemonultimate.data.model.database.DataBase
 import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
+import com.example.pokemonultimate.data.model.pokemonCard.SetEntity
 import com.example.pokemonultimate.data.model.pokemonCard.database.PokemonCardRemoteMediator
+import com.example.pokemonultimate.data.model.sets.ImageSetEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val pokemonCardsDb: DataBase) : ViewModel() {
 
     private val _filters = MutableStateFlow<List<String>>(emptyList())
+
+    init {
+        syncCollection()
+    }
+
+    private fun syncCollection() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = ApiRepository.getSets()
+            response.data?.let { sets ->
+                pokemonCardsDb.setDao.insertSets(sets)
+            }
+        }
+    }
 
     fun getFlow(
         query: String?,

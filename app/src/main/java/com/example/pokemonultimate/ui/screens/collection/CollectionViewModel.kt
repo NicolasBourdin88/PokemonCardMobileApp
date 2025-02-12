@@ -44,10 +44,10 @@ class CollectionViewModel @Inject constructor(private val pokemonCardsDb: DataBa
         })
     }
 
+
     private fun getSets() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val apiResponse: ApiResponse<List<Set>> = ApiRepository.getSets()
-            _setsFlow.value = apiResponse.data ?: emptyList()
+        viewModelScope.launch {
+            _setsFlow.value = pokemonCardsDb.setDao.getAllSets()
         }
     }
 

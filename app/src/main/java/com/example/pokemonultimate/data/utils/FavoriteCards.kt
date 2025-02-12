@@ -1,6 +1,5 @@
 package com.example.pokemonultimate.data.utils
 
-import android.util.Log
 import com.example.pokemonultimate.data.model.pokemonCard.ImagePokemonEntity
 import com.example.pokemonultimate.data.model.pokemonCard.ImagePokemonEntity.Companion.mapToImagePokemonEntity
 import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
@@ -10,24 +9,12 @@ import com.example.pokemonultimate.data.model.pokemonCard.SetEntity.Companion.ma
 import com.example.pokemonultimate.data.model.pokemonCard.SubTypeEntity
 import com.example.pokemonultimate.data.model.pokemonCard.TcgPlayerEntity.Companion.mapToTcgPlayerEntity
 import com.example.pokemonultimate.data.model.pokemonCard.TypeEntity
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
 const val KEY_FIREBASE_COLLECTION = "drawnCards"
 
-//fun getUserCards(
-//    userDocument: DocumentReference,
-//    onFinish: (userCards: MutableSet<PokemonCardEntity>, documentExist: Boolean) -> Unit
-//) {
-//    userDocument.get().addOnSuccessListener { document ->
-//        val userCards =
-//            document.get(KEY_FIREBASE_COLLECTION) as? List<PokemonCardEntity> ?: emptyList()
-//        onFinish.invoke(userCards.toMutableSet(), document.exists())
-//    }
-//}
-
 fun getUserCards(onFinish: (userCards: MutableSet<PokemonCardEntity>, documentExist: Boolean) -> Unit) {
-    val userId = getUserId() ?: return // utilisateur non connecté
+    val userId = getUserId() ?: return
     val db = FirebaseFirestore.getInstance().collection("users").document(userId)
 
     db.get().addOnSuccessListener { document ->
