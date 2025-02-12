@@ -51,6 +51,7 @@ import com.example.pokemonultimate.R
 import com.example.pokemonultimate.data.model.pokemonCard.ColorType
 import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
 import com.example.pokemonultimate.ui.navigation.CollectionNavigation
+import com.example.pokemonultimate.ui.navigation.MainNavigation
 import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.formatDate
 import com.example.pokemonultimate.ui.utils.setFirstToUpperCase
@@ -398,7 +399,7 @@ fun InformationCard(cardPokemon: PokemonCardEntity) {
 fun ButtonCollection(cardPokemon: PokemonCardEntity, navController: NavHostController) {
     Button(
         onClick = {
-            navController.navigate(CollectionNavigation.CardListDestination(setImage = cardPokemon.set.images.logo, setId = cardPokemon.set.id, cardFromHome = cardPokemon.id))
+            navController.navigate(MainNavigation.CardListDestination(setImage = cardPokemon.set.images.logo, setId = cardPokemon.set.id, cardFromHome = cardPokemon.id))
         }
     ) {
         Row {

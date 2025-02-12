@@ -9,6 +9,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.pokemonultimate.ui.navigation.UserNavigation
 import com.example.pokemonultimate.ui.screens.authentification.AuthViewModel
+import com.example.pokemonultimate.ui.screens.home.HomeScreen
+import com.example.pokemonultimate.ui.screens.home.HomeViewModel
 
 @Composable
 fun UserNavigation(
@@ -39,6 +41,12 @@ fun UserNavigation(
             displayBackAction.invoke(true)
             val listImageUrl: UserNavigation.DisplayScannedCardsDestination = it.toRoute()
             DisplayScannedCardsScreen(listImageUrl.imageUrls)
+        }
+
+        composable<UserNavigation.HomeDestination> {
+            displayBackAction.invoke(true)
+            val viewModel = hiltViewModel<HomeViewModel>()
+            HomeScreen(viewModel, navController)
         }
     }
 }

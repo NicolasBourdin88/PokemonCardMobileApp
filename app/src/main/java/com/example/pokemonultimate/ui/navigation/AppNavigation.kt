@@ -56,6 +56,7 @@ import com.example.pokemonultimate.ui.screens.boosters.BoostersNavigation
 import com.example.pokemonultimate.ui.screens.card.CardScreen
 import com.example.pokemonultimate.ui.screens.collection.CollectionNavigation
 import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
+import com.example.pokemonultimate.ui.screens.collection.cardList.CardListScreen
 import com.example.pokemonultimate.ui.screens.connection.ConnectionViewModel
 import com.example.pokemonultimate.ui.screens.home.HomeScreen
 import com.example.pokemonultimate.ui.screens.home.HomeViewModel
@@ -189,7 +190,7 @@ fun AppNavigation() {
                 composable<MainNavigation.HomeDestination> {
                     shouldDisplayBackAction.value = false
                     val viewModel = hiltViewModel<HomeViewModel>()
-                    HomeScreen(viewModel)
+                    HomeScreen(viewModel, navController)
                 }
                 composable<MainNavigation.CollectionDestination> {
                     val viewModel = hiltViewModel<CollectionViewModel>()
@@ -255,6 +256,18 @@ fun AppNavigation() {
                         navController
                     )
 
+                }
+                composable<MainNavigation.CardListDestination> {
+                    shouldDisplayBackAction.value = true
+                    val cardListDestination: MainNavigation.CardListDestination = it.toRoute()
+                    val collectionViewModel = hiltViewModel<CollectionViewModel>()
+                    CardListScreen(
+                        cardListDestination.setId,
+                        cardListDestination.setImage,
+                        cardListDestination.cardFromHome,
+                        collectionViewModel = collectionViewModel,
+                        navController = navController
+                    )
                 }
 
             }

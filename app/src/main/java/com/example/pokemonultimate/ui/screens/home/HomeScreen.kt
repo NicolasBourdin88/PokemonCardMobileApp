@@ -44,11 +44,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.pokemonultimate.R
+import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
+import com.example.pokemonultimate.ui.navigation.MainNavigation
 import com.example.pokemonultimate.ui.theme.cardFireFirstColor
 import com.example.pokemonultimate.ui.theme.cardFireSecondColor
 import com.example.pokemonultimate.ui.theme.cardGrassFirstColor
@@ -61,13 +64,15 @@ import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.TitleText
 import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
 import com.example.pokemonultimate.ui.utils.setFirstToUpperCase
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 private const val DEFAULT_WITH_POKEMON_CELL = 200
 private const val DEFAULT_PADDING_BOTTOM_POKEMON_CELL = 40
 
 
 @Composable
-fun HomeScreen(homeViewModel: HomeViewModel) {
+fun HomeScreen(homeViewModel: HomeViewModel, navController: NavHostController) {
 
     var querySearch: String? by remember { mutableStateOf(null) }
     val filtersTypes = remember { mutableStateListOf<String>() }
@@ -110,6 +115,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                 filtersTypes = filtersTypes,
                 filtersSubTypes = filtersSubTypes,
                 filtersSuperTypes = filtersSuperTypes,
+                navController = navController,
             )
         }
     }
@@ -141,7 +147,8 @@ fun ListCardSearchResult(
     query: String?,
     filtersTypes: List<String>,
     filtersSubTypes: List<String>,
-    filtersSuperTypes: List<String>
+    filtersSuperTypes: List<String>,
+    navController: NavHostController
 ) {
     val immutableFiltersTypes = filtersTypes.toList()
     val immutableFiltersSubTypes = filtersSubTypes.toList()
@@ -195,7 +202,11 @@ fun ListCardSearchResult(
                     contentDescription = "Card",
                     modifier = Modifier
                         .width(100.dp)
-                        .padding(Padding.MINI.dp),
+                        .padding(Padding.MINI.dp)
+                        .clickable {
+                            val jsonCard = Json.Default.encodeToString<PokemonCardEntity>(it)
+                            navController.navigate(MainNavigation.CardDestination(jsonCard, true))
+                        },
                     contentScale = ContentScale.FillWidth,
                 )
             }

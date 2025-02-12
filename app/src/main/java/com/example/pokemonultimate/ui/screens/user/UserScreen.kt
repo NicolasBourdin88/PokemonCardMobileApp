@@ -255,7 +255,7 @@ fun ButtonLogOut(viewModel: AuthViewModel, navController: NavController) {
     Button(
         onClick = {
             viewModel.logoutUser()
-            navController.navigate(MainNavigation.HomeDestination)
+            navController.navigate(UserNavigation.HomeDestination)
         },
         modifier = Modifier
             .width(160.dp)

@@ -6,6 +6,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.example.pokemonultimate.R
 import com.example.pokemonultimate.ui.screens.authentification.AuthViewModel
+import com.example.pokemonultimate.ui.screens.home.HomeViewModel
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -31,6 +32,9 @@ sealed class MainNavigation : NavigationDestination() {
     @Serializable
     data object AuthenticationDestination : MainNavigation()
 
+    @Serializable
+    data class CardListDestination(val setImage: String, val setId: String, val cardFromHome:String? = null) : CollectionNavigation()
+
     companion object {
         val startDestination = HomeDestination
     }
@@ -55,6 +59,9 @@ sealed class UserNavigation : NavigationDestination() {
 
     @Serializable
     data object SetDestination : UserNavigation()
+
+    /*@Serializable
+    data class HomeDestination(val homeViewModel: HomeViewModel, val navController: NavController) : UserNavigation()*/
 
     @Serializable
     data object ShowQrCodeDestination : UserNavigation()
