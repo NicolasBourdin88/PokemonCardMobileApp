@@ -3,7 +3,9 @@ package com.example.pokemonultimate.ui.navigation
 import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import com.example.pokemonultimate.R
+import com.example.pokemonultimate.ui.screens.authentification.AuthViewModel
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
@@ -42,6 +44,26 @@ sealed class AuthenticationNavigation : NavigationDestination() {
 
     companion object {
         val startDestination = SignInDestination
+    }
+}
+
+@Serializable
+sealed class UserNavigation : NavigationDestination() {
+
+    @Serializable
+    data object SetDestination : UserNavigation()
+
+    @Serializable
+    data object ShowQrCodeDestination : UserNavigation()
+
+    @Serializable
+    data object ScanCollectionDestination : UserNavigation()
+
+    @Serializable
+    data object DisplayScannedCardsDestination : UserNavigation()
+
+    companion object {
+        val startDestination = SetDestination
     }
 }
 

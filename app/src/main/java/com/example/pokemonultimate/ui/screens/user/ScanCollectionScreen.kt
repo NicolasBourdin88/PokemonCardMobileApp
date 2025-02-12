@@ -1,3 +1,5 @@
+package com.example.pokemonultimate.ui.screens.user
+
 import android.util.Log
 import android.view.ViewGroup
 import androidx.annotation.OptIn
@@ -16,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.google.mlkit.vision.barcode.BarcodeScanning
@@ -29,7 +30,7 @@ import java.util.concurrent.Executors
 @Composable
 fun ScanCollectionScreen(onScanComplete: (List<String>) -> Unit) {
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
     val barcodeScanner = BarcodeScanning.getClient()
     val executor = remember { Executors.newSingleThreadExecutor() }

@@ -41,6 +41,8 @@ import com.example.pokemonultimate.data.utils.getUserCards
 import com.example.pokemonultimate.ui.screens.authentification.AuthViewModel
 import com.example.pokemonultimate.ui.utils.Padding
 import com.example.pokemonultimate.ui.utils.fontFamilyAvenir
+import com.example.pokemonultimate.ui.navigation.UserNavigation
+
 
 @Composable
 fun UserScreen(viewModel: AuthViewModel, navController: NavController) {
@@ -53,7 +55,7 @@ fun UserScreen(viewModel: AuthViewModel, navController: NavController) {
             StatsUser()
             Column {
                 ScanQRCodeFriend(navController)
-                ShowQRCode()
+                ShowQRCode(navController)
             }
         }
         ButtonLogOut(viewModel)
@@ -146,13 +148,16 @@ fun StatsUser() {
 
 
 @Composable
-fun ShowQRCode() {
+fun ShowQRCode(navController: NavController) {
     Box(
         modifier = Modifier
             .size(width = 165.dp, height = 125.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.secondaryContainer)
-            .padding(Padding.MINI.dp),
+            .padding(Padding.MINI.dp)
+            .clickable {
+                navController.navigate(UserNavigation.ShowQrCodeDestination)
+            },
         contentAlignment = Alignment.TopStart
     ) {
         Column(

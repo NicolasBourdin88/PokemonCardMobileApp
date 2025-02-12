@@ -48,7 +48,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.example.pokemonultimate.data.utils.getUserId
 import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion.toDestination
 import com.example.pokemonultimate.ui.screens.authentification.AuthViewModel
@@ -60,7 +59,8 @@ import com.example.pokemonultimate.ui.screens.home.HomeScreen
 import com.example.pokemonultimate.ui.screens.home.HomeViewModel
 import com.example.pokemonultimate.ui.screens.inscription.AuthenticationNavigation
 import com.example.pokemonultimate.ui.screens.inscription.InscriptionViewModel
-import com.example.pokemonultimate.ui.screens.user.UserScreen
+import com.example.pokemonultimate.ui.screens.user.UserNavigation
+
 import com.example.pokemonultimate.ui.utils.Padding
 
 const val ICON_SIZE = 24
@@ -241,7 +241,18 @@ fun AppNavigation() {
                 composable<MainNavigation.UserDestination> {
                     val authenticationViewModel = hiltViewModel<AuthViewModel>()
                     shouldDisplayBackAction.value = true
-                    UserScreen(viewModel = authenticationViewModel,navController= navController)
+                    UserNavigation(
+                        navController=navController,
+
+                        currentController = {
+                            currentBackNavController.value = it
+                        },
+                        displayBackAction = {
+                            shouldDisplayBackAction.value = it
+                        },
+                        viewModel = authenticationViewModel
+                    )
+
                 }
 
             }
