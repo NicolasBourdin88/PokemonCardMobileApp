@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -57,7 +59,7 @@ fun CustomTextField(
         },
         leadingIcon = {
             Icon(
-                painter = painterResource(id = leadingIconRes),
+                imageVector = Icons.Default.Lock,
                 contentDescription = label,
                 modifier = Modifier
                     .size(27.dp)
