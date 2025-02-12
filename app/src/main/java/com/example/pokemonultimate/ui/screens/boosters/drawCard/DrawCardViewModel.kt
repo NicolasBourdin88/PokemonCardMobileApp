@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokemonultimate.data.api.ApiRepository
 import com.example.pokemonultimate.data.api.ApiResponse
+import com.example.pokemonultimate.data.model.database.DataBase
 import com.example.pokemonultimate.data.model.pokemonCard.PokemonCardEntity
 import com.example.pokemonultimate.data.model.pokemonCard.isBeforeFinalBoosterCard
 import com.example.pokemonultimate.data.model.pokemonCard.isCommonBoosterCard
@@ -12,15 +13,29 @@ import com.example.pokemonultimate.data.utils.KEY_FIREBASE_COLLECTION
 import com.example.pokemonultimate.data.utils.getUserCards
 import com.example.pokemonultimate.data.utils.getUserId
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DrawCardViewModel : ViewModel() {
+@HiltViewModel
+class DrawCardViewModel @Inject constructor(private val pokemonCardsDb: DataBase) : ViewModel() {
+
     private val _cardToDisplay = MutableStateFlow<List<PokemonCardEntity>>(emptyList())
     val cardToDisplay: StateFlow<List<PokemonCardEntity>> get() = _cardToDisplay
+
+    private val _displaySet = MutableStateFlow("swsh1")
+    val displaySet: StateFlow<String> get() = _displaySet
+
+    private val _displaySetImage = MutableStateFlow("swsh1")
+    val displaySetImage: StateFlow<String> get() = _displaySetImage
+
+    init {
+        setSet()
+    }
 
     fun getCardsToDraw(setId: String) {
         getAllCollection(
@@ -29,6 +44,15 @@ class DrawCardViewModel : ViewModel() {
                 _cardToDisplay.update { getCardToOpen(listCard) }
             }
         )
+    }
+
+    fun setSet() {
+        _cardToDisplay.value = emptyList()
+        viewModelScope.launch(Dispatchers.IO) {
+            val set = pokemonCardsDb.setDao.getAllSets().random()
+            _displaySet.value = set.id
+            _displaySetImage.value = set.images.logo
+        }
     }
 
     private fun getCardToOpen(listCard: List<PokemonCardEntity>): List<PokemonCardEntity> {
@@ -50,22 +74,22 @@ class DrawCardViewModel : ViewModel() {
         if (endCardList.isNotEmpty()) {
             boosterContent.add(endCardList.random())
         } else {
-            boosterContent.add(commonCardList.random())
+            boosterContent.add(listCard.random())
         }
 
         if (secondToLastCardList.isNotEmpty()) {
             boosterContent.add(secondToLastCardList.random())
         } else {
-            boosterContent.add(commonCardList.random())
+            boosterContent.add(listCard.random())
         }
 
         val numberOfCommonToGet = if (cardEnergyList.isEmpty()) 9 else 8
-        boosterContent.addAll(commonCardList.shuffled().take(numberOfCommonToGet))
+        boosterContent.addAll(listCard.shuffled().take(numberOfCommonToGet))
 
         if (cardEnergyList.isNotEmpty()) {
             boosterContent.add(cardEnergyList.random())
         } else {
-            boosterContent.add(commonCardList.random())
+            boosterContent.add(listCard.random())
         }
 
         saveDrawnCard(boosterContent)

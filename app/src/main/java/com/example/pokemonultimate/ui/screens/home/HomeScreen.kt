@@ -350,7 +350,7 @@ private enum class PokemonCellInfo(
             .padding(bottom = DEFAULT_PADDING_BOTTOM_POKEMON_CELL.dp)
             .width(DEFAULT_WITH_POKEMON_CELL.dp),
     ),
-    ELECTRIC(
+    LIGHTNING(
         pokemonCellImage = R.drawable.image_card_lightning,
         brush = Brush.linearGradient(listOf(cardLightningFirstColor, cardLightningSecondColor)),
         modifier = Modifier

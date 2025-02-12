@@ -1,6 +1,5 @@
 package com.example.pokemonultimate.ui.navigation
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -87,7 +86,10 @@ fun AppNavigation() {
 
     Scaffold(
         bottomBar = {
-            if (isPortrait && !isOnUserScreen(navBackStackEntry) && !isInFullScreen.value) BottomBarNavigation(currentDestination, navController)
+            if (isPortrait && !isOnUserScreen(navBackStackEntry) && !isInFullScreen.value) BottomBarNavigation(
+                currentDestination,
+                navController
+            )
         },
         topBar = {
             if (!isInFullScreen.value) {
@@ -102,14 +104,19 @@ fun AppNavigation() {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (shouldDisplayBackAction.value) {
-                        IconButton(onClick = {
-                            val canGoBack = currentBackNavController.value.previousBackStackEntry != null
-                            if (canGoBack) {
-                                currentBackNavController.value.navigateUp()
-                            } else {
-                                navController.navigate(MainNavigation.HomeDestination)
-                            }
-                        }) {
+                        IconButton(
+                            onClick = {
+                                val canGoBack =
+                                    currentBackNavController.value.previousBackStackEntry != null
+                                if (canGoBack) {
+                                    currentBackNavController.value.navigateUp()
+                                } else {
+                                    navController.navigate(MainNavigation.HomeDestination)
+                                }
+                            }, modifier = Modifier.padding(
+                                start = if (!isPortrait) Padding.ULTRA.dp else 0.dp
+                            )
+                        ) {
                             Icon(Icons.AutoMirrored.Default.ArrowBack, contentDescription = "Back")
                         }
                     }
@@ -122,7 +129,10 @@ fun AppNavigation() {
                         ) {
                             if (!isUserLoggedIn) {
                                 Button(
-                                    modifier = Modifier.padding(top = Padding.MASSIVE.dp, end = Padding.MEDIUM.dp),
+                                    modifier = Modifier.padding(
+                                        top = Padding.MASSIVE.dp,
+                                        end = Padding.MEDIUM.dp
+                                    ),
                                     onClick = {
                                         navController.navigate(MainNavigation.AuthenticationDestination)
                                     }
@@ -163,7 +173,10 @@ fun AppNavigation() {
             Modifier
                 .fillMaxSize()
         ) {
-            if (!isPortrait && !isOnUserScreen(navBackStackEntry) && !isInFullScreen.value) RailBarNavigation(currentDestination, navController)
+            if (!isPortrait && !isOnUserScreen(navBackStackEntry) && !isInFullScreen.value) RailBarNavigation(
+                currentDestination,
+                navController
+            )
 
             NavHost(
                 navController = navController,
@@ -330,7 +343,7 @@ fun NavHostController.navigateToSelectedItem(destination: NavigationDestination)
         }
         launchSingleTop = true
 
-        if (destination != MainNavigation.CollectionDestination) {
+        if (destination != MainNavigation.CollectionDestination || destination != OpeningBoostersNavigation.BoosterDestination || destination != OpeningBoostersNavigation.BoosterDestination) {
             restoreState = true
         }
     }

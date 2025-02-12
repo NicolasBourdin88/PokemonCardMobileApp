@@ -48,10 +48,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -67,10 +68,10 @@ const val BOOSTER_TOP_HEIGHT = 25
 const val BOOSTER_BOTTOM_HEIGHT = 370
 const val BOOSTER_ALUMINIUM_HEIGHT = 50
 
-const val COUNTDOWN_VALUE = 1f
+const val COUNTDOWN_VALUE = 10f
 
 @Composable
-fun BoostersScreen(onBoosterOpened: () -> Unit) {
+fun BoostersScreen(setImage: String, onBoosterOpened: () -> Unit) {
     var isBoosterOpened: Boolean by remember { mutableStateOf(false) }
     var openedBlur: Int by remember { mutableIntStateOf(0) }
 
@@ -94,7 +95,7 @@ fun BoostersScreen(onBoosterOpened: () -> Unit) {
             var canOpenBooster: Boolean by remember { mutableStateOf(false) }
             Booster(canOpenBooster, onBoosterOpened = {
                 isBoosterOpened = true
-            })
+            }, setImage)
             if (!canOpenBooster) {
                 Countdown(onFinish = {
                     canOpenBooster = true
@@ -172,6 +173,7 @@ fun DarkBackground() {
 fun Booster(
     canOpenBooster: Boolean,
     onBoosterOpened: () -> Unit,
+    setImage: String,
     boosterViewModel: BoosterViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -210,7 +212,7 @@ fun Booster(
                 Modifier
                     .width(BOOSTER_WIDTH.dp)
             ) {
-                BottomBooster()
+                BottomBooster(setImage)
                 TopBooster(hasSwiped)
             }
             PlaceHolder(swipeProgress, hasSwiped, canOpenBooster)
@@ -297,7 +299,7 @@ private fun CutLineAnimation(swipeProgress: Float) {
 }
 
 @Composable
-fun BottomBooster() {
+fun BottomBooster(setImage: String) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -306,7 +308,7 @@ fun BottomBooster() {
             Modifier
                 .padding(top = BOOSTER_ALUMINIUM_HEIGHT.dp)
         ) {
-            BottomBoosterContentPart()
+            BottomBoosterContentPart(setImage)
             AluminiumBoosterPiece(modifier = Modifier.rotate(180F))
         }
     }
@@ -331,9 +333,8 @@ fun TopBooster(isSwipe: Boolean) {
     }
 }
 
-@Preview
 @Composable
-fun BottomBoosterContentPart() {
+fun BottomBoosterContentPart(setImage: String) {
     val colorStops = arrayOf(
         0.3f to Color(0XFF77B4FB),
         1f to Color(0XFF130086),
@@ -365,20 +366,26 @@ fun BottomBoosterContentPart() {
                 .height(BOOSTER_BOTTOM_HEIGHT.dp)
                 .background(brush = Brush.linearGradient(colorStops = colorStops))
         ) {
-            BoosterIllustration()
+            BoosterIllustration(setImage)
         }
     }
 }
 
 @Composable
-private fun BoosterIllustration() {
+private fun BoosterIllustration(setImage: String) {
     Column {
-        Image(
-            painter = painterResource(R.drawable.pokemon_logo),
-            contentDescription = "Logo pokemon",
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(setImage)
+                .placeholder(R.drawable.pokemon_logo)
+                .error(R.drawable.pokemon_logo)
+                .crossfade(true)
+                .build(),
+            contentDescription = "Logo set",
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = Padding.HUGE.dp),
+                .padding(Padding.HUGE.dp),
+            contentScale = ContentScale.Fit,
         )
         Image(
             painter = painterResource(R.drawable.image_card_lightning),
