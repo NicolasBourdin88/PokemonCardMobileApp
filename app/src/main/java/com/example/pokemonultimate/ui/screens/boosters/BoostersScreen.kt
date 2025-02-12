@@ -1,5 +1,6 @@
 package com.example.pokemonultimate.ui.screens.boosters
 
+import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
@@ -21,6 +22,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,11 +45,13 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -164,11 +169,17 @@ fun DarkBackground() {
 }
 
 @Composable
-fun Booster(canOpenBooster: Boolean, onBoosterOpened: () -> Unit) {
+fun Booster(
+    canOpenBooster: Boolean,
+    onBoosterOpened: () -> Unit,
+    boosterViewModel: BoosterViewModel = hiltViewModel()
+) {
+    val context = LocalContext.current
     val swipeThreshold = 500f
     var hasSwiped: Boolean by remember { mutableStateOf(false) }
     var swipeOffset by remember { mutableFloatStateOf(0f) }
     val swipeProgress = (swipeOffset.absoluteValue / swipeThreshold).coerceIn(0f, 1f)
+    val snackbarHostState = remember { SnackbarHostState() }
 
     Column(
         modifier = Modifier
@@ -178,10 +189,14 @@ fun Booster(canOpenBooster: Boolean, onBoosterOpened: () -> Unit) {
                 detectHorizontalDragGestures(
                     onHorizontalDrag = { change, dragAmount ->
                         change.consume()
-                        if (canOpenBooster && hasSwiped == false) swipeOffset += dragAmount
+                        if (canOpenBooster && !hasSwiped) swipeOffset += dragAmount
                         if (swipeOffset.absoluteValue > swipeThreshold) {
-                            onBoosterOpened()
-                            hasSwiped = true
+                            if (boosterViewModel.isNetworkAvailable.value == true) {
+                                onBoosterOpened()
+                                hasSwiped = true
+                            } else {
+                                Toast.makeText(context, "No connection", Toast.LENGTH_LONG).show()
+                            }
                         }
                     },
                     onDragEnd = {
@@ -200,6 +215,7 @@ fun Booster(canOpenBooster: Boolean, onBoosterOpened: () -> Unit) {
             }
             PlaceHolder(swipeProgress, hasSwiped, canOpenBooster)
         }
+        SnackbarHost(hostState = snackbarHostState)
     }
 }
 
