@@ -40,9 +40,7 @@ class CollectionViewModel @Inject constructor(private val pokemonCardsDb: DataBa
         }
     }
 
-    fun getFlow(
-        setId: String,
-    ): Flow<PagingData<PokemonCardEntity>> {
+    fun getFlow(setId: String): Flow<PagingData<PokemonCardEntity>> {
         return getPager(
             setId = setId,
         ).flow.map { pagingData ->
@@ -51,9 +49,7 @@ class CollectionViewModel @Inject constructor(private val pokemonCardsDb: DataBa
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    fun getPager(
-        setId: String,
-    ): Pager<Int, PokemonCardEntity> {
+    fun getPager(setId: String): Pager<Int, PokemonCardEntity> {
         return Pager(
             config = PagingConfig(20),
             remoteMediator = PokemonCardRemoteMediator(

@@ -299,7 +299,7 @@ private fun HomeSearchBar(onSearch: (query: String) -> Unit, onFilterClicked: ()
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
-                                onFilterClicked.invoke()
+                                onFilterClicked()
                             })
                 },
             )

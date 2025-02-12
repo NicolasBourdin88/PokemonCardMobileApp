@@ -32,9 +32,7 @@ class AuthViewModel @Inject constructor(private val pokemonCardsDb: DataBase) : 
     private fun loadUserProfile(userId: String) {
         viewModelScope.launch {
             val userProfile = pokemonCardsDb.userProfileDao.getUserProfile(userId)
-            userProfile?.let {
-                userProfileImage.value = it.pokemonCell
-            }
+            userProfile?.let { userProfileImage.value = it.pokemonCell }
         }
     }
 }

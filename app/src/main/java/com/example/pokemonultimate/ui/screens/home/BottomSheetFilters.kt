@@ -66,7 +66,7 @@ fun DisplayBottomSheetFilter(
 
     ModalBottomSheet(
         onDismissRequest = {
-            onDismissBottomSheet.invoke()
+            onDismissBottomSheet()
         },
         sheetState = sheetState,
     ) {
@@ -150,7 +150,7 @@ fun ButtonFilters(
 
     Button(
         onClick = {
-            onButtonClicked.invoke()
+            onButtonClicked()
         },
         enabled = numberOfFilters > 0,
         modifier = Modifier
