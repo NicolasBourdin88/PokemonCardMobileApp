@@ -7,6 +7,7 @@ import com.example.pokemonultimate.data.model.pokemonCard.Rarity
 import com.example.pokemonultimate.data.model.pokemonCard.SetEntity
 import com.example.pokemonultimate.data.model.pokemonCard.SetEntity.Companion.mapToSetEntity
 import com.example.pokemonultimate.data.model.pokemonCard.SubTypeEntity
+import com.example.pokemonultimate.data.model.pokemonCard.TcgPlayerEntity.Companion.mapToCardMarketEntity
 import com.example.pokemonultimate.data.model.pokemonCard.TcgPlayerEntity.Companion.mapToTcgPlayerEntity
 import com.example.pokemonultimate.data.model.pokemonCard.TypeEntity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -35,11 +36,16 @@ fun getUserCards(onFinish: (userCards: MutableSet<PokemonCardEntity>, documentEx
                 set = (map["set"] as? Map<String, Any>)?.let { mapToSetEntity(it) } ?: SetEntity(),
                 number = map["number"] as? String ?: "",
                 artist = map["artist"] as? String,
-                rarity = (map["rarity"] as? String)?.let { Rarity.valueOf(it.uppercase()) }
-                    ?: Rarity.COMMON,
+                rarity = ((map["rarity"] as? String)?.let { Rarity.valueOf(it.uppercase()) }
+                    ?: Rarity.COMMON),
                 images = (map["images"] as? Map<String, Any>)?.let { mapToImagePokemonEntity(it) }
                     ?: ImagePokemonEntity(),
                 tcgPlayer = (map["tcgplayer"] as? Map<String, Any>)?.let { mapToTcgPlayerEntity(it) },
+                cardMarket = (map["cardmarket"] as? Map<String, Any>)?.let {
+                    mapToCardMarketEntity(
+                        it
+                    )
+                },
             )
         }
 
@@ -66,11 +72,16 @@ fun getUserCardsFromId(userId: String, onFinish: (List<PokemonCardEntity>) -> Un
                 set = (map["set"] as? Map<String, Any>)?.let { mapToSetEntity(it) } ?: SetEntity(),
                 number = map["number"] as? String ?: "",
                 artist = map["artist"] as? String,
-                rarity = (map["rarity"] as? String)?.let { Rarity.valueOf(it.uppercase()) }
-                    ?: Rarity.COMMON,
+                rarity = ((map["rarity"] as? String)?.let { Rarity.valueOf(it.uppercase()) }
+                    ?: Rarity.COMMON),
                 images = (map["images"] as? Map<String, Any>)?.let { mapToImagePokemonEntity(it) }
                     ?: ImagePokemonEntity(),
                 tcgPlayer = (map["tcgplayer"] as? Map<String, Any>)?.let { mapToTcgPlayerEntity(it) },
+                cardMarket = (map["cardmarket"] as? Map<String, Any>)?.let {
+                    mapToCardMarketEntity(
+                        it
+                    )
+                },
             )
         }
 
@@ -81,13 +92,11 @@ fun getUserCardsFromId(userId: String, onFinish: (List<PokemonCardEntity>) -> Un
 fun calculateUserStats(cards: Set<PokemonCardEntity>): Pair<Int, Int> {
     val totalCards = cards.size
 
-    val completedSets = cards
-        .filter { it.set.id.isNotEmpty() }
-        .groupBy { it.set.id }
-        .count { (_, cardsInSet) ->
-            val setTotal = cardsInSet.first().set.total
-            cardsInSet.size >= setTotal
-        }
+    val completedSets =
+        cards.filter { it.set.id.isNotEmpty() }.groupBy { it.set.id }.count { (_, cardsInSet) ->
+                val setTotal = cardsInSet.first().set.total
+                cardsInSet.size >= setTotal
+            }
 
     return Pair(totalCards, completedSets)
 }

@@ -45,5 +45,14 @@ data class TcgPlayerEntity(
                 prices = null,
             )
         }
+        fun mapToCardMarketEntity(map: Map<String, Any>): CardMarketEntity {
+            return CardMarketEntity(
+                url = map["url"] as? String ?: "",
+                updatedAt = Date(),
+                prices = null,
+            )
+        }
     }
+
+
 }

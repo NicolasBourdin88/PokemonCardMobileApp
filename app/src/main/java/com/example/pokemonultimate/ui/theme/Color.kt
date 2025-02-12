@@ -111,3 +111,5 @@ val cardMetalSecondColor = Color(0XFF9090A0)
 
 val cardPsychicFirstColor = Color(0XFFFF6666)
 val cardPsychicSecondColor = Color(0XFFAA0088)
+
+val cardLightingColorFilter = Color(0xFF444444)

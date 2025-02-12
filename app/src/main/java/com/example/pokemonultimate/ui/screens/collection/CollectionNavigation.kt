@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.pokemonultimate.ui.navigation.CollectionNavigation
+import com.example.pokemonultimate.ui.screens.card.CardScreen
 import com.example.pokemonultimate.ui.screens.collection.cardList.CardListScreen
 import com.example.pokemonultimate.ui.screens.collection.set.ListSetScreen
 
@@ -34,12 +35,15 @@ fun CollectionNavigation(
             CardListScreen(
                 cardListDestination.setId,
                 cardListDestination.setImage,
-                collectionViewModel = collectionViewModel
+                cardListDestination.cardFromHome,
+                collectionViewModel = collectionViewModel,
+                navController = navController
             )
         }
         composable<CollectionNavigation.CardDestination> {
+            val cardDestination: CollectionNavigation.CardDestination = it.toRoute()
             displayBackAction.invoke(true)
-            Text("Card")
+            CardScreen(cardDestination.jsonCard, cardDestination.withButtonCollection, navController)
         }
     }
 }

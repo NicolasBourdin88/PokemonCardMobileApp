@@ -48,10 +48,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.pokemonultimate.data.utils.getUserId
 import com.example.pokemonultimate.ui.navigation.NavigationDestination.Companion.toDestination
 import com.example.pokemonultimate.ui.screens.authentification.AuthViewModel
 import com.example.pokemonultimate.ui.screens.boosters.BoostersNavigation
+import com.example.pokemonultimate.ui.screens.card.CardScreen
 import com.example.pokemonultimate.ui.screens.collection.CollectionNavigation
 import com.example.pokemonultimate.ui.screens.collection.CollectionViewModel
 import com.example.pokemonultimate.ui.screens.connection.ConnectionViewModel
@@ -203,15 +205,12 @@ fun AppNavigation() {
                     )
                 }
                 composable<MainNavigation.BoostersDestination> {
-                    Log.e("nicolas", "AppNavigation - here")
                     if (getUserId() == null) {
-                        Log.e("nicolas", "AppNavigation - here3")
                         navController.navigate(MainNavigation.AuthenticationDestination) {
                             popUpTo(MainNavigation.BoostersDestination) { inclusive = true }
                             launchSingleTop = true
                         }
                     }
-                    Log.e("nicolas", "AppNavigation - here 2")
                     shouldDisplayBackAction.value = false
                     BoostersNavigation(
                         currentController = {
@@ -223,7 +222,6 @@ fun AppNavigation() {
                     )
                 }
                 composable<MainNavigation.AuthenticationDestination> {
-                    Log.e("nicolas", "AppNavigation - ici ????")
                     val inscriptionViewModel = hiltViewModel<InscriptionViewModel>()
                     val connectionViewModel = hiltViewModel<ConnectionViewModel>()
 
@@ -232,7 +230,6 @@ fun AppNavigation() {
                         inscriptionViewModel = inscriptionViewModel,
                         connectionViewModel = connectionViewModel,
                         onSuccess = {
-                            Log.e("nicolas", "AppNavigation - non non")
                             navController.popBackStack()
                             authViewModel.checkUserLoggedIn()
                         }
@@ -247,6 +244,15 @@ fun AppNavigation() {
                         displayBackAction = {
                             shouldDisplayBackAction.value = it
                         },
+                    )
+                }
+                composable<MainNavigation.CardDestination> {
+                    shouldDisplayBackAction.value = true
+                    val cardDestination: MainNavigation.CardDestination = it.toRoute()
+                    CardScreen(
+                        cardDestination.jsonCard,
+                        cardDestination.withButtonCollection,
+                        navController
                     )
 
                 }

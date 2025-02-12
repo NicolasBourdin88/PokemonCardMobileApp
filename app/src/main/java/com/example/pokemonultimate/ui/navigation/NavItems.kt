@@ -26,6 +26,9 @@ sealed class MainNavigation : NavigationDestination() {
     data object UserDestination : MainNavigation()
 
     @Serializable
+    data class CardDestination(val jsonCard: String, val withButtonCollection: Boolean = true) : MainNavigation()
+
+    @Serializable
     data object AuthenticationDestination : MainNavigation()
 
     companion object {
@@ -74,10 +77,10 @@ sealed class CollectionNavigation : NavigationDestination() {
     data object SetDestination : CollectionNavigation()
 
     @Serializable
-    data class CardListDestination(val setImage: String, val setId: String) : CollectionNavigation()
+    data class CardListDestination(val setImage: String, val setId: String, val cardFromHome:String? = null) : CollectionNavigation()
 
     @Serializable
-    data object CardDestination : CollectionNavigation()
+    data class CardDestination(val jsonCard: String, val withButtonCollection: Boolean = true) : CollectionNavigation()
 
     companion object {
         val startDestination = SetDestination
