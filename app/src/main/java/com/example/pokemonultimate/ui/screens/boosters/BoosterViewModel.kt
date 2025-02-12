@@ -3,7 +3,6 @@ package com.example.pokemonultimate.ui.screens.boosters
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.pokemonultimate.data.model.database.DataBase
 import com.example.pokemonultimate.data.utils.NetworkAvailability
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
