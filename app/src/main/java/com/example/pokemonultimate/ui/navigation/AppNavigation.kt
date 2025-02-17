@@ -189,15 +189,12 @@ fun AppNavigation() {
                     )
                 }
                 composable<MainNavigation.BoostersDestination> {
-                    Log.e("nicolas", "AppNavigation - here")
                     if (getUserId() == null) {
-                        Log.e("nicolas", "AppNavigation - here3")
                         navController.navigate(MainNavigation.AuthenticationDestination) {
                             popUpTo(MainNavigation.BoostersDestination) { inclusive = true }
                             launchSingleTop = true
                         }
                     }
-                    Log.e("nicolas", "AppNavigation - here 2")
                     shouldDisplayBackAction.value = false
                     BoostersNavigation(
                         currentController = {
@@ -209,7 +206,6 @@ fun AppNavigation() {
                     )
                 }
                 composable<MainNavigation.AuthenticationDestination> {
-                    Log.e("nicolas", "AppNavigation - ici ????")
                     val inscriptionViewModel = hiltViewModel<InscriptionViewModel>()
                     val connectionViewModel = hiltViewModel<ConnectionViewModel>()
 
@@ -218,7 +214,6 @@ fun AppNavigation() {
                         inscriptionViewModel = inscriptionViewModel,
                         connectionViewModel = connectionViewModel,
                         onSuccess = {
-                            Log.e("nicolas", "AppNavigation - non non")
                             navController.popBackStack()
                             authViewModel.checkUserLoggedIn()
                         }
